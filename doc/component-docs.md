@@ -14,7 +14,7 @@ This file contains any relevant links to guides, datasheets, or application note
 ## MAX5206 (DAC)
 * [Datasheet](https://datasheets.maximintegrated.com/en/ds/MAX5204-MAX5207.pdf)
 
-## 74LVC1G157 (2x1 MUX)
-* [Datasheet](https://assets.nexperia.com/documents/data-sheet/74LVC1G157.pdf)
+## 74LVC2G53 (2x1 MUX)
+* [Datasheet](https://www.ti.com/lit/ds/symlink/sn74lvc2g53.pdf)
 
 
