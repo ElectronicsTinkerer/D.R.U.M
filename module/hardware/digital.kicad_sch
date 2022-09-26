@@ -2890,7 +2890,7 @@
     (uuid c3b0ca1c-76c1-4f22-a9a4-4f2d2d26349d)
     (property "Reference" "SW2" (id 0) (at 82.55 219.71 0))
     (property "Value" "SW_Push" (id 1) (at 82.55 222.25 0))
-    (property "Footprint" "" (id 2) (at 82.55 222.25 0)
+    (property "Footprint" "custom:TE_ConnMSLPT5252CG1" (id 2) (at 82.55 222.25 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 82.55 222.25 0)
