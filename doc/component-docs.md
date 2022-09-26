@@ -17,4 +17,12 @@ This file contains any relevant links to guides, datasheets, or application note
 ## 74LVC2G53 (2x1 MUX)
 * [Datasheet](https://www.ti.com/lit/ds/symlink/sn74lvc2g53.pdf)
 
+## OPA340 (OP-AMP)
+* [Datasheet](https://rocelec.widen.net/view/pdf/oeyhv4mosm/sbos073c.pdf)
+
+## MAX6070AAUT33 (Voltage Reference)
+* [Datasheet](https://www.digikey.com/en/products/detail/analog-devices-inc-maxim-integrated/MAX6070AAUT33-T/4156352)
+
+
+
 
