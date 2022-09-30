@@ -13,7 +13,10 @@ Files for the D.R.U.M. Machine
 │   └── software    # Module firmware
 ├── README.md       # INFO (this doc)
 └── sequencer       # Files specific to the sequencer
-    ├── cad         # Housing design
-    ├── hardware    # PCB design (kicad)
-    └── software    # Sequencer firmware
+│   ├── cad         # Housing design
+│   ├── hardware    # PCB design (kicad)
+│   └── software    # Sequencer firmware
+└── slidepot        # Slide potentiometer daughterboard
+    ├── cad         # 3D models for slidepot (knob)
+    └── hardware    # Daughterboard design
 ```
