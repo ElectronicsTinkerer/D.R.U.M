@@ -44,7 +44,7 @@
         "silk_text_thickness": 0.19999999999999998,
         "silk_text_upright": false,
         "zones": {
-          "45_degree_only": true,
+          "45_degree_only": false,
           "min_clearance": 0.508
         }
       },
@@ -55,7 +55,10 @@
           "width": 0.0
         }
       ],
-      "drc_exclusions": [],
+      "drc_exclusions": [
+        "silk_over_copper|128093000|167640000|5dc46aff-4751-4a29-967c-4b60fd79548b|356fac4a-9af1-40af-ad9d-8243178f832c",
+        "silk_over_copper|135813000|167640000|5dc46aff-4751-4a29-967c-4b60fd79548b|ee93cf40-139b-4c65-a474-1701e6115fa9"
+      ],
       "meta": {
         "version": 2
       },
@@ -418,7 +421,7 @@
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
-      "step": "",
+      "step": "module-hardware.step",
       "vrml": ""
     },
     "page_layout_descr_file": ""
