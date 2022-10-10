@@ -2951,6 +2951,10 @@
     (effects (font (size 2.54 2.54) (thickness 0.508) bold italic) (justify left bottom))
     (uuid e49f4042-935c-4ae2-992b-931ae02fa538)
   )
+  (text "Star ground point" (at 52.07 54.61 0)
+    (effects (font (size 1.27 1.27)) (justify left bottom))
+    (uuid edf3ff7a-38e1-41d7-b1c9-e23e989f0fec)
+  )
 
   (label "A2" (at 81.28 127 180)
     (effects (font (size 1.27 1.27)) (justify right bottom))
