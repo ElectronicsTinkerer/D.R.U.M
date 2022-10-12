@@ -4,6 +4,13 @@
 
   (paper "USLegal")
 
+  (title_block
+    (title "DRUM System Sequencer")
+    (date "2022-10-12")
+    (rev "1.0")
+    (company "D.R.U.M.")
+  )
+
   (lib_symbols
     (symbol "Connector:Conn_01x03_Male" (pin_names (offset 1.016) hide) (in_bom yes) (on_board yes)
       (property "Reference" "J" (id 0) (at 0 5.08 0)
@@ -981,7 +988,6 @@
     (uuid fdb3da17-3fa1-47ed-ab5e-cae9173c1702)
   )
 
-  (no_connect (at 251.46 101.6) (uuid 24c81c22-daab-4e0f-afa7-b3abf4b1b048))
   (no_connect (at 251.46 116.84) (uuid 32fbf552-bcde-4569-982c-41ba2c616cf5))
   (no_connect (at 251.46 63.5) (uuid 7dace7e6-7a9f-4e53-8d19-90f99f4b4613))
   (no_connect (at 251.46 119.38) (uuid cd82fcc5-7a39-472b-99be-28a3fa40ba0c))
@@ -1174,6 +1180,10 @@
   (wire (pts (xy 107.95 119.38) (xy 120.65 119.38))
     (stroke (width 0) (type default) (color 0 0 0 0))
     (uuid 31e290c9-a37f-41e4-87cb-486ad1a1ca0b)
+  )
+  (wire (pts (xy 251.46 101.6) (xy 271.78 101.6))
+    (stroke (width 0) (type default) (color 0 0 0 0))
+    (uuid 3483da17-bbe5-44ea-929f-038ad2e8149a)
   )
   (wire (pts (xy 92.71 33.02) (xy 95.25 33.02))
     (stroke (width 0) (type default) (color 0 0 0 0))
@@ -2125,6 +2135,10 @@
   (hierarchical_label "USB_D+" (shape bidirectional) (at 167.64 68.58 180)
     (effects (font (size 1.27 1.27)) (justify right))
     (uuid c8a28e9e-34ac-48da-bb8b-8370ccc24a6a)
+  )
+  (hierarchical_label "GPIO16_NEXTPRSNT" (shape input) (at 271.78 101.6 0)
+    (effects (font (size 1.27 1.27)) (justify left))
+    (uuid d47a02d5-ce6c-4405-9356-47b39b88122d)
   )
   (hierarchical_label "GPIO5_I2C0_SCL" (shape output) (at 271.78 76.2 0)
     (effects (font (size 1.27 1.27)) (justify left))
