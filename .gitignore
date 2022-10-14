@@ -28,6 +28,9 @@ fp-info-cache
 # Emacs autosave
 \#*
 
-
 # Kicad backups & gerbers
 *.zip
+
+# Solidworks autosave
+~\$*
+
