@@ -392,11 +392,9 @@
         "name": "POWER",
         "nets": [
           "+1V1",
-          "+3.3VA",
           "+3V3",
           "+5VA",
           "+5VD",
-          "GND",
           "GNDA"
         ],
         "pcb_color": "rgba(0, 0, 0, 0.000)",
