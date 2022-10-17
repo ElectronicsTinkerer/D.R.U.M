@@ -1,3 +1,3 @@
 (fp_lib_table
-  (lib (name "custom")(type "KiCad")(uri "C:/Users/v_mar/Documents/GitHub/D.R.U.M/module/hardware/custom.pretty")(options "")(descr ""))
+  (lib (name "custom")(type "KiCad")(uri "${KIPRJMOD}/custom.pretty")(options "")(descr ""))
 )
