@@ -1,3 +1,4 @@
 (fp_lib_table
   (lib (name "custom")(type "KiCad")(uri "${KIPRJMOD}/custom.pretty")(options "")(descr ""))
+  (lib (name "DRUM Library")(type "KiCad")(uri "C:/Users/zbald/Downloads/DRUM/D.R.U.M/DRUM Library.pretty")(options "")(descr ""))
 )
