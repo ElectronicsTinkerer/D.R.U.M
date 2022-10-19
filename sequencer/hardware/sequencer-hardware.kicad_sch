@@ -3817,11 +3817,11 @@
     (property "Datasheet" "~" (id 3) (at 250.19 135.89 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "3" (uuid ac403733-e7d9-4af1-b28f-37739a33ffb5))
     (pin "2" (uuid 940f1380-130e-464a-83b9-9cb2e7f8762b))
+    (pin "3" (uuid ac403733-e7d9-4af1-b28f-37739a33ffb5))
+    (pin "4" (uuid 619443f0-b9e5-44e0-ba84-c3cad9bbbade))
     (pin "6" (uuid 982a896f-173e-4250-9e64-fecb37c4349c))
     (pin "7" (uuid ae6479a5-f9e6-4df8-a3a7-fb2c34b52313))
-    (pin "4" (uuid 619443f0-b9e5-44e0-ba84-c3cad9bbbade))
   )
 
   (symbol (lib_id "power:+5VD") (at 151.13 161.29 0) (unit 1)
@@ -5101,7 +5101,7 @@
       (reference "U7") (unit 1) (value "W25Q128JVS") (footprint "Package_SO:SOIC-8_5.23x5.23mm_P1.27mm")
     )
     (path "/56dcffd5-e973-4f89-956d-68b94266f270/908da860-dfd4-4da5-bee2-86e426774566"
-      (reference "U8") (unit 1) (value "RP2040") (footprint "Package_DFN_QFN:QFN-56-1EP_7x7mm_P0.4mm_EP3.2x3.2mm")
+      (reference "U8") (unit 1) (value "RP2040") (footprint "custom:QFN-56-1EP_7x7mm_P0.4mm_EP3.2x3.2mm")
     )
     (path "/56dcffd5-e973-4f89-956d-68b94266f270/8cd1272e-ec52-4d92-858d-7b13e262a71e"
       (reference "Y1") (unit 1) (value "12MHz 18pF") (footprint "Crystal:Crystal_SMD_HC49-SD")

@@ -2522,7 +2522,7 @@
 
   (footprint "Package_DFN_QFN:QFN-56-1EP_7x7mm_P0.4mm_EP3.2x3.2mm" (layer "F.Cu")
     (tedit 627AC11D) (tstamp 8c6160bf-dfe1-4e06-aee5-0ba8b3f08550)
-    (at 215.646 89.027)
+    (at 229.324 87.846)
     (descr "QFN, 56 Pin (https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#page=634), generated with kicad-footprint-generator ipc_noLead_generator.py")
     (tags "QFN NoLead")
     (property "Sheetfile" "File: digital.kicad_sch")
