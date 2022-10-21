@@ -3699,7 +3699,7 @@
     (uuid 622d6f91-69b3-4cb6-8ec6-4ea59f7b3e15)
     (property "Reference" "SW1" (id 0) (at 52.07 31.75 0))
     (property "Value" "PWR" (id 1) (at 52.07 34.29 0))
-    (property "Footprint" "" (id 2) (at 52.07 38.1 0)
+    (property "Footprint" "Connector_PinHeader_2.00mm:PinHeader_1x02_P2.00mm_Vertical" (id 2) (at 52.07 38.1 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 52.07 38.1 0)
@@ -5236,7 +5236,7 @@
       (reference "RV1") (unit 1) (value "1k Audio Taper Pot") (footprint "custom:LINPOT-10KDB")
     )
     (path "/622d6f91-69b3-4cb6-8ec6-4ea59f7b3e15"
-      (reference "SW1") (unit 1) (value "PWR") (footprint "")
+      (reference "SW1") (unit 1) (value "PWR") (footprint "Connector_PinHeader_2.00mm:PinHeader_1x02_P2.00mm_Vertical")
     )
     (path "/cfd12834-aaf9-4680-8c75-780e13783c78"
       (reference "SW2") (unit 1) (value "SW_Push") (footprint "custom:TE_ConnMSLPT5252CG1")
