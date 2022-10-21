@@ -407,7 +407,7 @@
     (property "Value" "R_Potentiometer" (id 1) (at 125.73 77.4699 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "Potentiometer_THT:Potentiometer_Bourns_PTA6043_Single_Slide" (id 2) (at 128.27 76.2 0)
+    (property "Footprint" "Potentiometer_THT:Potentiometer_Bourns_PTA4543_Single_Slide" (id 2) (at 128.27 76.2 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 128.27 76.2 0)
@@ -449,7 +449,7 @@
       (reference "J2") (unit 1) (value "Conn_01x02") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical")
     )
     (path "/9531b8f7-c21e-4d2d-a08b-fcb6e8903a99"
-      (reference "RV1") (unit 1) (value "R_Potentiometer") (footprint "Potentiometer_THT:Potentiometer_Bourns_PTA6043_Single_Slide")
+      (reference "RV1") (unit 1) (value "R_Potentiometer") (footprint "Potentiometer_THT:Potentiometer_Bourns_PTA4543_Single_Slide")
     )
   )
 )
