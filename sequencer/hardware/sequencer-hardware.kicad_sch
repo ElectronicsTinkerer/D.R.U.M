@@ -3488,7 +3488,7 @@
     (property "Value" "1k Audio Taper Pot" (id 1) (at 303.53 146.0499 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "" (id 2) (at 306.07 144.78 0)
+    (property "Footprint" "custom:LINPOT-10KDB" (id 2) (at 306.07 144.78 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 306.07 144.78 0)
@@ -3538,7 +3538,7 @@
     (uuid 359d6b0b-5f28-4c5f-9c0e-eb52ae372b11)
     (property "Reference" "U1" (id 0) (at 55.88 72.39 0))
     (property "Value" "L7805_A" (id 1) (at 55.88 74.93 0))
-    (property "Footprint" "" (id 2) (at 56.515 83.82 0)
+    (property "Footprint" "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown" (id 2) (at 56.515 83.82 0)
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
     )
     (property "Datasheet" "http://www.st.com/content/ccc/resource/technical/document/datasheet/41/4f/b3/b0/12/d4/47/88/CD00000444.pdf/files/CD00000444.pdf/jcr:content/translations/en.CD00000444.pdf" (id 3) (at 55.88 81.28 0)
@@ -3730,7 +3730,7 @@
     (uuid 67731542-430c-42f7-87ed-59c57eb6fef9)
     (property "Reference" "U3" (id 0) (at 92.71 77.47 0))
     (property "Value" "ICL7660" (id 1) (at 92.71 80.01 0))
-    (property "Footprint" "" (id 2) (at 95.25 95.25 0)
+    (property "Footprint" "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" (id 2) (at 95.25 95.25 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "http://datasheets.maximintegrated.com/en/ds/ICL7660-MAX1044.pdf" (id 3) (at 95.25 121.92 0)
@@ -4046,7 +4046,7 @@
     (property "Value" "TS Out" (id 1) (at 330.2 145.4149 0)
       (effects (font (size 1.27 1.27)) (justify right))
     )
-    (property "Footprint" "" (id 2) (at 325.12 144.78 0)
+    (property "Footprint" "Connector_Audio:Jack_6.35mm_Neutrik_NRJ6HF-AU_Horizontal" (id 2) (at 325.12 144.78 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (id 3) (at 325.12 144.78 0)
@@ -4211,7 +4211,7 @@
     (uuid ca9611d6-76b3-4219-bb41-c1da253c11b4)
     (property "Reference" "U2" (id 0) (at 119.38 24.13 0))
     (property "Value" "L7805_D" (id 1) (at 119.38 26.67 0))
-    (property "Footprint" "" (id 2) (at 120.015 35.56 0)
+    (property "Footprint" "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown" (id 2) (at 120.015 35.56 0)
       (effects (font (size 1.27 1.27) italic) (justify left) hide)
     )
     (property "Datasheet" "http://www.st.com/content/ccc/resource/technical/document/datasheet/41/4f/b3/b0/12/d4/47/88/CD00000444.pdf/files/CD00000444.pdf/jcr:content/translations/en.CD00000444.pdf" (id 3) (at 119.38 33.02 0)
@@ -5086,7 +5086,7 @@
       (reference "J5") (unit 1) (value "JST 4-Pin male") (footprint "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical")
     )
     (path "/9aace521-c29e-4538-a0ed-3cdf64db2fd6"
-      (reference "J6") (unit 1) (value "TS Out") (footprint "")
+      (reference "J6") (unit 1) (value "TS Out") (footprint "Connector_Audio:Jack_6.35mm_Neutrik_NRJ6HF-AU_Horizontal")
     )
     (path "/56dcffd5-e973-4f89-956d-68b94266f270/4e8db76f-d9b3-4673-8ae0-baf543e2e32d"
       (reference "J7") (unit 1) (value "Conn_01x03_Male") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
@@ -5233,7 +5233,7 @@
       (reference "R37") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder")
     )
     (path "/2cc3a222-efe9-400d-8ec9-be9ab26a505c"
-      (reference "RV1") (unit 1) (value "1k Audio Taper Pot") (footprint "")
+      (reference "RV1") (unit 1) (value "1k Audio Taper Pot") (footprint "custom:LINPOT-10KDB")
     )
     (path "/622d6f91-69b3-4cb6-8ec6-4ea59f7b3e15"
       (reference "SW1") (unit 1) (value "PWR") (footprint "")
@@ -5245,13 +5245,13 @@
       (reference "SW3") (unit 1) (value "SW_Push") (footprint "custom:TE_ConnMSLPT5252CG1")
     )
     (path "/359d6b0b-5f28-4c5f-9c0e-eb52ae372b11"
-      (reference "U1") (unit 1) (value "L7805_A") (footprint "")
+      (reference "U1") (unit 1) (value "L7805_A") (footprint "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown")
     )
     (path "/ca9611d6-76b3-4219-bb41-c1da253c11b4"
-      (reference "U2") (unit 1) (value "L7805_D") (footprint "")
+      (reference "U2") (unit 1) (value "L7805_D") (footprint "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown")
     )
     (path "/67731542-430c-42f7-87ed-59c57eb6fef9"
-      (reference "U3") (unit 1) (value "ICL7660") (footprint "")
+      (reference "U3") (unit 1) (value "ICL7660") (footprint "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm")
     )
     (path "/e30197c3-13c5-4b66-bff7-7f72d9b4695c"
       (reference "U4") (unit 1) (value "NCP1117-3.3_TO252") (footprint "Package_TO_SOT_SMD:TO-252-2")
