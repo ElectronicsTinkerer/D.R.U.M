@@ -3303,6 +3303,23 @@
     (pin "2" (uuid d9a5da33-9414-4b55-bb39-07b9dff202d3))
   )
 
+  (symbol (lib_id "Mechanical:MountingHole") (at 87.63 199.39 0) (unit 1)
+    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (uuid 03befa8e-af78-4112-87b1-19a6aed29f7f)
+    (property "Reference" "H6" (id 0) (at 90.17 198.1199 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "MountingHole" (id 1) (at 90.17 200.6599 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO14580" (id 2) (at 87.63 199.39 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (id 3) (at 87.63 199.39 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+  )
+
   (symbol (lib_name "OPAMP_1") (lib_id "pspice:OPAMP") (at 281.94 138.43 0) (mirror x) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid 03c7ecca-ebe9-46ed-8c62-d9f6556f04f7)
@@ -3829,6 +3846,23 @@
     (pin "6" (uuid 9ffbf98a-cb80-408d-8765-209989be8039))
     (pin "7" (uuid 9c1a6e41-1c22-471d-ac76-389afcb6d6c4))
     (pin "8" (uuid dc3a3865-d0cb-4b93-8e92-3aac255989e7))
+  )
+
+  (symbol (lib_id "Mechanical:MountingHole") (at 69.85 199.39 0) (unit 1)
+    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (uuid 6ae32483-2b45-48a6-a7ab-d54762dd8df9)
+    (property "Reference" "H5" (id 0) (at 72.39 198.1199 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "MountingHole" (id 1) (at 72.39 200.6599 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO14580" (id 2) (at 69.85 199.39 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (id 3) (at 69.85 199.39 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
   )
 
   (symbol (lib_id "Filter:Choke_Schaffner_RN102-2-02-1M1") (at 36.83 40.64 0) (unit 1)
@@ -5218,6 +5252,12 @@
     (path "/243b3c1b-99cb-43f6-8b26-159acfcb9aa0"
       (reference "H4") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3_ISO14580_Pad")
     )
+    (path "/6ae32483-2b45-48a6-a7ab-d54762dd8df9"
+      (reference "H5") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3_ISO14580")
+    )
+    (path "/03befa8e-af78-4112-87b1-19a6aed29f7f"
+      (reference "H6") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3_ISO14580")
+    )
     (path "/e7d77e35-7d0f-418c-bddb-e70c65e01157"
       (reference "J1") (unit 1) (value "Barrel Jack") (footprint "Connector_BarrelJack:BarrelJack_Horizontal")
     )
@@ -5379,6 +5419,12 @@
     )
     (path "/56dcffd5-e973-4f89-956d-68b94266f270/99ffc954-37ac-423e-8472-316af16a398d"
       (reference "R37") (unit 1) (value "1k") (footprint "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder")
+    )
+    (path "/56dcffd5-e973-4f89-956d-68b94266f270/0809c410-6284-4664-9ee1-586a66288ddc"
+      (reference "R38") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder")
+    )
+    (path "/56dcffd5-e973-4f89-956d-68b94266f270/aa415fd7-5826-4c58-b1af-9ca95b3ef519"
+      (reference "R39") (unit 1) (value "10k") (footprint "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder")
     )
     (path "/2cc3a222-efe9-400d-8ec9-be9ab26a505c"
       (reference "RV1") (unit 1) (value "1k Audio Taper Pot") (footprint "custom:LINPOT-10KDB")
