@@ -4770,6 +4770,23 @@
     (pin "1" (uuid e7598f16-f89f-4b19-89ca-cf93f9c5e164))
   )
 
+  (symbol (lib_id "Mechanical:MountingHole") (at 105.41 199.39 0) (unit 1)
+    (in_bom yes) (on_board yes) (fields_autoplaced)
+    (uuid add4a986-5a60-4baf-8616-4f7d7cd0fb13)
+    (property "Reference" "H7" (id 0) (at 107.95 198.1199 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Value" "MountingHole" (id 1) (at 107.95 200.6599 0)
+      (effects (font (size 1.27 1.27)) (justify left))
+    )
+    (property "Footprint" "MountingHole:MountingHole_3.2mm_M3_ISO14580" (id 2) (at 105.41 199.39 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+    (property "Datasheet" "~" (id 3) (at 105.41 199.39 0)
+      (effects (font (size 1.27 1.27)) hide)
+    )
+  )
+
   (symbol (lib_id "Device:C") (at 210.82 124.46 90) (unit 1)
     (in_bom yes) (on_board yes)
     (uuid af9f9e80-4436-44e3-bc4c-8ebb79ccbca5)
@@ -5943,6 +5960,9 @@
     )
     (path "/03befa8e-af78-4112-87b1-19a6aed29f7f"
       (reference "H6") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3_ISO14580")
+    )
+    (path "/add4a986-5a60-4baf-8616-4f7d7cd0fb13"
+      (reference "H7") (unit 1) (value "MountingHole") (footprint "MountingHole:MountingHole_3.2mm_M3_ISO14580")
     )
     (path "/e7d77e35-7d0f-418c-bddb-e70c65e01157"
       (reference "J1") (unit 1) (value "Barrel Jack") (footprint "Connector_BarrelJack:BarrelJack_Horizontal")
