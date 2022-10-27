@@ -5796,6 +5796,12 @@
     (path "/e3e20b81-5a13-41ac-ab42-8b4f4826ca3c"
       (reference "#PWR077") (unit 1) (value "GNDA") (footprint "")
     )
+    (path "/56dcffd5-e973-4f89-956d-68b94266f270/98e98ba3-f5ec-405a-9566-a72fc0a2a193"
+      (reference "#PWR078") (unit 1) (value "+3V3") (footprint "")
+    )
+    (path "/56dcffd5-e973-4f89-956d-68b94266f270/4e7525b9-17f4-4548-beb8-c47b23d4c652"
+      (reference "#PWR079") (unit 1) (value "GNDD") (footprint "")
+    )
     (path "/a16cb1a3-db57-4f1c-bb1b-9a970683e6ab"
       (reference "C1") (unit 1) (value "10uF") (footprint "Capacitor_SMD:C_1206_3216Metric_Pad1.33x1.80mm_HandSolder")
     )
@@ -6014,6 +6020,9 @@
     )
     (path "/56dcffd5-e973-4f89-956d-68b94266f270/fcae6568-f705-4389-9383-70087de45f94"
       (reference "J17") (unit 1) (value "Conn_01x03") (footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical")
+    )
+    (path "/56dcffd5-e973-4f89-956d-68b94266f270/dd727c33-927c-47c3-aa17-8e2ed06baecd"
+      (reference "J18") (unit 1) (value "JST_4-pin_male") (footprint "Connector_JST:JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical")
     )
     (path "/4db95d31-7cd6-425a-aba5-1ff58537d849"
       (reference "JP1") (unit 1) (value "SolderJumper_2_Bridged") (footprint "custom:SolderJumper-2_P1.3mm_Bridged_Pad1.0x1.5mm")
