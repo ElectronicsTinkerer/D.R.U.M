@@ -3899,7 +3899,7 @@
     (property "Sheetname" "")
     (path "/4db95d31-7cd6-425a-aba5-1ff58537d849")
     (attr exclude_from_pos_files)
-    (fp_text reference "JP1" (at -3.429 0) (layer "F.SilkS")
+    (fp_text reference "JP1" (at -4.445 0) (layer "F.SilkS")
       (effects (font (size 1 1) (thickness 0.15)))
       (tstamp 817408ea-504d-4cc5-9eac-248f3f36d6c0)
     )
