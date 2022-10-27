@@ -418,7 +418,7 @@
       "netlist": "",
       "specctra_dsn": "",
       "step": "../cad/seqPCB.step",
-      "vrml": ""
+      "vrml": "../cad/VRML/sequencer-hardware.wrl"
     },
     "page_layout_descr_file": ""
   },
