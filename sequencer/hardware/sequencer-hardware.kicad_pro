@@ -413,7 +413,7 @@
   },
   "pcbnew": {
     "last_paths": {
-      "gencad": "",
+      "gencad": "sequencer-hardware.cad",
       "idf": "",
       "netlist": "",
       "specctra_dsn": "",
