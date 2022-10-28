@@ -2302,7 +2302,7 @@
 
   (no_connect (at 90.17 107.95) (uuid 49cac183-12d7-45b4-a1dc-beed4117564b))
   (no_connect (at 313.69 151.13) (uuid b4916e6e-7505-402e-9a3c-f9b1955aec8a))
-  (no_connect (at 313.69 148.59) (uuid b4916e6e-7505-402e-9a3c-f9b1955aec8a))
+  (no_connect (at 313.69 148.59) (uuid b4916e6e-7505-402e-9a3c-f9b1955aec8b))
   (no_connect (at 52.07 157.48) (uuid c385c918-83f7-4122-903c-70f1166e0d45))
   (no_connect (at 125.73 173.99) (uuid d1696b55-cc6f-48c6-a49b-b41fbe39926a))
   (no_connect (at 95.25 107.95) (uuid fd5ac6d1-32c4-48b9-a08e-b8c15fedade3))
@@ -6256,11 +6256,11 @@
     (path "/834771e2-2ab3-400d-9a26-61e4e611c603"
       (reference "TP8") (unit 1) (value "TestPoint") (footprint "TestPoint:TestPoint_Pad_D1.5mm")
     )
-    (path "/56dcffd5-e973-4f89-956d-68b94266f270/597ceade-bac0-4edb-a84e-23615c07fe7e"
-      (reference "TP?") (unit 1) (value "TestPoint") (footprint "TestPoint:TestPoint_Pad_D1.5mm")
-    )
     (path "/56dcffd5-e973-4f89-956d-68b94266f270/e7c2bb48-3ded-448a-a859-cfebec62163a"
-      (reference "TP?") (unit 1) (value "TestPoint") (footprint "TestPoint:TestPoint_Pad_D1.5mm")
+      (reference "TP9") (unit 1) (value "TestPoint") (footprint "TestPoint:TestPoint_Pad_D1.5mm")
+    )
+    (path "/56dcffd5-e973-4f89-956d-68b94266f270/597ceade-bac0-4edb-a84e-23615c07fe7e"
+      (reference "TP10") (unit 1) (value "TestPoint") (footprint "TestPoint:TestPoint_Pad_D1.5mm")
     )
     (path "/359d6b0b-5f28-4c5f-9c0e-eb52ae372b11"
       (reference "U1") (unit 1) (value "L7805_A") (footprint "Package_TO_SOT_THT:TO-220-3_Horizontal_TabDown")
