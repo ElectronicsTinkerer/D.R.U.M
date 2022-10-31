@@ -51,8 +51,7 @@
       (copper_finish "None")
       (dielectric_constraints no)
     )
-    (pad_to_mask_clearance 0.05)
-    (solder_mask_min_width 0.2)
+    (pad_to_mask_clearance 0)
     (pcbplotparams
       (layerselection 0x00010fc_ffffffff)
       (disableapertmacros false)
@@ -82,9 +81,9 @@
       (subtractmaskfromsilk false)
       (outputformat 1)
       (mirror false)
-      (drillshape 1)
+      (drillshape 0)
       (scaleselection 1)
-      (outputdirectory "")
+      (outputdirectory "gerb")
     )
   )
 
@@ -2381,7 +2380,6 @@
   (segment (start 163.35 49.05) (end 162.555 48.255) (width 1.016) (layer "F.Cu") (net 2) (tstamp 777e3d2e-7df6-46a4-8aff-45a18283a920))
   (segment (start 165.095 122.855) (end 166.85 124.61) (width 1.016) (layer "F.Cu") (net 3) (tstamp 75c0b347-6423-4b4d-9752-886fc3e42550))
   (segment (start 165.095 45.72) (end 165.095 122.855) (width 1.016) (layer "F.Cu") (net 3) (tstamp 9879cf6b-bdca-4443-9b65-8cd784f933d0))
-  (segment (start 165.1 122.86) (end 163.35 124.61) (width 1.016) (layer "B.Cu") (net 4) (tstamp a33ef6ae-ea3b-4388-ac0d-530a3d05e8eb))
 
   (zone (net 4) (net_name "GND") (layers F&B.Cu) (tstamp 15d7b332-9c09-4ec0-bef4-425c7bc5fd61) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
