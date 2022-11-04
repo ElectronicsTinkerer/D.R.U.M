@@ -37,3 +37,22 @@ fp-info-cache
 
 # Gerbers
 *gerb*
+
+# Binaries
+*.out
+
+# CMAKE
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+elf2uf2
+generated
+*.bin
+*.dis
+*.elf
+*.elf.map
+*.hex
+*.uf2
+pico-sdk
+pioasm

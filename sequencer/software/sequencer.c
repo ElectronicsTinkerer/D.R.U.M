@@ -1,5 +1,5 @@
 /**
- * MODULE CONTROLLER
+ * SEQUENCER CONTROLLER
  * 
  * Authors:
  * Zach Baldwin
@@ -10,5 +10,5 @@
 
 int main ()
 {
-    /* Your code goes here */
+    /* insert pancakes here */
 }
