@@ -21,7 +21,7 @@
 #define BPM_MAX 600
 
 // Time signature settings
-#define TS_DEFAULT = 1;
+#define TS_DEFAULT 1
 
 unsigned int time_signatures[][2] = {
     {3, 4},
