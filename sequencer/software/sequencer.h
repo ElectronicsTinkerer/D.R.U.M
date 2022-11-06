@@ -1,5 +1,5 @@
 /**
- * MODULE CONTROLLER
+ * SEQUENCER CONTROLLER
  * 
  * Authors:
  * Zach Baldwin
@@ -8,8 +8,8 @@
  *
  */
 
-#ifndef DRUM_MODULE_H
-#define DRUM_MODULE_H
+#ifndef DRUM_SEQUENCER_H
+#define DRUM_SEQUENCER_H
 
 // Useful things
 #define True 1
