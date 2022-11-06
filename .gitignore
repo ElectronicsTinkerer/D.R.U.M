@@ -56,3 +56,4 @@ generated
 *.uf2
 pico-sdk
 pioasm
+.emacs.desktop*
