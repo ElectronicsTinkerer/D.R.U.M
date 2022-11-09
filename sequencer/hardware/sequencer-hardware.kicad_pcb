@@ -3685,9 +3685,9 @@
       (net 95 "Net-(FL1-Pad3)") (pinfunction "3") (pintype "passive") (tstamp 2efd035e-3b42-4d22-a08a-d659f68e8918))
     (pad "4" thru_hole circle (at 10 10 180) (size 2 2) (drill 0.7) (layers *.Cu *.Mask)
       (net 2 "GNDA") (pinfunction "4") (pintype "passive") (tstamp 7130c0c5-4f65-4cfb-b590-16ea180c65cb))
-    (model "${KICAD6_3DMODEL_DIR}/Inductor_THT.3dshapes/Choke_Schaffner_RN102-04-14.0x14.0mm.wrl"
-      (offset (xyz 0 0 0))
-      (scale (xyz 1 1 1))
+    (model "${KICAD6_3DMODEL_DIR}/Inductor_THT.3dshapes/Choke_EPCOS_B82722A.step"
+      (offset (xyz 0 -10.16 0))
+      (scale (xyz 0.8 0.5 0.5))
       (rotate (xyz 0 0 0))
     )
   )
@@ -4832,7 +4832,7 @@
 
   (footprint "Package_SO:SOIC-8_5.23x5.23mm_P1.27mm" (layer "F.Cu")
     (tedit 5D9F72B1) (tstamp 6aa5068a-9473-4ee7-9e69-17c2682b748e)
-    (at 97.244 123.279)
+    (at 97.244002 123.279002)
     (descr "SOIC, 8 Pin (http://www.winbond.com/resource-files/w25q32jv%20revg%2003272018%20plus.pdf#page=68), generated with kicad-footprint-generator ipc_gullwing_generator.py")
     (tags "SOIC SO")
     (property "Sheetfile" "File: digital.kicad_sch")
@@ -4885,7 +4885,7 @@
       (net 59 "/D.R.U.M. Sequencer Digital/FD3") (pinfunction "IO3") (pintype "bidirectional") (tstamp 8c9f3d98-5ca3-4184-9998-ecfde0b5340f))
     (pad "8" smd roundrect (at 3.6 -1.905) (size 1.6 0.6) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.25)
       (net 3 "+3V3") (pinfunction "VCC") (pintype "power_in") (tstamp 4848b3d1-25b3-4b65-8a1c-47e34aa5b499))
-    (model "${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_5.23x5.23mm_P1.27mm.wrl"
+    (model "${KICAD6_3DMODEL_DIR}/Package_SO.3dshapes/SOIC-8_5.275x5.275mm_P1.27mm.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -5871,7 +5871,7 @@
 
   (footprint "Connector_BarrelJack:BarrelJack_Horizontal" locked (layer "F.Cu")
     (tedit 5A1DBF6A) (tstamp 8461a765-1af8-4af7-be89-ff0de48dd968)
-    (at 89.7865 39.116 -90)
+    (at 89.786511 39.116 -90)
     (descr "DC Barrel Jack")
     (tags "Power Jack")
     (property "Sheetfile" "File: sequencer-hardware.kicad_sch")
@@ -5926,6 +5926,11 @@
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
+    )
+    (model "${KIPRJMOD}/54-00133.STEP"
+      (offset (xyz -13.6525 0 6.3754))
+      (scale (xyz 1 1 1))
+      (rotate (xyz -90 0 90))
     )
   )
 
@@ -6015,7 +6020,7 @@
 
   (footprint "custom:QFN-56-1EP_7x7mm_P0.4mm_EP3.2x3.2mm" (layer "F.Cu")
     (tedit 627AC11D) (tstamp 8c6160bf-dfe1-4e06-aee5-0ba8b3f08550)
-    (at 105.753 137.122)
+    (at 105.753002 137.122002)
     (descr "QFN, 56 Pin (https://datasheets.raspberrypi.com/rp2040/rp2040-datasheet.pdf#page=634), generated with kicad-footprint-generator ipc_noLead_generator.py")
     (tags "QFN NoLead")
     (property "Sheetfile" "File: digital.kicad_sch")
@@ -6168,7 +6173,7 @@
       (net 51 "/D.R.U.M. Sequencer Digital/FCSB") (pinfunction "QSPI_SS") (pintype "bidirectional") (tstamp 62c78e10-e557-450c-8854-b04f90d09852))
     (pad "57" smd rect locked (at 0 0) (size 3.2 3.2) (layers "F.Cu" "F.Mask")
       (net 72 "GNDD") (pinfunction "GND") (pintype "power_in") (tstamp 209a81d9-fc92-456f-b5de-29a4cc7fcf26))
-    (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-56-1EP_7x7mm_P0.4mm_EP3.2x3.2mm.wrl"
+    (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-56-1EP_7x7mm_P0.4mm_EP5.6x5.6mm.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -7681,7 +7686,7 @@
 
   (footprint "custom:TE_ConnMSLPT5252CG1" (layer "F.Cu")
     (tedit 0) (tstamp c198317d-09a1-42f8-ad79-b69119931440)
-    (at 94.6255 113.3445 -90)
+    (at 94.62549 113.344503 -90)
     (property "Sheetfile" "File: digital.kicad_sch")
     (property "Sheetname" "D.R.U.M. Sequencer Digital")
     (path "/56dcffd5-e973-4f89-956d-68b94266f270/507dc9de-7041-42a1-9631-9cd7683dc8d3")
@@ -7716,6 +7721,11 @@
       (net 79 "Net-(R26-Pad2)") (pinfunction "2") (pintype "passive") (tstamp b947cc7e-7c16-4bb3-af75-d0cb94e2547c))
     (pad "5" smd roundrect (at 2.8 0 270) (size 0.6 1) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.05) (tstamp 112dcf9b-8eca-419b-92a6-803fffc4c596))
     (pad "6" smd roundrect (at -2.8 0 270) (size 0.6 1) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.05) (tstamp 004923bb-6176-461a-bc7f-d6fc437029d1))
+    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_SMD.3dshapes/SW_SPST_Omron_B3FS-105xP.step"
+      (offset (xyz 0 0 0))
+      (scale (xyz 0.9 0.8 0.8))
+      (rotate (xyz 0 0 90))
+    )
   )
 
   (footprint "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" (layer "F.Cu")
@@ -7957,6 +7967,11 @@
       (net 50 "/RUN") (pinfunction "2") (pintype "passive") (tstamp c2543157-6f26-44b0-b9af-2be664b48b36))
     (pad "5" smd roundrect (at 2.8 0 180) (size 0.6 1) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.05) (tstamp 96ce9701-91aa-4cf7-8662-43f8a9ccadd5))
     (pad "6" smd roundrect (at -2.8 0 180) (size 0.6 1) (layers "F.Cu" "F.Paste" "F.Mask") (roundrect_rratio 0.05) (tstamp 4ba171a4-e117-4db2-96d7-890d3ba0a0f7))
+    (model "${KICAD6_3DMODEL_DIR}/Button_Switch_SMD.3dshapes/SW_SPST_Omron_B3FS-105xP.step"
+      (offset (xyz 0 0 0))
+      (scale (xyz 0.8 0.8 0.8))
+      (rotate (xyz 0 0 90))
+    )
   )
 
   (footprint "Resistor_SMD:R_0603_1608Metric_Pad0.98x0.95mm_HandSolder" (layer "F.Cu")
@@ -8308,7 +8323,7 @@
 
   (footprint "Connector_USB:USB_Micro-B_Amphenol_10104110_Horizontal" (layer "F.Cu")
     (tedit 5E5842A1) (tstamp dbbaeca2-823e-435e-8cc2-961d3d8ae802)
-    (at 53.8565 89.154 -90)
+    (at 53.856509 89.154 -90)
     (descr "USB Micro-B, horizontal, https://cdn.amphenol-icc.com/media/wysiwyg/files/drawing/10104110.pdf")
     (tags "USB Micro B horizontal")
     (property "Sheetfile" "File: sequencer-hardware.kicad_sch")
@@ -8369,7 +8384,7 @@
       (net 72 "GNDD") (pinfunction "Shield") (pintype "passive") (tstamp b450d3c1-5d70-4313-b5fd-06f37c626e49))
     (pad "6" smd rect (at 3.75 1.3 270) (size 2.3 1.9) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 72 "GNDD") (pinfunction "Shield") (pintype "passive") (tstamp f18902bb-383b-4a5b-97cd-71e39c12869d))
-    (model "${KICAD6_3DMODEL_DIR}/Connector_USB.3dshapes/USB_Micro-B_Amphenol_10104110_Horizontal.wrl"
+    (model "${KICAD6_3DMODEL_DIR}/Connector_USB.3dshapes/USB_Micro-B_Molex_47346-0001.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
