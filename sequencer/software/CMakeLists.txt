@@ -42,7 +42,7 @@ pico_sdk_init()
 add_executable(sequencer sequencer.c)
 
 # Pull in dependencies
-target_link_libraries(sequencer pico_stdlib)
+target_link_libraries(sequencer pico_stdlib hardware_i2c)
 
 # create map/bin/hex file etc.
 pico_add_extra_outputs(sequencer)

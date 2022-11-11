@@ -52,6 +52,8 @@
 #define PLYSTP_BTN      GPIO_BTN0
 #define MOD_STAT_IRQ    GPIO_CBUS_EXTRA
 
+#define i2c_default 0
+
 
 // Tempo settings
 #define BPM_MIN 20
