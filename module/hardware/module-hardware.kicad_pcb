@@ -1045,7 +1045,7 @@
 
   (footprint "Connector_USB:USB_Micro-B_Amphenol_10104110_Horizontal" (layer "F.Cu")
     (tedit 5E5842A1) (tstamp 42b0bbb0-504a-4069-bae4-0d5e510b1d5f)
-    (at 149.86 166.213)
+    (at 149.86 166.213003)
     (descr "USB Micro-B, horizontal, https://cdn.amphenol-icc.com/media/wysiwyg/files/drawing/10104110.pdf")
     (tags "USB Micro B horizontal")
     (property "Sheetfile" "File: module-hardware.kicad_sch")
@@ -1106,7 +1106,7 @@
       (net 2 "GND") (pinfunction "Shield") (pintype "passive") (tstamp ac2539cb-9b54-46f7-90e9-9d0309e745a5))
     (pad "6" smd rect (at 1.15 1.3) (size 1.8 1.9) (layers "F.Cu" "F.Paste" "F.Mask")
       (net 2 "GND") (pinfunction "Shield") (pintype "passive") (tstamp c3c13c44-ee5a-4682-b2bc-2ac8c9bbb1cf))
-    (model "${KICAD6_3DMODEL_DIR}/Connector_USB.3dshapes/USB_Micro-B_Amphenol_10104110_Horizontal.wrl"
+    (model "${KICAD6_3DMODEL_DIR}/Connector_USB.3dshapes/USB_Micro-B_Molex_47346-0001.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))
@@ -1533,7 +1533,7 @@
       (net 49 "/D.R.U.M. Module Digital/FCSB") (pinfunction "QSPI_SS") (pintype "bidirectional") (tstamp 832c470b-f413-4d57-8d5d-903ae0693239))
     (pad "57" smd rect locked (at 0 0 180) (size 3.2 3.2) (layers "F.Cu" "F.Mask")
       (net 2 "GND") (pinfunction "GND") (pintype "power_in") (tstamp d130997a-db78-4284-86fd-1ba189a39269))
-    (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-56-1EP_7x7mm_P0.4mm_EP3.2x3.2mm.wrl"
+    (model "${KICAD6_3DMODEL_DIR}/Package_DFN_QFN.3dshapes/QFN-56-1EP_7x7mm_P0.4mm_EP5.6x5.6mm.step"
       (offset (xyz 0 0 0))
       (scale (xyz 1 1 1))
       (rotate (xyz 0 0 0))

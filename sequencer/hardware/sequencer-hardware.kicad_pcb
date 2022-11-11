@@ -8573,7 +8573,7 @@
 
   (footprint "Connector_Audio:Jack_6.35mm_Neutrik_NRJ6HF-AU_Horizontal" locked (layer "F.Cu")
     (tedit 5BF4713E) (tstamp e05bf442-85c0-4cac-811e-ac58fe34bc8a)
-    (at 124.771 47.752 90)
+    (at 124.770998 47.752 90)
     (descr "Slim Jacks, 6.35mm (1/4in) stereo jack, switched, gold plated contacts, fully threaded nose, https://www.neutrik.com/en/product/nrj6hf-au")
     (tags "neutrik jack slim")
     (property "Sheetfile" "File: sequencer-hardware.kicad_sch")
@@ -8622,10 +8622,10 @@
     (pad "T" thru_hole circle locked (at 0 0 90) (size 3 3) (drill 1.5) (layers *.Cu *.Mask)
       (net 96 "Net-(J6-PadT)") (pintype "passive") (tstamp 663f121e-b052-47e0-9393-72039d7b17ad))
     (pad "TN" thru_hole circle locked (at 0 11.43 90) (size 3 3) (drill 1.5) (layers *.Cu *.Mask) (tstamp a2142860-4352-400c-8730-fff433f0e5a8))
-    (model "${KICAD6_3DMODEL_DIR}/Connector_Audio.3dshapes/Jack_6.35mm_Neutrik_NRJ6HF-AU_Horizontal.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/TS.STEP"
+      (offset (xyz 17.4625 -13.6525 0))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 90 180 90))
     )
   )
 
