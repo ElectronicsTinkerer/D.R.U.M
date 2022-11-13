@@ -23,6 +23,7 @@ This file contains any relevant links to guides, datasheets, or application note
 ## MAX6070AAUT33 (Voltage Reference)
 * [Datasheet](https://www.digikey.com/en/products/detail/analog-devices-inc-maxim-integrated/MAX6070AAUT33-T/4156352)
 
-
+## PTA45/6043 (Slide Potentiometers)
+* [Datasheet](https://www.bourns.com/docs/Product-Datasheets/pta.pdf)
 
 

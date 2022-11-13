@@ -96,7 +96,7 @@
 
   (footprint "Connector_PinHeader_2.54mm:PinHeader_1x05_P2.54mm_Vertical" (layer "F.Cu")
     (tedit 59FED5CC) (tstamp 44f20eaa-489b-4712-8b26-af7242d1aa5f)
-    (at 170.175 45.72 -90)
+    (at 170.174996 45.72 -90)
     (descr "Through hole straight pin header, 1x05, 2.54mm pitch, single row")
     (tags "Through hole pin header THT 1x05 2.54mm single row")
     (property "Sheetfile" "File: slidepot-45.kicad_sch")
@@ -141,9 +141,9 @@
     (pad "5" thru_hole oval (at 0 10.16 270) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
       (net 2 "GND") (pinfunction "Pin_5") (pintype "passive") (tstamp 79fe590f-c5bf-464f-b3d6-2e5a3c0c269f))
     (model "${KICAD6_3DMODEL_DIR}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x05_P2.54mm_Vertical.wrl"
-      (offset (xyz 0 0 0))
+      (offset (xyz 0 0 -1.905))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 0 180 0))
     )
   )
 
@@ -2292,15 +2292,15 @@
     (pad "2" thru_hole oval (at 0 2.54 90) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask)
       (net 2 "GND") (pinfunction "Pin_2") (pintype "passive") (tstamp 830df5a9-3a41-4c35-bac0-3e521f0f29db))
     (model "${KICAD6_3DMODEL_DIR}/Connector_PinHeader_2.54mm.3dshapes/PinHeader_1x02_P2.54mm_Vertical.wrl"
-      (offset (xyz 0 0 0))
+      (offset (xyz 0 0 -1.905))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz 0 -180 0))
     )
   )
 
   (footprint "Potentiometer_THT:Potentiometer_Bourns_PTA4543_Single_Slide" (layer "F.Cu")
     (tedit 5B92F08E) (tstamp fb85b36c-24b1-4325-8302-e6a25b513762)
-    (at 166.85 51.11 -90)
+    (at 166.850009 51.110007 -90)
     (descr "Bourns single-gang slide potentiometer, 45.0mm travel, https://www.bourns.com/docs/Product-Datasheets/pta.pdf")
     (tags "Bourns single-gang slide potentiometer 45.0mm")
     (property "Sheetfile" "File: slidepot-45.kicad_sch")
@@ -2361,10 +2361,10 @@
     (pad "MP" thru_hole circle (at 4.15 5.95 270) (size 2.7 2.7) (drill 1.7) (layers *.Cu *.Mask) (tstamp 7060925a-97a7-4f87-a3b7-74c6ccd61aff))
     (pad "MP" thru_hole circle (at 53.15 -2.45 270) (size 2.7 2.7) (drill 1.7) (layers *.Cu *.Mask) (tstamp ea83ffee-daea-43ee-a57c-18ffeb61814e))
     (pad "MP" thru_hole circle (at 54.35 5.95 270) (size 2.7 2.7) (drill 1.7) (layers *.Cu *.Mask) (tstamp f44e4b69-3a8c-4228-9a3d-6cc777985ca0))
-    (model "${KICAD6_3DMODEL_DIR}/Potentiometer_THT.3dshapes/Potentiometer_Bourns_PTA4543_Single_Slide.wrl"
-      (offset (xyz 0 0 0))
+    (model "${KIPRJMOD}/PTA4543.stp"
+      (offset (xyz -353.3775 3.4925 38.1))
       (scale (xyz 1 1 1))
-      (rotate (xyz 0 0 0))
+      (rotate (xyz -10 -180 180))
     )
   )
 
