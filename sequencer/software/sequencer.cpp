@@ -23,10 +23,12 @@
 // All of these can be modified by the ISRs
 volatile unsigned int is_running;
 volatile unsigned int is_mod_selected;
-volatile unsigned int bpm;
+volatile int bpm;
 volatile unsigned int time_sig;
 volatile unsigned int current_beat;
 repeating_timer_t timer;
+
+// Adafruit_NeoTrellis keys = Adafruit_NeoTrellis();
 
 int main ()
 {
