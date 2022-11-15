@@ -29,24 +29,25 @@ volatile unsigned int is_mod_selected;
 volatile int bpm;
 volatile unsigned int time_sig;
 volatile unsigned int current_beat;
+volatile signed int current_ubeat;
+volatile unsigned int max_beat;
 repeating_timer_t timer;
-
-// Adafruit_NeoTrellis keys = Adafruit_NeoTrellis();
+volatile uint8_t beats[16]; // TODO: Make beats a struct
 
 Adafruit_NeoTrellis trellis;
 
 //define a callback for key presses
 TrellisCallback blink(keyEvent evt){
-  // Check is the pad pressed?
-  if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_RISING) {
-    trellis.pixels.setPixelColor(evt.bit.NUM, 0, 0, 255); //on rising
-  } else if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING) {
-  // or is the pad released?
-      trellis.pixels.setPixelColor(evt.bit.NUM, 96, 128, 28); //off falling
-  }
+  // // Check is the pad pressed?
+  // if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_RISING) {
+  //   trellis.pixels.setPixelColor(evt.bit.NUM, 0, 0, 255); //on rising
+  // } else if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING) {
+  // // or is the pad released?
+  //     trellis.pixels.setPixelColor(evt.bit.NUM, 96, 128, 28); //off falling
+  // }
 
-  // Turn on/off the neopixels!
-  trellis.pixels.show();
+  // // Turn on/off the neopixels!
+  // trellis.pixels.show();
 
   return 0;
 }
@@ -72,6 +73,7 @@ int main ()
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     current_beat = 0;
+    max_beat = 16; // TODO: init this based on default time sig
 
     trellis.begin(NEO_TRELLIS_ADDR, -1); // Casually ignoring the return value
     
@@ -173,7 +175,12 @@ int main ()
     // Set up the tick timer for micro beat generation    
     
     // Negative timeout means exact delay (rather than delay between callbacks)
-    if (!add_repeating_timer_us((-1000000 * 60) / bpm, isr_timer, NULL, &timer)) {
+    if (!add_repeating_timer_us(
+            (-1000000 * 60) / (bpm * TOTAL_UBEATS),
+            isr_timer,
+            NULL,
+            &timer)
+        ) {
         // printf("Failed to add timer\n");
         // ERROR!
         return 1;
@@ -206,6 +213,17 @@ void update_screen(void)
 void update_buttons(void)
 {
     // TODO
+    for (size_t i = 0; i < 16; ++i) {
+        if (i == current_beat) {
+            trellis.pixels.setPixelColor(i, 255, 255, 255);
+        }            
+        else if (beats[i] == 1) {
+            trellis.pixels.setPixelColor(i, 0, 0, 255);
+        } else {
+            trellis.pixels.setPixelColor(i, 0, 0, 0);
+        }
+    }
+    trellis.pixels.show();
 }
 
 
@@ -214,9 +232,20 @@ void update_buttons(void)
  */
 bool isr_timer(repeating_timer_t *rt)
 {
-    // TODO!
     bool s = !gpio_get(GPIO_CBUS_DRDY);
     gpio_put(GPIO_CBUS_DRDY, s);
+
+    // Update the current beat
+    if (current_ubeat == 0) {
+        ++current_beat;
+        if (current_beat >= max_beat) {
+            current_beat = 0;
+        }
+    }
+    else if (current_ubeat == MAX_UBEAT) {
+        current_ubeat = MIN_UBEAT;
+    }
+    ++current_ubeat;
 
     return true; // keep repeating    
 }
