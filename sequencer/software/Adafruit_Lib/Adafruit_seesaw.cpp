@@ -62,11 +62,11 @@ Adafruit_seesaw::Adafruit_seesaw(TwoWire *i2c_bus) {
 bool Adafruit_seesaw::begin(uint8_t addr, int8_t flow, bool reset) {
   _flow = flow;
 
-  if (_flow != -1) {
+  // if (_flow != -1) {
       // ZACH CHANGE
       // gpio_put(_flow, GPIO_IN);
-      Adafruit_seesaw::pinMode(_flow, INPUT);
-  }
+      // Adafruit_seesaw::pinMode(_flow, INPUT);
+  // }
 
   if (_i2c_dev) {
     delete _i2c_dev;

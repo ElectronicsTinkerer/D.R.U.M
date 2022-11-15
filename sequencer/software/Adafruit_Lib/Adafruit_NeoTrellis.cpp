@@ -29,7 +29,8 @@ Adafruit_NeoTrellis::Adafruit_NeoTrellis(uint8_t addr, TwoWire *i2c_bus)
 bool Adafruit_NeoTrellis::begin(uint8_t addr, int8_t flow) {
   _addr = addr;
 
-  bool ret = pixels.begin(addr, flow);
+  bool ret;
+  ret = pixels.begin(addr, flow);
 
   ret = Adafruit_seesaw::begin(addr, flow, false);
   if (!ret)
@@ -37,7 +38,7 @@ bool Adafruit_NeoTrellis::begin(uint8_t addr, int8_t flow) {
 
   enableKeypadInterrupt();
 
-  return ret;
+ return ret;
 }
 
 /**************************************************************************/

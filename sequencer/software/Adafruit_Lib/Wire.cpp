@@ -79,7 +79,7 @@ void TwoWire::setClock(uint32_t rate)
 void TwoWire::beginTransmission(uint8_t addr)
 {
     _i2c_transmitting = 1;
-    // _i2c_tx_addr = addr;
+    _i2c_tx_addr = addr;
     _i2c_tx_buf_len = 0;
     _i2c_tx_buf_index = 0;
 }
@@ -100,7 +100,7 @@ uint8_t TwoWire::endTransmission(uint8_t tx_mode)
         return 1; // Data too long
     }
     
-    int ret;
+    int ret = 0;
     if (_i2c_tx_buf_len != 0) {
         if (_i2c_channel == 0) {
             ret = i2c_write_blocking(
@@ -108,7 +108,7 @@ uint8_t TwoWire::endTransmission(uint8_t tx_mode)
                 _i2c_tx_addr,
                 _i2c_tx_buffer,
                 _i2c_tx_buf_len,
-                !_i2c_tx_mode
+                !tx_mode
                 );
         }
         else {
@@ -117,7 +117,7 @@ uint8_t TwoWire::endTransmission(uint8_t tx_mode)
                 _i2c_tx_addr,
                 _i2c_tx_buffer,
                 _i2c_tx_buf_len,
-                !_i2c_tx_mode
+                !tx_mode
                 );
         }
     }
@@ -141,21 +141,17 @@ size_t TwoWire::write(uint8_t data)
     }
     else {
         if (_i2c_channel == 0) {
-            i2c_write_blocking(
+            i2c_write_raw_blocking(
                 i2c0,
-                _i2c_tx_addr,
                 &data,
-                1,
-                !_i2c_tx_mode
+                1
                 );
         }
         else {
-            i2c_write_blocking(
+            i2c_write_raw_blocking(
                 i2c1,
-                _i2c_tx_addr,
                 &data,
-                1,
-                !_i2c_tx_mode
+                1
                 );
         }
     }
@@ -173,26 +169,24 @@ size_t TwoWire::write(const uint8_t *buf, size_t len)
     }
     else {
         if (_i2c_channel == 0) {
-            i2c_write_blocking(
+            i2c_write_raw_blocking(
                 i2c0,
-                _i2c_tx_addr,
                 buf,
-                len,
-                !_i2c_tx_mode
+                len
                 );
         }
         else {
-            i2c_write_blocking(
+            i2c_write_raw_blocking(
                 i2c1,
-                _i2c_tx_addr,
                 buf,
-                len,
-                !_i2c_tx_mode
+                len
                 );
         }
     }
     return len;
 }
+
+
 
 uint8_t TwoWire::requestFrom(uint8_t addr, size_t len, uint8_t stop)
 {
