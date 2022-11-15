@@ -18,9 +18,13 @@ extern "C" {
     #include <string.h>
     #include <inttypes.h>
     #include "hardware/i2c.h"
+    #include "pico/stdlib.h"
 }
 
 #include "Wire.h"
+
+uint8_t TwoWire::_i2c_channel = 0;
+uint32_t TwoWire::_i2c_clock = I2C_BAUDRATE;
 
 uint8_t TwoWire::_i2c_rx_buffer[I2C_BUFFER_LENGTH];
 size_t TwoWire::_i2c_rx_buf_len = 0;
@@ -29,14 +33,14 @@ size_t TwoWire::_i2c_rx_buf_index = 0;
 uint8_t TwoWire::_i2c_tx_buffer[I2C_BUFFER_LENGTH];
 size_t TwoWire::_i2c_tx_buf_len = 0;
 size_t TwoWire::_i2c_tx_buf_index = 0;
+uint8_t TwoWire::_i2c_tx_mode = 1; // Arduino levels are inverted pico levels
+size_t TwoWire::_i2c_tx_addr = 0;
 
 uint8_t TwoWire::_i2c_transmitting = 0;
 
 TwoWire::TwoWire()
 {
-    _i2c_channel = 0;
-    _i2c_clock = I2C_BAUDRATE;
-    _i2c_tx_mode = 1; // Arduino levels are inverted pico levels
+    /* empty */
 }
 
 void TwoWire::begin(void)
@@ -75,7 +79,7 @@ void TwoWire::setClock(uint32_t rate)
 void TwoWire::beginTransmission(uint8_t addr)
 {
     _i2c_transmitting = 1;
-    _i2c_tx_addr = addr;
+    // _i2c_tx_addr = addr;
     _i2c_tx_buf_len = 0;
     _i2c_tx_buf_index = 0;
 }
@@ -253,4 +257,6 @@ void TwoWire::flush(void)
     _i2c_tx_buf_index = 0;
 }
 
+
+TwoWire Wire;
 

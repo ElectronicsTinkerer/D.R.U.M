@@ -64,6 +64,7 @@ bool Adafruit_seesaw::begin(uint8_t addr, int8_t flow, bool reset) {
 
   if (_flow != -1) {
       // ZACH CHANGE
+      // gpio_put(_flow, GPIO_IN);
       Adafruit_seesaw::pinMode(_flow, INPUT);
   }
 

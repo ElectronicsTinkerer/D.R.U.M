@@ -31,8 +31,8 @@ inline long map(long val, long i_min, long i_max, long o_min, long o_max)
 class Print
 {
 public:
-    void pinMode(uint8_t, uint8_t);
-    bool digitalRead(uint8_t);
+    // void pinMode(uint8_t, uint8_t);
+    // bool digitalRead(uint8_t);
     /* empty? */
 };
 
