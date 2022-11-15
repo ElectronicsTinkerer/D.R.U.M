@@ -202,7 +202,7 @@ uint8_t TwoWire::requestFrom(uint8_t addr, size_t len, uint8_t stop)
             _i2c_rx_buffer,
             len,
             !stop,
-            1000 // Magic timeout number
+            I2C_REQUEST_TIMEOUT_US
             );
     }
     else {
@@ -212,7 +212,7 @@ uint8_t TwoWire::requestFrom(uint8_t addr, size_t len, uint8_t stop)
             _i2c_rx_buffer,
             len,
             !stop,
-            1000 // Magic timeout number
+            I2C_REQUEST_TIMEOUT_US
             );
     }
 

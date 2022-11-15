@@ -42,7 +42,7 @@ TrellisCallback blink(keyEvent evt){
     trellis.pixels.setPixelColor(evt.bit.NUM, 0, 0, 255); //on rising
   } else if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING) {
   // or is the pad released?
-    trellis.pixels.setPixelColor(evt.bit.NUM, 0); //off falling
+      trellis.pixels.setPixelColor(evt.bit.NUM, 96, 128, 28); //off falling
   }
 
   // Turn on/off the neopixels!
@@ -86,12 +86,12 @@ int main ()
     for (uint16_t i=0; i<trellis.pixels.numPixels(); i++) {
         trellis.pixels.setPixelColor(i, 255, 255, 255);
         trellis.pixels.show();
-        delay(50);
+        sleep_ms(50);
     }
     for (uint16_t i=0; i<trellis.pixels.numPixels(); i++) {
         trellis.pixels.setPixelColor(i, 0x000000);
         trellis.pixels.show();
-        delay(50);
+        sleep_ms(50);
     }
 
 
@@ -215,8 +215,8 @@ void update_buttons(void)
 bool isr_timer(repeating_timer_t *rt)
 {
     // TODO!
-    gpio_put(GPIO_CBUS_DRDY, !gpio_get(GPIO_CBUS_DRDY));
-    
+    bool s = !gpio_get(GPIO_CBUS_DRDY);
+    gpio_put(GPIO_CBUS_DRDY, s);
 
     return true; // keep repeating    
 }
