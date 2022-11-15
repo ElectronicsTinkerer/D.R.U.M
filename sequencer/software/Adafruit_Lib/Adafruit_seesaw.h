@@ -23,7 +23,7 @@
 
 #include "pico/stdlib.h"
 #include "Adafruit_I2CDevice.h"
-// #include <Arduino.h>
+#include "Arduino.h"
 #include "Wire.h"
 
 /*=========================================================================

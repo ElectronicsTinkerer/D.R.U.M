@@ -1,16 +1,4 @@
-/*-------------------------------------------------------------------------
-  Arduino library to control a wide variety of WS2811- and WS2812-based RGB
-  LED devices such as Adafruit FLORA RGB Smart Pixels and NeoPixel strips.
-  Currently handles 400 and 800 KHz bitstreams on 8, 12 and 16 MHz ATmega
-  MCUs, with LEDs wired for various color orders.  Handles most output pins
-  (possible exception with upper PORT registers on the Arduino Mega).
-  Written by Phil Burgess / Paint Your Dragon for Adafruit Industries,
-  contributions by PJRC, Michael Miller and other members of the open
-  source community.
-  Adafruit invests time and resources providing this open source code,
-  please support Adafruit and open-source hardware by purchasing products
-  from Adafruit!
-  -------------------------------------------------------------------------
+/*--------------------------------------------------------------------
   This file is part of the Adafruit NeoPixel library.
   NeoPixel is free software: you can redistribute it and/or modify
   it under the terms of the GNU Lesser General Public License as
@@ -23,283 +11,128 @@
   You should have received a copy of the GNU Lesser General Public
   License along with NeoPixel.  If not, see
   <http://www.gnu.org/licenses/>.
-  -------------------------------------------------------------------------*/
+  --------------------------------------------------------------------*/
 
-#ifndef NEO_SEESAW_H
-#define NEO_SEESAW_H
+#ifndef SEESAW_NEOPIXEL_H
+#define SEESAW_NEOPIXEL_H
 
-#include "seesaw_neopixel.h"
 #include "Adafruit_seesaw.h"
+#include "Arduino.h"
 #include "pico/stdlib.h"
 #include <cstring>
 #include <cstdlib>
 
-// Constructor when length, pin and type are known at compile-time:
-seesaw_NeoPixel::seesaw_NeoPixel(uint16_t n, uint8_t p, neoPixelType t,
-                                 TwoWire *Wi)
-    : Adafruit_seesaw(Wi), begun(false), numLEDs(n), pin(p), brightness(0),
-      pixels(NULL), endTime(0), type(t) {}
+// The order of primary colors in the NeoPixel data stream can vary
+// among device types, manufacturers and even different revisions of
+// the same item.  The third parameter to the seesaw_NeoPixel
+// constructor encodes the per-pixel byte offsets of the red, green
+// and blue primaries (plus white, if present) in the data stream --
+// the following #defines provide an easier-to-use named version for
+// each permutation.  e.g. NEO_GRB indicates a NeoPixel-compatible
+// device expecting three bytes per pixel, with the first byte
+// containing the green value, second containing red and third
+// containing blue.  The in-memory representation of a chain of
+// NeoPixels is the same as the data-stream order; no re-ordering of
+// bytes is required when issuing data to the chain.
 
-// via Michael Vogt/neophob: empty constructor is used when strand length
-// isn't known at compile-time; situations where program config might be
-// read from internal flash memory or an SD card, or arrive via serial
-// command.  If using this constructor, MUST follow up with updateType(),
-// updateLength(), etc. to establish the strand type, length and pin number!
-seesaw_NeoPixel::seesaw_NeoPixel(TwoWire *Wi)
-    : Adafruit_seesaw(Wi),
-#ifdef NEO_KHZ400
-      is800KHz(true),
-#endif
-      begun(false), numLEDs(0), numBytes(0), pin(-1), brightness(0),
-      pixels(NULL), rOffset(1), gOffset(0), bOffset(2), wOffset(1), endTime(0) {
-}
+// Bits 5,4 of this value are the offset (0-3) from the first byte of
+// a pixel to the location of the red color byte.  Bits 3,2 are the
+// green offset and 1,0 are the blue offset.  If it is an RGBW-type
+// device (supporting a white primary in addition to R,G,B), bits 7,6
+// are the offset to the white byte...otherwise, bits 7,6 are set to
+// the same value as 5,4 (red) to indicate an RGB (not RGBW) device.
+// i.e. binary representation:
+// 0bWWRRGGBB for RGBW devices
+// 0bRRRRGGBB for RGB
 
-seesaw_NeoPixel::~seesaw_NeoPixel() {
-  if (pixels)
-    free(pixels);
-}
+// RGB NeoPixel permutations; white and red offsets are always same
+// Offset:         W          R          G          B
+#define NEO_RGB ((0 << 6) | (0 << 4) | (1 << 2) | (2))
+#define NEO_RBG ((0 << 6) | (0 << 4) | (2 << 2) | (1))
+#define NEO_GRB ((1 << 6) | (1 << 4) | (0 << 2) | (2))
+#define NEO_GBR ((2 << 6) | (2 << 4) | (0 << 2) | (1))
+#define NEO_BRG ((1 << 6) | (1 << 4) | (2 << 2) | (0))
+#define NEO_BGR ((2 << 6) | (2 << 4) | (1 << 2) | (0))
 
-bool seesaw_NeoPixel::begin(uint8_t addr, int8_t flow) {
-  if (!Adafruit_seesaw::begin(addr, flow))
-    return false;
+// RGBW NeoPixel permutations; all 4 offsets are distinct
+// Offset:         W          R          G          B
+#define NEO_WRGB ((0 << 6) | (1 << 4) | (2 << 2) | (3))
+#define NEO_WRBG ((0 << 6) | (1 << 4) | (3 << 2) | (2))
+#define NEO_WGRB ((0 << 6) | (2 << 4) | (1 << 2) | (3))
+#define NEO_WGBR ((0 << 6) | (3 << 4) | (1 << 2) | (2))
+#define NEO_WBRG ((0 << 6) | (2 << 4) | (3 << 2) | (1))
+#define NEO_WBGR ((0 << 6) | (3 << 4) | (2 << 2) | (1))
 
-  updateType(type);
-  updateLength(numLEDs);
-  setPin(pin);
+#define NEO_RWGB ((1 << 6) | (0 << 4) | (2 << 2) | (3))
+#define NEO_RWBG ((1 << 6) | (0 << 4) | (3 << 2) | (2))
+#define NEO_RGWB ((2 << 6) | (0 << 4) | (1 << 2) | (3))
+#define NEO_RGBW ((3 << 6) | (0 << 4) | (1 << 2) | (2))
+#define NEO_RBWG ((2 << 6) | (0 << 4) | (3 << 2) | (1))
+#define NEO_RBGW ((3 << 6) | (0 << 4) | (2 << 2) | (1))
 
-  return true;
-}
+#define NEO_GWRB ((1 << 6) | (2 << 4) | (0 << 2) | (3))
+#define NEO_GWBR ((1 << 6) | (3 << 4) | (0 << 2) | (2))
+#define NEO_GRWB ((2 << 6) | (1 << 4) | (0 << 2) | (3))
+#define NEO_GRBW ((3 << 6) | (1 << 4) | (0 << 2) | (2))
+#define NEO_GBWR ((2 << 6) | (3 << 4) | (0 << 2) | (1))
+#define NEO_GBRW ((3 << 6) | (2 << 4) | (0 << 2) | (1))
 
-void seesaw_NeoPixel::updateLength(uint16_t n) {
-  if (pixels)
-    free(pixels); // Free existing data (if any)
+#define NEO_BWRG ((1 << 6) | (2 << 4) | (3 << 2) | (0))
+#define NEO_BWGR ((1 << 6) | (3 << 4) | (2 << 2) | (0))
+#define NEO_BRWG ((2 << 6) | (1 << 4) | (3 << 2) | (0))
+#define NEO_BRGW ((3 << 6) | (1 << 4) | (2 << 2) | (0))
+#define NEO_BGWR ((2 << 6) | (3 << 4) | (1 << 2) | (0))
+#define NEO_BGRW ((3 << 6) | (2 << 4) | (1 << 2) | (0))
 
-  // Allocate new data -- note: ALL PIXELS ARE CLEARED
-  numBytes = n * ((wOffset == rOffset) ? 3 : 4);
-  if ((pixels = (uint8_t *)malloc(numBytes))) {
-    memset(pixels, 0, numBytes);
-    numLEDs = n;
-  } else {
-    numLEDs = numBytes = 0;
-  }
+// If 400 KHz support is enabled, the third parameter to the constructor
+// requires a 16-bit value (in order to select 400 vs 800 KHz speed).
+// If only 800 KHz is enabled (as is default on ATtiny), an 8-bit value
+// is sufficient to encode pixel color order, saving some space.
 
-  uint8_t buf[] = {(uint8_t)(numBytes >> 8), (uint8_t)(numBytes & 0xFF)};
-  this->write(SEESAW_NEOPIXEL_BASE, SEESAW_NEOPIXEL_BUF_LENGTH, buf, 2);
-}
+#define NEO_KHZ800 0x0000 // 800 KHz datastream
+#define NEO_KHZ400 0x0100 // 400 KHz datastream
 
-void seesaw_NeoPixel::updateType(neoPixelType t) {
-  boolean oldThreeBytesPerPixel = (wOffset == rOffset); // false if RGBW
+typedef uint16_t neoPixelType;
 
-  wOffset = (t >> 6) & 0b11; // See notes in header file
-  rOffset = (t >> 4) & 0b11; // regarding R/G/B/W offsets
-  gOffset = (t >> 2) & 0b11;
-  bOffset = t & 0b11;
-  is800KHz = (t < 256); // 400 KHz flag is 1<<8
+/** Adafruit_NeoPixel-compatible 'wrapper' for LED control over seesaw
+ */
+class seesaw_NeoPixel : public Adafruit_seesaw {
 
-  this->write8(SEESAW_NEOPIXEL_BASE, SEESAW_NEOPIXEL_SPEED, is800KHz);
+public:
+  seesaw_NeoPixel(uint16_t n, uint8_t p = 6,
+                  neoPixelType t = NEO_GRB + NEO_KHZ800, TwoWire *Wi = NULL);
+  seesaw_NeoPixel(TwoWire *Wi = NULL);
+  ~seesaw_NeoPixel();
 
-  // If bytes-per-pixel has changed (and pixel data was previously
-  // allocated), re-allocate to new size.  Will clear any data.
-  if (pixels) {
-    boolean newThreeBytesPerPixel = (wOffset == rOffset);
-    if (newThreeBytesPerPixel != oldThreeBytesPerPixel)
-      updateLength(numLEDs);
-  }
-}
+  bool begin(uint8_t addr = SEESAW_ADDRESS, int8_t flow = -1);
+  void show(void), setPin(uint8_t p),
+      setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b),
+      setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b, uint8_t w),
+      setPixelColor(uint16_t n, uint32_t c), setBrightness(uint8_t), clear(),
+      updateLength(uint16_t n), updateType(neoPixelType t);
+  uint8_t *getPixels(void) const, getBrightness(void) const;
+  int8_t getPin(void) { return pin; };
+  uint16_t numPixels(void) const;
+  static uint32_t Color(uint8_t r, uint8_t g, uint8_t b),
+      Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w);
+  uint32_t getPixelColor(uint16_t n) const;
+  inline bool canShow(void) { return (micros() - endTime) >= 300L; }
 
-void seesaw_NeoPixel::show(void) {
+protected:
+  boolean is800KHz, // ...true if 800 KHz pixels
+      begun;        // true if begin() previously called
+  uint16_t numLEDs, // Number of RGB LEDs in strip
+      numBytes;     // Size of 'pixels' buffer below (3 or 4 bytes/pixel)
+  int8_t pin;
+  uint8_t brightness,
+      *pixels,      // Holds LED color values (3 or 4 bytes each)
+      rOffset,      // Index of red byte within each 3- or 4-byte pixel
+      gOffset,      // Index of green byte
+      bOffset,      // Index of blue byte
+      wOffset;      // Index of white byte (same as rOffset if no white)
+  uint32_t endTime; // Latch timing reference
 
-  if (!pixels)
-    return;
+  uint16_t type;
+};
 
-  // Data latch = 300+ microsecond pause in the output stream.  Rather than
-  // put a delay at the end of the function, the ending time is noted and
-  // the function will simply hold off (if needed) on issuing the
-  // subsequent round of data until the latch time has elapsed.  This
-  // allows the mainline code to start generating the next frame of data
-  // rather than stalling for the latch.
-  while (!canShow())
-    ;
-
-  this->write(SEESAW_NEOPIXEL_BASE, SEESAW_NEOPIXEL_SHOW, NULL, 0);
-
-  endTime = micros(); // Save EOD time for latch on next call
-}
-
-// Set the output pin number
-void seesaw_NeoPixel::setPin(uint8_t p) {
-  this->write8(SEESAW_NEOPIXEL_BASE, SEESAW_NEOPIXEL_PIN, p);
-  pin = p;
-}
-
-// Set pixel color from separate R,G,B components:
-void seesaw_NeoPixel::setPixelColor(uint16_t n, uint8_t r, uint8_t g,
-                                    uint8_t b) {
-
-  if (n < numLEDs) {
-    if (brightness) { // See notes in setBrightness()
-      r = (r * brightness) >> 8;
-      g = (g * brightness) >> 8;
-      b = (b * brightness) >> 8;
-    }
-    uint8_t *p;
-    if (wOffset == rOffset) { // Is an RGB-type strip
-      p = &pixels[n * 3];     // 3 bytes per pixel
-    } else {                  // Is a WRGB-type strip
-      p = &pixels[n * 4];     // 4 bytes per pixel
-      p[wOffset] = 0;         // But only R,G,B passed -- set W to 0
-    }
-    p[rOffset] = r; // R,G,B always stored
-    p[gOffset] = g;
-    p[bOffset] = b;
-
-    uint8_t len = (wOffset == rOffset ? 3 : 4);
-    uint16_t offset = n * len;
-
-    uint8_t writeBuf[6];
-    writeBuf[0] = (offset >> 8);
-    writeBuf[1] = offset;
-    memcpy(&writeBuf[2], p, len);
-
-    this->write(SEESAW_NEOPIXEL_BASE, SEESAW_NEOPIXEL_BUF, writeBuf, len + 2);
-  }
-}
-
-void seesaw_NeoPixel::setPixelColor(uint16_t n, uint8_t r, uint8_t g, uint8_t b,
-                                    uint8_t w) {
-
-  if (n < numLEDs) {
-    if (brightness) { // See notes in setBrightness()
-      r = (r * brightness) >> 8;
-      g = (g * brightness) >> 8;
-      b = (b * brightness) >> 8;
-      w = (w * brightness) >> 8;
-    }
-    uint8_t *p;
-    if (wOffset == rOffset) { // Is an RGB-type strip
-      p = &pixels[n * 3];     // 3 bytes per pixel (ignore W)
-    } else {                  // Is a WRGB-type strip
-      p = &pixels[n * 4];     // 4 bytes per pixel
-      p[wOffset] = w;         // Store W
-    }
-    p[rOffset] = r; // Store R,G,B
-    p[gOffset] = g;
-    p[bOffset] = b;
-
-    uint8_t len = (wOffset == rOffset ? 3 : 4);
-    uint16_t offset = n * len;
-
-    uint8_t writeBuf[6];
-    writeBuf[0] = (offset >> 8);
-    writeBuf[1] = offset;
-    memcpy(&writeBuf[2], p, len);
-
-    this->write(SEESAW_NEOPIXEL_BASE, SEESAW_NEOPIXEL_BUF, writeBuf, len + 2);
-  }
-}
-
-// Set pixel color from 'packed' 32-bit RGB color:
-void seesaw_NeoPixel::setPixelColor(uint16_t n, uint32_t c) {
-  if (n < numLEDs) {
-    uint8_t *p, r = (uint8_t)(c >> 16), g = (uint8_t)(c >> 8), b = (uint8_t)c;
-    if (brightness) { // See notes in setBrightness()
-      r = (r * brightness) >> 8;
-      g = (g * brightness) >> 8;
-      b = (b * brightness) >> 8;
-    }
-    if (wOffset == rOffset) {
-      p = &pixels[n * 3];
-    } else {
-      p = &pixels[n * 4];
-      uint8_t w = (uint8_t)(c >> 24);
-      p[wOffset] = brightness ? ((w * brightness) >> 8) : w;
-    }
-    p[rOffset] = r;
-    p[gOffset] = g;
-    p[bOffset] = b;
-
-    uint8_t len = (wOffset == rOffset ? 3 : 4);
-    uint16_t offset = n * len;
-
-    uint8_t writeBuf[6];
-    writeBuf[0] = (offset >> 8);
-    writeBuf[1] = offset;
-    memcpy(&writeBuf[2], p, len);
-
-    this->write(SEESAW_NEOPIXEL_BASE, SEESAW_NEOPIXEL_BUF, writeBuf, len + 2);
-  }
-}
-
-// Convert separate R,G,B into packed 32-bit RGB color.
-// Packed format is always RGB, regardless of LED strand color order.
-uint32_t seesaw_NeoPixel::Color(uint8_t r, uint8_t g, uint8_t b) {
-  return ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
-}
-
-// Convert separate R,G,B,W into packed 32-bit WRGB color.
-// Packed format is always WRGB, regardless of LED strand color order.
-uint32_t seesaw_NeoPixel::Color(uint8_t r, uint8_t g, uint8_t b, uint8_t w) {
-  return ((uint32_t)w << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | b;
-}
-
-// Query color from previously-set pixel (returns packed 32-bit RGB value)
-uint32_t seesaw_NeoPixel::getPixelColor(uint16_t n) const {
-  if (n >= numLEDs)
-    return 0; // Out of bounds, return no color.
-
-  uint8_t *p;
-
-  if (wOffset == rOffset) { // Is RGB-type device
-    p = &pixels[n * 3];
-    if (brightness) {
-      // Stored color was decimated by setBrightness().  Returned value
-      // attempts to scale back to an approximation of the original 24-bit
-      // value used when setting the pixel color, but there will always be
-      // some error -- those bits are simply gone.  Issue is most
-      // pronounced at low brightness levels.
-      return (((uint32_t)(p[rOffset] << 8) / brightness) << 16) |
-             (((uint32_t)(p[gOffset] << 8) / brightness) << 8) |
-             ((uint32_t)(p[bOffset] << 8) / brightness);
-    } else {
-      // No brightness adjustment has been made -- return 'raw' color
-      return ((uint32_t)p[rOffset] << 16) | ((uint32_t)p[gOffset] << 8) |
-             (uint32_t)p[bOffset];
-    }
-  } else { // Is RGBW-type device
-    p = &pixels[n * 4];
-    if (brightness) { // Return scaled color
-      return (((uint32_t)(p[wOffset] << 8) / brightness) << 24) |
-             (((uint32_t)(p[rOffset] << 8) / brightness) << 16) |
-             (((uint32_t)(p[gOffset] << 8) / brightness) << 8) |
-             ((uint32_t)(p[bOffset] << 8) / brightness);
-    } else { // Return raw color
-      return ((uint32_t)p[wOffset] << 24) | ((uint32_t)p[rOffset] << 16) |
-             ((uint32_t)p[gOffset] << 8) | (uint32_t)p[bOffset];
-    }
-  }
-}
-
-// Returns pointer to pixels[] array.  Pixel data is stored in device-
-// native format and is not translated here.  Application will need to be
-// aware of specific pixel data format and handle colors appropriately.
-uint8_t *seesaw_NeoPixel::getPixels(void) const { return pixels; }
-
-uint16_t seesaw_NeoPixel::numPixels(void) const { return numLEDs; }
-
-void seesaw_NeoPixel::clear() {
-  // Clear local pixel buffer
-  memset(pixels, 0, numBytes);
-
-  // Now clear the pixels on the seesaw
-  uint8_t writeBuf[32];
-  memset(writeBuf, 0, 32);
-  for (uint8_t offset = 0; offset < numBytes; offset += 32 - 4) {
-    writeBuf[0] = (offset >> 8);
-    writeBuf[1] = offset;
-    this->write(SEESAW_NEOPIXEL_BASE, SEESAW_NEOPIXEL_BUF, writeBuf, 32);
-  }
-}
-
-void seesaw_NeoPixel::setBrightness(uint8_t b) { brightness = b; }
-
-#endif
+#endif // seesaw_NeoPixel_H

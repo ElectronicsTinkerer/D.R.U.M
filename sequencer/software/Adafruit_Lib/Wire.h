@@ -42,7 +42,9 @@ private:
     static uint8_t _i2c_rx_buffer[I2C_BUFFER_LENGTH];
     static size_t _i2c_rx_buf_len;
     static size_t _i2c_rx_buf_index;
-    };
+};
+
+extern TwoWire Wire;
 
 #endif
 
