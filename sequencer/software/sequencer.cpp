@@ -15,6 +15,9 @@
 #include "hardware/i2c.h"
 
 #include "Adafruit_Lib/Adafruit_NeoTrellis.h"
+#include "Adafruit_Lib/seesaw_neopixel.h"
+#include "Adafruit_Lib/Adafruit_NeoTrellis.h"
+#include "Adafruit_lib/Arduino.h"
 
 #include "serbus.h"
 // #include "oled.h"
@@ -29,6 +32,24 @@ volatile unsigned int current_beat;
 repeating_timer_t timer;
 
 // Adafruit_NeoTrellis keys = Adafruit_NeoTrellis();
+
+Adafruit_NeoTrellis trellis;
+
+//define a callback for key presses
+TrellisCallback blink(keyEvent evt){
+  // Check is the pad pressed?
+  if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_RISING) {
+    trellis.pixels.setPixelColor(evt.bit.NUM, 0, 0, 255); //on rising
+  } else if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING) {
+  // or is the pad released?
+    trellis.pixels.setPixelColor(evt.bit.NUM, 0); //off falling
+  }
+
+  // Turn on/off the neopixels!
+  trellis.pixels.show();
+
+  return 0;
+}
 
 int main ()
 {
@@ -45,6 +66,30 @@ int main ()
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     current_beat = 0;
+
+    trellis.begin(); // Ignoring return value
+    
+    //activate all keys and set callbacks
+    for(int i=0; i<NEO_TRELLIS_NUM_KEYS; i++){
+        trellis.activateKey(i, SEESAW_KEYPAD_EDGE_RISING);
+        trellis.activateKey(i, SEESAW_KEYPAD_EDGE_FALLING);
+        trellis.registerCallback(i, blink);
+    }
+
+    //do a little animation to show we're on
+    for (uint16_t i=0; i<trellis.pixels.numPixels(); i++) {
+        trellis.pixels.setPixelColor(i, 255, 255, 255);
+        trellis.pixels.show();
+        // delay(50);
+    }
+    for (uint16_t i =0; i != 0xffff; i++) {
+    }
+    for (uint16_t i=0; i<trellis.pixels.numPixels(); i++) {
+        trellis.pixels.setPixelColor(i, 0x000000);
+        trellis.pixels.show();
+        // delay(50);
+    }
+
 
     // // BEGIN RPI
     // // I2C is "open drain", pull ups to keep signal high when no data is being
@@ -135,6 +180,7 @@ int main ()
     while (1) {
         update_screen();
         update_buttons();
+        trellis.read();  // interrupt management does all the work! :)
     }
 }
 

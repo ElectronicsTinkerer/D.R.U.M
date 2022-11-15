@@ -26,8 +26,8 @@
  *
  */
 
+#include "Arduino.h"
 #include "Adafruit_seesaw.h"
-#include <Arduino.h>
 
 //#define SEESAW_I2C_DEBUG
 
@@ -62,8 +62,10 @@ Adafruit_seesaw::Adafruit_seesaw(TwoWire *i2c_bus) {
 bool Adafruit_seesaw::begin(uint8_t addr, int8_t flow, bool reset) {
   _flow = flow;
 
-  if (_flow != -1)
-    ::pinMode(_flow, INPUT);
+  if (_flow != -1) {
+      // ZACH CHANGE
+      Adafruit_seesaw::pinMode(_flow, INPUT);
+  }
 
   if (_i2c_dev) {
     delete _i2c_dev;
@@ -873,8 +875,9 @@ bool Adafruit_seesaw::read(uint8_t regHigh, uint8_t regLow, uint8_t *buf,
     uint8_t read_now = min(32, num - pos);
 
     if (_flow != -1) {
-      while (!::digitalRead(_flow))
-        yield();
+      while (!Adafruit_seesaw::digitalRead(_flow))
+        // yield(); // ZACH ???
+      {}
     }
 
     if (!_i2c_dev->write(prefix, 2)) {
@@ -885,8 +888,9 @@ bool Adafruit_seesaw::read(uint8_t regHigh, uint8_t regLow, uint8_t *buf,
     delayMicroseconds(delay);
 
     if (_flow != -1) {
-      while (!::digitalRead(_flow))
-        yield();
+      while (!Adafruit_seesaw::digitalRead(_flow))
+        // yield(); // ZACH????
+      {}
     }
 
 #ifdef SEESAW_I2C_DEBUG
@@ -927,8 +931,9 @@ bool Adafruit_seesaw::write(uint8_t regHigh, uint8_t regLow,
   prefix[1] = (uint8_t)regLow;
 
   if (_flow != -1)
-    while (!::digitalRead(_flow))
-      yield();
+    while (!Adafruit_seesaw::digitalRead(_flow))
+      // yield(); // ZACH????
+    {} 
 
   if (!_i2c_dev->write(buf, num, true, prefix, 2)) {
     return false;

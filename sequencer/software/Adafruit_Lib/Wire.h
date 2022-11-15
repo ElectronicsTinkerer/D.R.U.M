@@ -4,6 +4,8 @@
  * Zach Baldwin
  */
 
+#include "pico/stdlib.h"
+
 #ifndef _WIRE_H
 #define _WIRE_H
 
@@ -23,7 +25,7 @@ public:
     uint8_t endTransmission(uint8_t);
     size_t write(uint8_t);
     size_t write(const uint8_t*, size_t);
-    uint8_t requestFrom(uint8_t, uint8_t, uint8_t);
+    uint8_t requestFrom(uint8_t, size_t, uint8_t);
     int read(void);
     int peek(void);
     void flush(void);
@@ -39,7 +41,7 @@ private:
     static size_t _i2c_tx_buf_len;
     static size_t _i2c_tx_buf_index;
 
-    static uint8_t _i2c_rx_buffer[I2C_BUFFER_LENGTH];
+    static uint8_t _i2c_rx_buffer[];
     static size_t _i2c_rx_buf_len;
     static size_t _i2c_rx_buf_index;
 };

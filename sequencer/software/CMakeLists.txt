@@ -39,7 +39,15 @@ set(DRUM_SEQUENCER_PATH ${PROJECT_SOURCE_DIR})
 pico_sdk_init()
 
 # Set up our executable/build stuff
-add_executable(sequencer sequencer.cpp)
+add_executable(sequencer
+  Adafruit_Lib/Arduino.cpp
+  Adafruit_Lib/Wire.cpp
+  Adafruit_Lib/Adafruit_I2CDevice.cpp
+  Adafruit_Lib/seesaw_neopixel.cpp
+  Adafruit_lib/Adafruit_seesaw.cpp
+  Adafruit_Lib/Adafruit_NeoTrellis.cpp
+  sequencer.cpp
+  )
 
 # Pull in dependencies
 target_link_libraries(sequencer pico_stdlib hardware_i2c pico_malloc pico_mem_ops)
