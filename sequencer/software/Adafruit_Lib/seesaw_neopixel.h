@@ -25,8 +25,14 @@
   <http://www.gnu.org/licenses/>.
   -------------------------------------------------------------------------*/
 
+#ifndef NEO_SEESAW_H
+#define NEO_SEESAW_H
+
 #include "seesaw_neopixel.h"
 #include "Adafruit_seesaw.h"
+#include "pico/stdlib.h"
+#include <cstring>
+#include <cstdlib>
 
 // Constructor when length, pin and type are known at compile-time:
 seesaw_NeoPixel::seesaw_NeoPixel(uint16_t n, uint8_t p, neoPixelType t,
@@ -295,3 +301,5 @@ void seesaw_NeoPixel::clear() {
 }
 
 void seesaw_NeoPixel::setBrightness(uint8_t b) { brightness = b; }
+
+#endif

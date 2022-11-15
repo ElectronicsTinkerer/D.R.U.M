@@ -3,7 +3,10 @@
 
 #include "Adafruit_seesaw.h"
 #include "seesaw_neopixel.h"
-#include <Arduino.h>
+// #include <Arduino.h>
+#include "pico/stdlib.h"
+#include <cstring>
+#include <cstdlib>
 
 #define NEO_TRELLIS_ADDR 0x2E
 

@@ -21,9 +21,10 @@
 #ifndef LIB_SEESAW_H
 #define LIB_SEESAW_H
 
+#include "pico/stdlib.h"
 #include "Adafruit_I2CDevice.h"
-#include <Arduino.h>
-#include <Wire.h>
+// #include <Arduino.h>
+#include "Wire.h"
 
 /*=========================================================================
     I2C ADDRESS/BITS

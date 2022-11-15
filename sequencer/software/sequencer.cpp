@@ -14,8 +14,10 @@
 #include "pico/binary_info.h"
 #include "hardware/i2c.h"
 
+#include "Adafruit_Lib/Adafruit_NeoTrellis.h"
+
 #include "serbus.h"
-#include "oled.h"
+// #include "oled.h"
 #include "sequencer.h"
 
 // All of these can be modified by the ISRs
@@ -42,35 +44,35 @@ int main ()
     time_sig = TS_DEFAULT;
     current_beat = 0;
 
-    // BEGIN RPI
-    // I2C is "open drain", pull ups to keep signal high when no data is being
-    // sent
-    i2c_init(i2c_default, 400 * 1000);
-    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+    // // BEGIN RPI
+    // // I2C is "open drain", pull ups to keep signal high when no data is being
+    // // sent
+    // i2c_init(i2c_default, 400 * 1000);
+    // gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
+    // gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
+    // gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+    // gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
 
-    // run through the complete initialization process
-    oled_init();
+    // // run through the complete initialization process
+    // oled_init();
 
-    // initialize render area for entire frame (128 pixels by 4 pages)
-    render_area_t frame_area = {start_col: 0, end_col : OLED_WIDTH - 1, start_page : 0, end_page : OLED_NUM_PAGES - 1};
-    calc_render_area_buflen(&frame_area);
+    // // initialize render area for entire frame (128 pixels by 4 pages)
+    // render_area_t frame_area = {start_col: 0, end_col : OLED_WIDTH - 1, start_page : 0, end_page : OLED_NUM_PAGES - 1};
+    // calc_render_area_buflen(&frame_area);
 
-    // zero the entire display
-    uint8_t buf[OLED_BUF_LEN];
-    fill(buf, 0x00);
-    render(buf, &frame_area);
+    // // zero the entire display
+    // uint8_t buf[OLED_BUF_LEN];
+    // fill(buf, 0x00);
+    // render(buf, &frame_area);
 
-    // intro sequence: flash the screen 3 times
-    for (int i = 0; i < 3; i++) {
-        oled_send_cmd(0xA5); // ignore RAM, all pixels on
-        sleep_ms(500);
-        oled_send_cmd(0xA4); // go back to following RAM
-        sleep_ms(500);
-    }
-    // END RPI
+    // // intro sequence: flash the screen 3 times
+    // for (int i = 0; i < 3; i++) {
+    //     oled_send_cmd(0xA5); // ignore RAM, all pixels on
+    //     sleep_ms(500);
+    //     oled_send_cmd(0xA4); // go back to following RAM
+    //     sleep_ms(500);
+    // }
+    // // END RPI
     
     // // Register ISRs to GPIO and Timer events
     // // Tempo Encoder
