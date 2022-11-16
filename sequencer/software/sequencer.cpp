@@ -21,14 +21,18 @@
 #include "Adafruit_Lib/Adafruit_SSD1306.h"
 #include "adafruit_Lib/Adafruit_GFX.h"
 
+// Fonts
+#include "Adafruit_Lib/Fonts/FreeMonoBoldOblique12pt7b.h"
+
 #include "serbus.h"
 // #include "oled.h"
 #include "sequencer.h"
 
 // All of these can be modified by the ISRs
-volatile unsigned int is_running;
-volatile unsigned int is_mod_selected;
+volatile bool is_running;
+volatile bool is_mod_selected;
 volatile int bpm;
+volatile bool has_bpm_changed;
 volatile unsigned int time_sig;
 volatile unsigned int current_beat;
 volatile signed int current_ubeat;
@@ -38,22 +42,6 @@ volatile uint8_t beats[16]; // TODO: Make beats a struct
 
 Adafruit_NeoTrellis trellis;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
-
-//define a callback for key presses
-TrellisCallback blink(keyEvent evt){
-  // // Check is the pad pressed?
-  // if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_RISING) {
-  //   trellis.pixels.setPixelColor(evt.bit.NUM, 0, 0, 255); //on rising
-  // } else if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING) {
-  // // or is the pad released?
-  //     trellis.pixels.setPixelColor(evt.bit.NUM, 96, 128, 28); //off falling
-  // }
-
-  // // Turn on/off the neopixels!
-  // trellis.pixels.show();
-
-  return 0;
-}
 
 int main ()
 {
@@ -70,16 +58,28 @@ int main ()
     gpio_init(GPIO_CBUS_DRDY);
     gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
 
+    // Inputs
+    gpio_init(TEMPO_ENC0);
+    gpio_init(TEMPO_ENC1);
+    gpio_init(PLYSTP_BTN);
+    gpio_set_dir(TEMPO_ENC0, GPIO_IN);
+    gpio_set_dir(TEMPO_ENC1, GPIO_IN);
+    gpio_set_dir(PLYSTP_BTN, GPIO_IN);
+
     // Initialize Sequencer states
-    is_running = false;
+    is_running = true;
     is_mod_selected = false;
+    has_bpm_changed = false;
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     current_beat = 0;
     max_beat = 16; // TODO: init this based on default time sig
 
     trellis.begin(NEO_TRELLIS_ADDR, -1); // Casually ignoring the return value
-    display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS); // APVCC = gen drive voltage from 3V3 pin
+    // CAPVCC = gen drive voltage from 3V3 pin
+    display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+    display.setFont(&FreeMonoBoldOblique12pt7b);
+    display.setTextColor(WHITE);
 
     // Show splash screen
     display.display();    
@@ -88,7 +88,7 @@ int main ()
     for(int i=0; i<NEO_TRELLIS_NUM_KEYS; i++){
         trellis.activateKey(i, SEESAW_KEYPAD_EDGE_RISING);
         trellis.activateKey(i, SEESAW_KEYPAD_EDGE_FALLING);
-        trellis.registerCallback(i, blink);
+        trellis.registerCallback(i, isr_pad_event);
     }
 
     // do a little animation to show we're on
@@ -107,20 +107,14 @@ int main ()
     display.clearDisplay();
     display.display();
 
-    // // Register ISRs to GPIO and Timer events
-    // // Tempo Encoder
-    // gpio_set_irq_enabled_with_callback(
-    //     TEMPO_ENC0,
-    //     GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
-    //     true, // Enable interrupt
-    //     &isr_tempo_encoder
-    //     );
-    // gpio_set_irq_enabled_with_callback(
-    //     TEMPO_ENC1,
-    //     GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
-    //     true, // Enable interrupt
-    //     &isr_tempo_encoder
-    //     );
+    // Register ISRs to GPIO and Timer events
+    // Tempo Encoder
+    gpio_set_irq_enabled_with_callback(
+        TEMPO_ENC0,
+        GPIO_IRQ_EDGE_FALL,
+        true, // Enable interrupt
+        &isr_tempo_encoder
+        );
 
     // // Time signature encoder
     // gpio_set_irq_enabled_with_callback(
@@ -136,13 +130,13 @@ int main ()
     //     &isr_time_sig_encoder
     //     );
 
-    // // Play / pause button
+    // Play / pause button
     // gpio_set_irq_enabled_with_callback(
-    //     PLYSTP_BTN,
-    //     GPIO_IRQ_EDGE_FALL,
-    //     true, // Enable interrupt
-    //     &isr_play_pause
-    //     );
+        // PLYSTP_BTN,
+        // GPIO_IRQ_EDGE_FALL,
+        // true, // Enable interrupt
+        // &isr_play_pause
+        // );
 
     // // Module selection status update
     // gpio_set_irq_enabled_with_callback(
@@ -183,6 +177,10 @@ int main ()
 void update_screen(void)
 {
     // TODO
+    display.clearDisplay();
+    display.setCursor(0,18); // Magic numbers for field locations on screen
+    display.println(bpm, DEC);
+    display.display();
 }
 
 
@@ -192,9 +190,8 @@ void update_screen(void)
  */
 void update_buttons(void)
 {
-    // TODO
     for (size_t i = 0; i < 16; ++i) {
-        if (i == current_beat) {
+        if (is_running && i == current_beat) {
             trellis.pixels.setPixelColor(i, 255, 255, 255);
         }            
         else if (beats[i] == 1) {
@@ -216,17 +213,26 @@ bool isr_timer(repeating_timer_t *rt)
     gpio_put(GPIO_CBUS_DRDY, s);
 
     // Update the current beat
-    if (current_ubeat == 0) {
-        ++current_beat;
-        if (current_beat >= max_beat) {
-            current_beat = 0;
+    if (is_running) {
+        if (current_ubeat == 0) {
+            ++current_beat;
+            if (current_beat >= max_beat) {
+                current_beat = 0;
+            }
         }
+        else if (current_ubeat == MAX_UBEAT) {
+            current_ubeat = MIN_UBEAT;
+        }
+        ++current_ubeat;
     }
-    else if (current_ubeat == MAX_UBEAT) {
-        current_ubeat = MIN_UBEAT;
-    }
-    ++current_ubeat;
 
+    // A bit of a hack, but adjust the timer's timeout value
+    // based on the current BPM setting
+    if (has_bpm_changed) {
+        rt->delay_us = (-1000000 * 60) / (bpm * TOTAL_UBEATS);
+        has_bpm_changed = false;
+    }
+    
     return true; // keep repeating    
 }
 
@@ -252,7 +258,17 @@ void isr_module_status(unsigned int gpio, uint32_t event)
  */
 void isr_tempo_encoder(unsigned int gpio, uint32_t event)
 {
-    // TODO
+    
+    if (gpio_get(TEMPO_ENC1) == 1) { // "Forward"
+        if (bpm < BPM_MAX) {
+            ++bpm;
+        }
+    } else { // Backward
+        if (bpm > BPM_MIN) {
+            --bpm;
+        }
+    }
+    has_bpm_changed = true;
 }
 
 
@@ -266,6 +282,10 @@ void isr_tempo_encoder(unsigned int gpio, uint32_t event)
 void isr_play_pause(unsigned int gpio, uint32_t event)
 {
     is_running = !is_running;
+    if (is_running) {
+        current_beat = 0;
+        current_ubeat = 0;
+    }
 }
 
 
@@ -282,16 +302,16 @@ void isr_time_sig_encoder(unsigned int gpio, uint32_t event)
 }
 
 
-// TODO: This might not be possible, depending on whether or not the pad can s
 /**
  * Handle a button press on the squish pad
  * 
  * @param The GPIO pin number
  * @param The GPIO event type
  */
-void isr_pad_event(void)
+TrellisCallback isr_pad_event(keyEvent evt)
 {
     // TODO
+    return 0; // Does something...
 }
 
 

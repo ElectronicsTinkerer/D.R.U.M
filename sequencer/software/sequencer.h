@@ -35,7 +35,7 @@
 #define GPIO_CBUS_SDOUT 20
 // GPIO 21
 #define GPIO_CBUS_NXTPR 22
-#define GPIO_BTN0       23
+#define GPIO_BTN0       0 // 23 <- PCB uses 23 but is not available on Pico
 #define GPIO_BTN1       24
 // GPIO 25
 #define GPIO_ADC0       26
@@ -83,7 +83,7 @@ void isr_module_status(unsigned int, uint32_t);
 void isr_tempo_encoder(unsigned int, uint32_t);
 void isr_play_pause(unsigned int, uint32_t);
 void isr_time_sig_encoder(unsigned int, uint32_t);
-void isr_pad_event(void); // This might not be possible, depending on whether or not the pad can send interrupts
+TrellisCallback isr_pad_event(keyEvent);
 
 #endif
 
