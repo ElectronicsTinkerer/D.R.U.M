@@ -81,6 +81,7 @@ typedef struct time_sig_t {
 // Function signatures
 void update_screen(void);
 void update_buttons(void);
+void isr_gpio_handler(unsigned int, uint32_t);
 bool isr_timer(repeating_timer_t *rt);
 void isr_module_status(unsigned int, uint32_t);
 void isr_tempo_encoder(unsigned int, uint32_t);

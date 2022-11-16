@@ -73,15 +73,17 @@ int main ()
     gpio_set_dir(PLYSTP_BTN, GPIO_IN);
 
     // Initialize Sequencer states
-    is_running = true;
+    is_running = false;
     is_mod_selected = false;
     has_bpm_changed = false;
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     current_beat = 0;
     max_beat = time_signatures[time_sig].max_ticks;
+
+     // Casually ignoring the return value
+    trellis.begin(NEO_TRELLIS_ADDR, -1);
     
-    trellis.begin(NEO_TRELLIS_ADDR, -1); // Casually ignoring the return value
     // CAPVCC = gen drive voltage from 3V3 pin
     display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
     display.setFont(&FreeMonoBoldOblique12pt7b);
@@ -90,14 +92,14 @@ int main ()
     // Show splash screen
     display.display();    
     
-    //activate all keys and set callbacks
+    // Activate all keys and set callbacks
     for(int i=0; i<NEO_TRELLIS_NUM_KEYS; i++){
         trellis.activateKey(i, SEESAW_KEYPAD_EDGE_RISING);
         trellis.activateKey(i, SEESAW_KEYPAD_EDGE_FALLING);
         trellis.registerCallback(i, isr_pad_event);
     }
 
-    // do a little animation to show we're on
+    // Do a little animation to show we're on
     for (uint16_t i=0; i<trellis.pixels.numPixels(); i++) {
         trellis.pixels.setPixelColor(i, 255, 255, 255);
         trellis.pixels.show();
@@ -119,7 +121,7 @@ int main ()
         TEMPO_ENC0,
         GPIO_IRQ_EDGE_FALL,
         true, // Enable interrupt
-        &isr_tempo_encoder
+        &isr_gpio_handler
         );
 
     // // Time signature encoder
@@ -137,12 +139,11 @@ int main ()
     //     );
 
     // Play / pause button
-    // gpio_set_irq_enabled_with_callback(
-        // PLYSTP_BTN,
-        // GPIO_IRQ_EDGE_FALL,
-        // true, // Enable interrupt
-        // &isr_play_pause
-        // );
+    gpio_set_irq_enabled(
+        PLYSTP_BTN,
+        GPIO_IRQ_EDGE_FALL,
+        true // Enable interrupt
+        );
 
     // // Module selection status update
     // gpio_set_irq_enabled_with_callback(
@@ -207,6 +208,26 @@ void update_buttons(void)
         }
     }
     trellis.pixels.show();
+}
+
+
+/**
+ * Determines the GPIO which triggered the interrupt and calls it's handler
+ */
+void isr_gpio_handler(unsigned int gpio, uint32_t event)
+{
+    switch (gpio) {
+    case TEMPO_ENC0:
+        isr_tempo_encoder(gpio, event);
+        break;
+
+    case PLYSTP_BTN:
+        isr_play_pause(gpio, event);
+        break;
+            
+    default:
+        return;
+    }
 }
 
 
