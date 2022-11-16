@@ -25,8 +25,14 @@
 #include "Adafruit_Lib/Fonts/FreeMonoBoldOblique12pt7b.h"
 
 #include "serbus.h"
-// #include "oled.h"
 #include "sequencer.h"
+
+time_sig_t time_signatures[] = {
+    {3, 4, 12},
+    {4, 4, 16},
+    {7, 8, 14}
+};
+
 
 // All of these can be modified by the ISRs
 volatile bool is_running;
@@ -48,11 +54,11 @@ int main ()
     // Hardware init
     stdio_init_all();
 
+    // Init I2C for the screen and keypad
     gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
     gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
     gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
-
 
     // Output pins
     gpio_init(GPIO_CBUS_DRDY);
@@ -73,8 +79,8 @@ int main ()
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     current_beat = 0;
-    max_beat = 16; // TODO: init this based on default time sig
-
+    max_beat = time_signatures[time_sig].max_ticks;
+    
     trellis.begin(NEO_TRELLIS_ADDR, -1); // Casually ignoring the return value
     // CAPVCC = gen drive voltage from 3V3 pin
     display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
@@ -150,7 +156,7 @@ int main ()
     
     // Negative timeout means exact delay (rather than delay between callbacks)
     if (!add_repeating_timer_us(
-            (-1000000 * 60) / (bpm * TOTAL_UBEATS),
+            TEMPO_TICK_US_CALC,
             isr_timer,
             NULL,
             &timer)
@@ -209,8 +215,8 @@ void update_buttons(void)
  */
 bool isr_timer(repeating_timer_t *rt)
 {
-    bool s = !gpio_get(GPIO_CBUS_DRDY);
-    gpio_put(GPIO_CBUS_DRDY, s);
+    // bool s = !gpio_get(GPIO_CBUS_DRDY);
+    // gpio_put(GPIO_CBUS_DRDY, s);
 
     // Update the current beat
     if (is_running) {
@@ -229,7 +235,7 @@ bool isr_timer(repeating_timer_t *rt)
     // A bit of a hack, but adjust the timer's timeout value
     // based on the current BPM setting
     if (has_bpm_changed) {
-        rt->delay_us = (-1000000 * 60) / (bpm * TOTAL_UBEATS);
+        rt->delay_us = TEMPO_TICK_US_CALC;
         has_bpm_changed = false;
     }
     

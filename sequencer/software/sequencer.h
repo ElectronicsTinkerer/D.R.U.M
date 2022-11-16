@@ -56,19 +56,22 @@
 #define BPM_MIN 20
 #define BPM_DEFAULT 120
 #define BPM_MAX 600
+#define TICKS_PER_ROW 4 // Number of pads per beat (must be a power of 2)
 #define TOTAL_UBEATS 9
 #define MIN_UBEAT (-(TOTAL_UBEATS-1)/2) // Microbeats before the beat
 #define MAX_UBEAT ((TOTAL_UBEATS-1)/2)  // Microbeats after the beat
 
+#define TEMPO_TICK_US_CALC ((-1000000 * 60) / (bpm * TOTAL_UBEATS * TICKS_PER_ROW))
+
 // Time signature settings
 #define TS_DEFAULT 1
 
-unsigned int time_signatures[][2] = {
-    {3, 4},
-    {4, 4},
-    {7, 8}
-};
-
+typedef struct time_sig_t {
+    uint8_t beats;     // Numberator of time signature
+    uint8_t measure;   // Denominator of time signature
+    uint8_t max_ticks; // Number of pads to use
+} time_sig_t;
+        
 
 // Display
 #define SCREEN_WIDTH 128
