@@ -17,7 +17,9 @@
 #include "Adafruit_Lib/Adafruit_NeoTrellis.h"
 #include "Adafruit_Lib/seesaw_neopixel.h"
 #include "Adafruit_Lib/Adafruit_NeoTrellis.h"
-#include "Adafruit_lib/Arduino.h"
+#include "Adafruit_Lib/Arduino.h"
+#include "Adafruit_Lib/Adafruit_SSD1306.h"
+#include "adafruit_Lib/Adafruit_GFX.h"
 
 #include "serbus.h"
 // #include "oled.h"
@@ -35,6 +37,7 @@ repeating_timer_t timer;
 volatile uint8_t beats[16]; // TODO: Make beats a struct
 
 Adafruit_NeoTrellis trellis;
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 //define a callback for key presses
 TrellisCallback blink(keyEvent evt){
@@ -76,6 +79,10 @@ int main ()
     max_beat = 16; // TODO: init this based on default time sig
 
     trellis.begin(NEO_TRELLIS_ADDR, -1); // Casually ignoring the return value
+    display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS); // APVCC = gen drive voltage from 3V3 pin
+
+    // Show splash screen
+    display.display();    
     
     //activate all keys and set callbacks
     for(int i=0; i<NEO_TRELLIS_NUM_KEYS; i++){
@@ -96,37 +103,10 @@ int main ()
         sleep_ms(50);
     }
 
+    // Clear display
+    display.clearDisplay();
+    display.display();
 
-    // // BEGIN RPI
-    // // I2C is "open drain", pull ups to keep signal high when no data is being
-    // // sent
-    // i2c_init(i2c_default, 400 * 1000);
-    // gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    // gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    // gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-    // gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
-
-    // // run through the complete initialization process
-    // oled_init();
-
-    // // initialize render area for entire frame (128 pixels by 4 pages)
-    // render_area_t frame_area = {start_col: 0, end_col : OLED_WIDTH - 1, start_page : 0, end_page : OLED_NUM_PAGES - 1};
-    // calc_render_area_buflen(&frame_area);
-
-    // // zero the entire display
-    // uint8_t buf[OLED_BUF_LEN];
-    // fill(buf, 0x00);
-    // render(buf, &frame_area);
-
-    // // intro sequence: flash the screen 3 times
-    // for (int i = 0; i < 3; i++) {
-    //     oled_send_cmd(0xA5); // ignore RAM, all pixels on
-    //     sleep_ms(500);
-    //     oled_send_cmd(0xA4); // go back to following RAM
-    //     sleep_ms(500);
-    // }
-    // // END RPI
-    
     // // Register ISRs to GPIO and Timer events
     // // Tempo Encoder
     // gpio_set_irq_enabled_with_callback(

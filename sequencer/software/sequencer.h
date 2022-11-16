@@ -70,6 +70,11 @@ unsigned int time_signatures[][2] = {
 };
 
 
+// Display
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define SCREEN_ADDRESS 0x3D // Magic number from OLED datasheet
+
 // Function signatures
 void update_screen(void);
 void update_buttons(void);
