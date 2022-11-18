@@ -2,7 +2,7 @@
 #include "pico/stdlib.h"
 #include <cstring>
 #include <cstdlib>
-
+#include <cstdio>
 
 #ifndef _PSEUDO_ARDUINO_H
 #define _PSEUDO_ARDUINO_H
@@ -28,13 +28,19 @@ inline long map(long val, long i_min, long i_max, long o_min, long o_max)
     return ((val - i_min) * (o_max - o_min)) / (i_max - i_min);
 }
 
-class Print
-{
-public:
+char *ultoa(unsigned long value, char *string, int radix);
+char *utoa(unsigned value, char *string, int radix);
+char *ltoa(long value, char *string, int radix);
+char *itoa(int value, char *string, int radix);
+char *dtostrf(double val, signed char width, unsigned char prec, char *sout);
+
+// class Print
+// {
+// public:
     // void pinMode(uint8_t, uint8_t);
     // bool digitalRead(uint8_t);
     /* empty? */
-};
+// };
 
 #endif
 

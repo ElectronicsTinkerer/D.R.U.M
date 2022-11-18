@@ -25,6 +25,7 @@
 #include "Adafruit_I2CDevice.h"
 #include "Arduino.h"
 #include "Wire.h"
+#include "../Arduino_Lib/Print.h"
 
 /*=========================================================================
     I2C ADDRESS/BITS

@@ -41,11 +41,15 @@ pico_sdk_init()
 # Set up our executable/build stuff
 add_executable(sequencer
   Adafruit_Lib/Arduino.cpp
+  Arduino_Lib/Print.cpp
+  Arduino_Lib/String.cpp
   Adafruit_Lib/Wire.cpp
   Adafruit_Lib/Adafruit_I2CDevice.cpp
   Adafruit_Lib/seesaw_neopixel.cpp
   Adafruit_lib/Adafruit_seesaw.cpp
   Adafruit_Lib/Adafruit_NeoTrellis.cpp
+  Adafruit_Lib/Adafruit_GFX.cpp
+  Adafruit_Lib/Adafruit_SSD1306.cpp
   sequencer.cpp
   )
 

@@ -17,16 +17,28 @@
 #include "Adafruit_Lib/Adafruit_NeoTrellis.h"
 #include "Adafruit_Lib/seesaw_neopixel.h"
 #include "Adafruit_Lib/Adafruit_NeoTrellis.h"
-#include "Adafruit_lib/Arduino.h"
+#include "Adafruit_Lib/Arduino.h"
+#include "Adafruit_Lib/Adafruit_SSD1306.h"
+#include "adafruit_Lib/Adafruit_GFX.h"
+
+// Fonts
+#include "Adafruit_Lib/Fonts/FreeMonoBoldOblique12pt7b.h"
 
 #include "serbus.h"
-// #include "oled.h"
 #include "sequencer.h"
 
+time_sig_t time_signatures[] = {
+    {3, 4, 12},
+    {4, 4, 16},
+    {7, 8, 14}
+};
+
+
 // All of these can be modified by the ISRs
-volatile unsigned int is_running;
-volatile unsigned int is_mod_selected;
+volatile bool is_running;
+volatile bool is_mod_selected;
 volatile int bpm;
+volatile bool has_bpm_changed;
 volatile unsigned int time_sig;
 volatile unsigned int current_beat;
 volatile signed int current_ubeat;
@@ -35,56 +47,59 @@ repeating_timer_t timer;
 volatile uint8_t beats[16]; // TODO: Make beats a struct
 
 Adafruit_NeoTrellis trellis;
-
-//define a callback for key presses
-TrellisCallback blink(keyEvent evt){
-  // // Check is the pad pressed?
-  // if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_RISING) {
-  //   trellis.pixels.setPixelColor(evt.bit.NUM, 0, 0, 255); //on rising
-  // } else if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING) {
-  // // or is the pad released?
-  //     trellis.pixels.setPixelColor(evt.bit.NUM, 96, 128, 28); //off falling
-  // }
-
-  // // Turn on/off the neopixels!
-  // trellis.pixels.show();
-
-  return 0;
-}
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 int main ()
 {
     // Hardware init
     stdio_init_all();
 
+    // Init I2C for the screen and keypad
     gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
     gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
     gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
     gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
 
-
     // Output pins
     gpio_init(GPIO_CBUS_DRDY);
     gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
 
+    // Inputs
+    gpio_init(TEMPO_ENC0);
+    gpio_init(TEMPO_ENC1);
+    gpio_init(PLYSTP_BTN);
+    gpio_set_dir(TEMPO_ENC0, GPIO_IN);
+    gpio_set_dir(TEMPO_ENC1, GPIO_IN);
+    gpio_set_dir(PLYSTP_BTN, GPIO_IN);
+
     // Initialize Sequencer states
     is_running = false;
     is_mod_selected = false;
+    has_bpm_changed = false;
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     current_beat = 0;
-    max_beat = 16; // TODO: init this based on default time sig
+    max_beat = time_signatures[time_sig].max_ticks;
 
-    trellis.begin(NEO_TRELLIS_ADDR, -1); // Casually ignoring the return value
+     // Casually ignoring the return value
+    trellis.begin(NEO_TRELLIS_ADDR, -1);
     
-    //activate all keys and set callbacks
+    // CAPVCC = gen drive voltage from 3V3 pin
+    display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+    display.setFont(&FreeMonoBoldOblique12pt7b);
+    display.setTextColor(WHITE);
+
+    // Show splash screen
+    display.display();    
+    
+    // Activate all keys and set callbacks
     for(int i=0; i<NEO_TRELLIS_NUM_KEYS; i++){
         trellis.activateKey(i, SEESAW_KEYPAD_EDGE_RISING);
         trellis.activateKey(i, SEESAW_KEYPAD_EDGE_FALLING);
-        trellis.registerCallback(i, blink);
+        trellis.registerCallback(i, isr_pad_event);
     }
 
-    // do a little animation to show we're on
+    // Do a little animation to show we're on
     for (uint16_t i=0; i<trellis.pixels.numPixels(); i++) {
         trellis.pixels.setPixelColor(i, 255, 255, 255);
         trellis.pixels.show();
@@ -96,51 +111,18 @@ int main ()
         sleep_ms(50);
     }
 
+    // Clear display
+    display.clearDisplay();
+    display.display();
 
-    // // BEGIN RPI
-    // // I2C is "open drain", pull ups to keep signal high when no data is being
-    // // sent
-    // i2c_init(i2c_default, 400 * 1000);
-    // gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    // gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    // gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-    // gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
-
-    // // run through the complete initialization process
-    // oled_init();
-
-    // // initialize render area for entire frame (128 pixels by 4 pages)
-    // render_area_t frame_area = {start_col: 0, end_col : OLED_WIDTH - 1, start_page : 0, end_page : OLED_NUM_PAGES - 1};
-    // calc_render_area_buflen(&frame_area);
-
-    // // zero the entire display
-    // uint8_t buf[OLED_BUF_LEN];
-    // fill(buf, 0x00);
-    // render(buf, &frame_area);
-
-    // // intro sequence: flash the screen 3 times
-    // for (int i = 0; i < 3; i++) {
-    //     oled_send_cmd(0xA5); // ignore RAM, all pixels on
-    //     sleep_ms(500);
-    //     oled_send_cmd(0xA4); // go back to following RAM
-    //     sleep_ms(500);
-    // }
-    // // END RPI
-    
-    // // Register ISRs to GPIO and Timer events
-    // // Tempo Encoder
-    // gpio_set_irq_enabled_with_callback(
-    //     TEMPO_ENC0,
-    //     GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
-    //     true, // Enable interrupt
-    //     &isr_tempo_encoder
-    //     );
-    // gpio_set_irq_enabled_with_callback(
-    //     TEMPO_ENC1,
-    //     GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
-    //     true, // Enable interrupt
-    //     &isr_tempo_encoder
-    //     );
+    // Register ISRs to GPIO and Timer events
+    // Tempo Encoder
+    gpio_set_irq_enabled_with_callback(
+        TEMPO_ENC0,
+        GPIO_IRQ_EDGE_FALL,
+        true, // Enable interrupt
+        &isr_gpio_handler
+        );
 
     // // Time signature encoder
     // gpio_set_irq_enabled_with_callback(
@@ -156,13 +138,12 @@ int main ()
     //     &isr_time_sig_encoder
     //     );
 
-    // // Play / pause button
-    // gpio_set_irq_enabled_with_callback(
-    //     PLYSTP_BTN,
-    //     GPIO_IRQ_EDGE_FALL,
-    //     true, // Enable interrupt
-    //     &isr_play_pause
-    //     );
+    // Play / pause button
+    gpio_set_irq_enabled(
+        PLYSTP_BTN,
+        GPIO_IRQ_EDGE_FALL,
+        true // Enable interrupt
+        );
 
     // // Module selection status update
     // gpio_set_irq_enabled_with_callback(
@@ -176,7 +157,7 @@ int main ()
     
     // Negative timeout means exact delay (rather than delay between callbacks)
     if (!add_repeating_timer_us(
-            (-1000000 * 60) / (bpm * TOTAL_UBEATS),
+            TEMPO_TICK_US_CALC,
             isr_timer,
             NULL,
             &timer)
@@ -203,6 +184,10 @@ int main ()
 void update_screen(void)
 {
     // TODO
+    display.clearDisplay();
+    display.setCursor(0,18); // Magic numbers for field locations on screen
+    display.println(bpm, DEC);
+    display.display();
 }
 
 
@@ -212,9 +197,8 @@ void update_screen(void)
  */
 void update_buttons(void)
 {
-    // TODO
     for (size_t i = 0; i < 16; ++i) {
-        if (i == current_beat) {
+        if (is_running && i == current_beat) {
             trellis.pixels.setPixelColor(i, 255, 255, 255);
         }            
         else if (beats[i] == 1) {
@@ -228,25 +212,54 @@ void update_buttons(void)
 
 
 /**
+ * Determines the GPIO which triggered the interrupt and calls it's handler
+ */
+void isr_gpio_handler(unsigned int gpio, uint32_t event)
+{
+    switch (gpio) {
+    case TEMPO_ENC0:
+        isr_tempo_encoder(gpio, event);
+        break;
+
+    case PLYSTP_BTN:
+        isr_play_pause(gpio, event);
+        break;
+            
+    default:
+        return;
+    }
+}
+
+
+/**
  * Handles generation of synchronization "tick" pulses with all modules
  */
 bool isr_timer(repeating_timer_t *rt)
 {
-    bool s = !gpio_get(GPIO_CBUS_DRDY);
-    gpio_put(GPIO_CBUS_DRDY, s);
+    // bool s = !gpio_get(GPIO_CBUS_DRDY);
+    // gpio_put(GPIO_CBUS_DRDY, s);
 
     // Update the current beat
-    if (current_ubeat == 0) {
-        ++current_beat;
-        if (current_beat >= max_beat) {
-            current_beat = 0;
+    if (is_running) {
+        if (current_ubeat == 0) {
+            ++current_beat;
+            if (current_beat >= max_beat) {
+                current_beat = 0;
+            }
         }
+        else if (current_ubeat == MAX_UBEAT) {
+            current_ubeat = MIN_UBEAT;
+        }
+        ++current_ubeat;
     }
-    else if (current_ubeat == MAX_UBEAT) {
-        current_ubeat = MIN_UBEAT;
-    }
-    ++current_ubeat;
 
+    // A bit of a hack, but adjust the timer's timeout value
+    // based on the current BPM setting
+    if (has_bpm_changed) {
+        rt->delay_us = TEMPO_TICK_US_CALC;
+        has_bpm_changed = false;
+    }
+    
     return true; // keep repeating    
 }
 
@@ -272,7 +285,17 @@ void isr_module_status(unsigned int gpio, uint32_t event)
  */
 void isr_tempo_encoder(unsigned int gpio, uint32_t event)
 {
-    // TODO
+    
+    if (gpio_get(TEMPO_ENC1) == 1) { // "Forward"
+        if (bpm < BPM_MAX) {
+            ++bpm;
+        }
+    } else { // Backward
+        if (bpm > BPM_MIN) {
+            --bpm;
+        }
+    }
+    has_bpm_changed = true;
 }
 
 
@@ -286,6 +309,10 @@ void isr_tempo_encoder(unsigned int gpio, uint32_t event)
 void isr_play_pause(unsigned int gpio, uint32_t event)
 {
     is_running = !is_running;
+    if (is_running) {
+        current_beat = 0;
+        current_ubeat = 0;
+    }
 }
 
 
@@ -302,16 +329,16 @@ void isr_time_sig_encoder(unsigned int gpio, uint32_t event)
 }
 
 
-// TODO: This might not be possible, depending on whether or not the pad can s
 /**
  * Handle a button press on the squish pad
  * 
  * @param The GPIO pin number
  * @param The GPIO event type
  */
-void isr_pad_event(void)
+TrellisCallback isr_pad_event(keyEvent evt)
 {
     // TODO
+    return 0; // Does something...
 }
 
 

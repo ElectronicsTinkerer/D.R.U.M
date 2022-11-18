@@ -35,7 +35,7 @@
 #define GPIO_CBUS_SDOUT 20
 // GPIO 21
 #define GPIO_CBUS_NXTPR 22
-#define GPIO_BTN0       23
+#define GPIO_BTN0       0 // 23 <- PCB uses 23 but is not available on Pico
 #define GPIO_BTN1       24
 // GPIO 25
 #define GPIO_ADC0       26
@@ -56,29 +56,38 @@
 #define BPM_MIN 20
 #define BPM_DEFAULT 120
 #define BPM_MAX 600
+#define TICKS_PER_ROW 4 // Number of pads per beat (must be a power of 2)
 #define TOTAL_UBEATS 9
 #define MIN_UBEAT (-(TOTAL_UBEATS-1)/2) // Microbeats before the beat
 #define MAX_UBEAT ((TOTAL_UBEATS-1)/2)  // Microbeats after the beat
 
+#define TEMPO_TICK_US_CALC ((-1000000 * 60) / (bpm * TOTAL_UBEATS * TICKS_PER_ROW))
+
 // Time signature settings
 #define TS_DEFAULT 1
 
-unsigned int time_signatures[][2] = {
-    {3, 4},
-    {4, 4},
-    {7, 8}
-};
+typedef struct time_sig_t {
+    uint8_t beats;     // Numberator of time signature
+    uint8_t measure;   // Denominator of time signature
+    uint8_t max_ticks; // Number of pads to use
+} time_sig_t;
+        
 
+// Display
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define SCREEN_ADDRESS 0x3D // Magic number from OLED datasheet
 
 // Function signatures
 void update_screen(void);
 void update_buttons(void);
+void isr_gpio_handler(unsigned int, uint32_t);
 bool isr_timer(repeating_timer_t *rt);
 void isr_module_status(unsigned int, uint32_t);
 void isr_tempo_encoder(unsigned int, uint32_t);
 void isr_play_pause(unsigned int, uint32_t);
 void isr_time_sig_encoder(unsigned int, uint32_t);
-void isr_pad_event(void); // This might not be possible, depending on whether or not the pad can send interrupts
+TrellisCallback isr_pad_event(keyEvent);
 
 #endif
 
