@@ -59,7 +59,7 @@
 // Tempo settings
 #define BPM_MIN 20
 #define BPM_DEFAULT 120
-#define BPM_MAX 600
+#define BPM_MAX 400
 #define TICKS_PER_ROW 4 // Number of pads per beat (must be a power of 2)
 #define TOTAL_UBEATS 9
 #define MIN_UBEAT (-(TOTAL_UBEATS-1)/2) // Microbeats before the beat
@@ -83,10 +83,12 @@ typedef struct time_sig_t {
 #define SCREEN_ADDRESS 0x3D // Magic number from OLED datasheet
 
 // Function signatures
+bool start_timer();
+bool stop_timer();
 void update_screen(void);
 void update_buttons(void);
 void isr_gpio_handler(unsigned int, uint32_t);
-bool isr_timer(repeating_timer_t *rt);
+bool isr_timer(repeating_timer_t *);
 void isr_module_status(unsigned int, uint32_t);
 void isr_tempo_encoder(unsigned int, uint32_t);
 void isr_play_pause(unsigned int, uint32_t);

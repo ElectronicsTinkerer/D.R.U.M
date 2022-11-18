@@ -82,8 +82,9 @@ int main ()
     has_bpm_changed = false;
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
-    current_beat = 0;
     max_beat = time_signatures[time_sig].max_ticks;
+    current_beat = max_beat;
+    current_ubeat = 0;
 
      // Casually ignoring the return value
     trellis.begin(NEO_TRELLIS_ADDR, -1);
@@ -157,21 +158,6 @@ int main ()
     //     &isr_module_status
     //     );
 
-    // Set up the tick timer for micro beat generation    
-    
-    // Negative timeout means exact delay (rather than delay between callbacks)
-    if (!add_repeating_timer_us(
-            TEMPO_TICK_US_CALC,
-            isr_timer,
-            NULL,
-            &timer)
-        ) {
-        // printf("Failed to add timer\n");
-        // ERROR!
-        return 1;
-    }
-
-
     // Main event loop
     while (1) {
         update_screen();
@@ -196,6 +182,30 @@ void update_screen(void)
     display.print('/');
     display.print(time_signatures[time_sig].measure, DEC);
     display.display();
+}
+
+
+/**
+ * Starts the micro beat tick timer
+ */
+bool start_timer()
+{
+    // Negative timeout means exact delay (rather than delay between callbacks)
+    return add_repeating_timer_us(
+        TEMPO_TICK_US_CALC,
+        isr_timer,
+        NULL,
+        &timer
+        );
+}
+
+
+/**
+ * Stops the micro beat timer
+ */
+bool stop_timer()
+{
+    return cancel_repeating_timer(&timer);
 }
 
 
@@ -318,8 +328,11 @@ void isr_play_pause(unsigned int gpio, uint32_t event)
 {
     is_running = !is_running;
     if (is_running) {
-        current_beat = 0;
+        current_beat = max_beat;
         current_ubeat = 0;
+        start_timer();
+    } else {
+        stop_timer();
     }
 }
 
