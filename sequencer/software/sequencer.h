@@ -51,6 +51,10 @@
 #define TSIG_ENC1       GPIO_ENC11
 #define PLYSTP_BTN      GPIO_BTN0
 #define MOD_STAT_IRQ    GPIO_CBUS_EXTRA
+#define KEYPAD_SDA      GPIO_I2C0_SDA0
+#define KEYPAD_SCL      GPIO_I2C0_SCL0
+// #define OLED_SDA      GPIO_I2C0_SDA1
+// #define OLED_SCL      GPIO_I2C0_SCL1
 
 // Tempo settings
 #define BPM_MIN 20

@@ -55,10 +55,14 @@ int main ()
     stdio_init_all();
 
     // Init I2C for the screen and keypad
-    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+    gpio_set_function(KEYPAD_SDA, GPIO_FUNC_I2C);
+    gpio_set_function(KEYPAD_SCL, GPIO_FUNC_I2C);
+    gpio_pull_up(KEYPAD_SDA);
+    gpio_pull_up(KEYPAD_SCL);
+    // gpio_set_function(OLED_SDA, GPIO_FUNC_I2C);
+    // gpio_set_function(OLED_SCL, GPIO_FUNC_I2C);
+    // gpio_pull_up(OLED_SDA);
+    // gpio_pull_up(OLED_SCL);
 
     // Output pins
     gpio_init(GPIO_CBUS_DRDY);
@@ -186,7 +190,11 @@ void update_screen(void)
     // TODO
     display.clearDisplay();
     display.setCursor(0,18); // Magic numbers for field locations on screen
-    display.println(bpm, DEC);
+    display.print(bpm, DEC);
+    display.setCursor(84, 18);
+    display.print(time_signatures[time_sig].beats, DEC);
+    display.print('/');
+    display.print(time_signatures[time_sig].measure, DEC);
     display.display();
 }
 
