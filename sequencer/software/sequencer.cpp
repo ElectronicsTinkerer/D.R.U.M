@@ -14,22 +14,54 @@
 #include "pico/binary_info.h"
 #include "hardware/i2c.h"
 
+#include "Adafruit_Lib/Adafruit_NeoTrellis.h"
+#include "Adafruit_Lib/seesaw_neopixel.h"
+#include "Adafruit_Lib/Adafruit_NeoTrellis.h"
+#include "Adafruit_lib/Arduino.h"
+
 #include "serbus.h"
-#include "oled.h"
+// #include "oled.h"
 #include "sequencer.h"
 
 // All of these can be modified by the ISRs
 volatile unsigned int is_running;
 volatile unsigned int is_mod_selected;
-volatile unsigned int bpm;
+volatile int bpm;
 volatile unsigned int time_sig;
 volatile unsigned int current_beat;
+volatile signed int current_ubeat;
+volatile unsigned int max_beat;
 repeating_timer_t timer;
+volatile uint8_t beats[16]; // TODO: Make beats a struct
+
+Adafruit_NeoTrellis trellis;
+
+//define a callback for key presses
+TrellisCallback blink(keyEvent evt){
+  // // Check is the pad pressed?
+  // if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_RISING) {
+  //   trellis.pixels.setPixelColor(evt.bit.NUM, 0, 0, 255); //on rising
+  // } else if (evt.bit.EDGE == SEESAW_KEYPAD_EDGE_FALLING) {
+  // // or is the pad released?
+  //     trellis.pixels.setPixelColor(evt.bit.NUM, 96, 128, 28); //off falling
+  // }
+
+  // // Turn on/off the neopixels!
+  // trellis.pixels.show();
+
+  return 0;
+}
 
 int main ()
 {
     // Hardware init
     stdio_init_all();
+
+    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
+    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
+    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+
 
     // Output pins
     gpio_init(GPIO_CBUS_DRDY);
@@ -41,36 +73,59 @@ int main ()
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     current_beat = 0;
+    max_beat = 16; // TODO: init this based on default time sig
 
-    // BEGIN RPI
-    // I2C is "open drain", pull ups to keep signal high when no data is being
-    // sent
-    i2c_init(i2c_default, 400 * 1000);
-    gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
-    gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
-
-    // run through the complete initialization process
-    oled_init();
-
-    // initialize render area for entire frame (128 pixels by 4 pages)
-    render_area_t frame_area = {start_col: 0, end_col : OLED_WIDTH - 1, start_page : 0, end_page : OLED_NUM_PAGES - 1};
-    calc_render_area_buflen(&frame_area);
-
-    // zero the entire display
-    uint8_t buf[OLED_BUF_LEN];
-    fill(buf, 0x00);
-    render(buf, &frame_area);
-
-    // intro sequence: flash the screen 3 times
-    for (int i = 0; i < 3; i++) {
-        oled_send_cmd(0xA5); // ignore RAM, all pixels on
-        sleep_ms(500);
-        oled_send_cmd(0xA4); // go back to following RAM
-        sleep_ms(500);
+    trellis.begin(NEO_TRELLIS_ADDR, -1); // Casually ignoring the return value
+    
+    //activate all keys and set callbacks
+    for(int i=0; i<NEO_TRELLIS_NUM_KEYS; i++){
+        trellis.activateKey(i, SEESAW_KEYPAD_EDGE_RISING);
+        trellis.activateKey(i, SEESAW_KEYPAD_EDGE_FALLING);
+        trellis.registerCallback(i, blink);
     }
-    // END RPI
+
+    // do a little animation to show we're on
+    for (uint16_t i=0; i<trellis.pixels.numPixels(); i++) {
+        trellis.pixels.setPixelColor(i, 255, 255, 255);
+        trellis.pixels.show();
+        sleep_ms(50);
+    }
+    for (uint16_t i=0; i<trellis.pixels.numPixels(); i++) {
+        trellis.pixels.setPixelColor(i, 0x000000);
+        trellis.pixels.show();
+        sleep_ms(50);
+    }
+
+
+    // // BEGIN RPI
+    // // I2C is "open drain", pull ups to keep signal high when no data is being
+    // // sent
+    // i2c_init(i2c_default, 400 * 1000);
+    // gpio_set_function(PICO_DEFAULT_I2C_SDA_PIN, GPIO_FUNC_I2C);
+    // gpio_set_function(PICO_DEFAULT_I2C_SCL_PIN, GPIO_FUNC_I2C);
+    // gpio_pull_up(PICO_DEFAULT_I2C_SDA_PIN);
+    // gpio_pull_up(PICO_DEFAULT_I2C_SCL_PIN);
+
+    // // run through the complete initialization process
+    // oled_init();
+
+    // // initialize render area for entire frame (128 pixels by 4 pages)
+    // render_area_t frame_area = {start_col: 0, end_col : OLED_WIDTH - 1, start_page : 0, end_page : OLED_NUM_PAGES - 1};
+    // calc_render_area_buflen(&frame_area);
+
+    // // zero the entire display
+    // uint8_t buf[OLED_BUF_LEN];
+    // fill(buf, 0x00);
+    // render(buf, &frame_area);
+
+    // // intro sequence: flash the screen 3 times
+    // for (int i = 0; i < 3; i++) {
+    //     oled_send_cmd(0xA5); // ignore RAM, all pixels on
+    //     sleep_ms(500);
+    //     oled_send_cmd(0xA4); // go back to following RAM
+    //     sleep_ms(500);
+    // }
+    // // END RPI
     
     // // Register ISRs to GPIO and Timer events
     // // Tempo Encoder
@@ -120,7 +175,12 @@ int main ()
     // Set up the tick timer for micro beat generation    
     
     // Negative timeout means exact delay (rather than delay between callbacks)
-    if (!add_repeating_timer_us((-1000000 * 60) / bpm, isr_timer, NULL, &timer)) {
+    if (!add_repeating_timer_us(
+            (-1000000 * 60) / (bpm * TOTAL_UBEATS),
+            isr_timer,
+            NULL,
+            &timer)
+        ) {
         // printf("Failed to add timer\n");
         // ERROR!
         return 1;
@@ -131,6 +191,7 @@ int main ()
     while (1) {
         update_screen();
         update_buttons();
+        trellis.read();  // interrupt management does all the work! :)
     }
 }
 
@@ -152,6 +213,17 @@ void update_screen(void)
 void update_buttons(void)
 {
     // TODO
+    for (size_t i = 0; i < 16; ++i) {
+        if (i == current_beat) {
+            trellis.pixels.setPixelColor(i, 255, 255, 255);
+        }            
+        else if (beats[i] == 1) {
+            trellis.pixels.setPixelColor(i, 0, 0, 255);
+        } else {
+            trellis.pixels.setPixelColor(i, 0, 0, 0);
+        }
+    }
+    trellis.pixels.show();
 }
 
 
@@ -160,9 +232,20 @@ void update_buttons(void)
  */
 bool isr_timer(repeating_timer_t *rt)
 {
-    // TODO!
-    gpio_put(GPIO_CBUS_DRDY, !gpio_get(GPIO_CBUS_DRDY));
-    
+    bool s = !gpio_get(GPIO_CBUS_DRDY);
+    gpio_put(GPIO_CBUS_DRDY, s);
+
+    // Update the current beat
+    if (current_ubeat == 0) {
+        ++current_beat;
+        if (current_beat >= max_beat) {
+            current_beat = 0;
+        }
+    }
+    else if (current_ubeat == MAX_UBEAT) {
+        current_ubeat = MIN_UBEAT;
+    }
+    ++current_ubeat;
 
     return true; // keep repeating    
 }

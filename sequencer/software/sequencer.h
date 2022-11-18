@@ -52,13 +52,13 @@
 #define PLYSTP_BTN      GPIO_BTN0
 #define MOD_STAT_IRQ    GPIO_CBUS_EXTRA
 
-#define i2c_default 0
-
-
 // Tempo settings
 #define BPM_MIN 20
 #define BPM_DEFAULT 120
 #define BPM_MAX 600
+#define TOTAL_UBEATS 9
+#define MIN_UBEAT (-(TOTAL_UBEATS-1)/2) // Microbeats before the beat
+#define MAX_UBEAT ((TOTAL_UBEATS-1)/2)  // Microbeats after the beat
 
 // Time signature settings
 #define TS_DEFAULT 1
