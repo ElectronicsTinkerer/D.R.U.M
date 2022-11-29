@@ -20,8 +20,8 @@
 #define GPIO_I2C0_SCL0  5
 #define GPIO_ENC10      6
 #define GPIO_ENC11      7
-// GPIO 8
-// GPIO 9
+#define GPIO_BTN0       8
+#define GPIO_BTN1       9
 #define GPIO_ENC20      10
 #define GPIO_ENC21      11
 #define GPIO_I2C0_SDA1  12
@@ -35,8 +35,8 @@
 #define GPIO_CBUS_SDOUT 20
 // GPIO 21
 #define GPIO_CBUS_NXTPR 22
-#define GPIO_BTN0       0 // 23 <- PCB uses 23 but is not available on Pico
-#define GPIO_BTN1       24
+// GPIO 23
+// GPIO 24
 // GPIO 25
 #define GPIO_ADC0       26
 #define GPIO_ADC1       27
@@ -47,14 +47,14 @@
 // Named pin mapping
 #define TEMPO_ENC0      GPIO_ENC00
 #define TEMPO_ENC1      GPIO_ENC01
-#define TSIG_ENC0       GPIO_ENC10
-#define TSIG_ENC1       GPIO_ENC11
+#define TSIG_ENC0       GPIO_ENC20
+#define TSIG_ENC1       GPIO_ENC21
 #define PLYSTP_BTN      GPIO_BTN0
+#define CLEAR_BTN       GPIO_BTN1
 #define MOD_STAT_IRQ    GPIO_CBUS_EXTRA
 #define KEYPAD_SDA      GPIO_I2C0_SDA0
 #define KEYPAD_SCL      GPIO_I2C0_SCL0
-// #define OLED_SDA      GPIO_I2C0_SDA1
-// #define OLED_SCL      GPIO_I2C0_SCL1
+
 
 // Tempo settings
 #define BPM_MIN 20

@@ -33,6 +33,8 @@ time_sig_t time_signatures[] = {
     {7, 8, 14}
 };
 
+#define TSIG_MAX (sizeof(time_signatures)/sizeof(*time_signatures))
+
 
 // All of these can be modified by the ISRs
 volatile bool is_running;
@@ -72,9 +74,19 @@ int main ()
     gpio_init(TEMPO_ENC0);
     gpio_init(TEMPO_ENC1);
     gpio_init(PLYSTP_BTN);
+    gpio_init(TSIG_ENC0);
+    gpio_init(TSIG_ENC1);
+    gpio_init(CLEAR_BTN);
     gpio_set_dir(TEMPO_ENC0, GPIO_IN);
     gpio_set_dir(TEMPO_ENC1, GPIO_IN);
     gpio_set_dir(PLYSTP_BTN, GPIO_IN);
+    gpio_set_dir(TSIG_ENC0, GPIO_IN);
+    gpio_set_dir(TSIG_ENC1, GPIO_IN);
+    gpio_set_dir(CLEAR_BTN, GPIO_IN);
+
+    gpio_init(MOD_STAT_IRQ);
+    gpio_set_dir(MOD_STAT_IRQ, GPIO_IN);
+    gpio_pull_up(MOD_STAT_IRQ);
 
     // Initialize Sequencer states
     is_running = false;
@@ -86,7 +98,10 @@ int main ()
     current_beat = max_beat;
     current_ubeat = 0;
 
-     // Casually ignoring the return value
+    // Delay for power supply OLED issues
+    sleep_ms(100);
+    
+    // Casually ignoring the return value
     trellis.begin(NEO_TRELLIS_ADDR, -1);
     
     // CAPVCC = gen drive voltage from 3V3 pin
@@ -129,19 +144,12 @@ int main ()
         &isr_gpio_handler
         );
 
-    // // Time signature encoder
-    // gpio_set_irq_enabled_with_callback(
-    //     TSIG_ENC0,
-    //     GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
-    //     true, // Enable interrupt
-    //     &isr_time_sig_encoder
-    //     );
-    // gpio_set_irq_enabled_with_callback(
-    //     TSIG_ENC1,
-    //     GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
-    //     true, // Enable interrupt
-    //     &isr_time_sig_encoder
-    //     );
+    // Time signature encoder
+    gpio_set_irq_enabled(
+        TSIG_ENC0,
+        GPIO_IRQ_EDGE_FALL,
+        true // Enable interrupt
+        );
 
     // Play / pause button
     gpio_set_irq_enabled(
@@ -150,13 +158,12 @@ int main ()
         true // Enable interrupt
         );
 
-    // // Module selection status update
-    // gpio_set_irq_enabled_with_callback(
-    //     MOD_STAT_IRQ,
-    //     GPIO_IRQ_EDGE_RISE,
-    //     true, // Enable interrupt
-    //     &isr_module_status
-    //     );
+    // Module selection status update
+    gpio_set_irq_enabled(
+        MOD_STAT_IRQ,
+        GPIO_IRQ_EDGE_RISE,
+        true // Enable interrupt
+        );
 
     // Main event loop
     while (1) {
@@ -218,10 +225,14 @@ void update_buttons(void)
     for (size_t i = 0; i < 16; ++i) {
         if (is_running && i == current_beat) {
             trellis.pixels.setPixelColor(i, 255, 255, 255);
-        }            
+        }
+        else if (i >= max_beat) {
+            trellis.pixels.setPixelColor(i, 127, 0, 0); // Light red
+        }
         else if (beats[i] == 1) {
             trellis.pixels.setPixelColor(i, 0, 0, 255);
-        } else {
+        }
+        else {
             trellis.pixels.setPixelColor(i, 0, 0, 0);
         }
     }
@@ -242,6 +253,14 @@ void isr_gpio_handler(unsigned int gpio, uint32_t event)
     case PLYSTP_BTN:
         isr_play_pause(gpio, event);
         break;
+
+    case TSIG_ENC0:
+        isr_time_sig_encoder(gpio, event);
+        break;
+
+    // case CLEAR_BTN:
+        // isr_clear_pattern(gpio, event);
+        // break;
             
     default:
         return;
@@ -303,7 +322,6 @@ void isr_module_status(unsigned int gpio, uint32_t event)
  */
 void isr_tempo_encoder(unsigned int gpio, uint32_t event)
 {
-    
     if (gpio_get(TEMPO_ENC1) == 1) { // "Forward"
         if (bpm < BPM_MAX) {
             ++bpm;
@@ -346,7 +364,20 @@ void isr_play_pause(unsigned int gpio, uint32_t event)
  */
 void isr_time_sig_encoder(unsigned int gpio, uint32_t event)
 {
-
+    if (gpio_get(TSIG_ENC1) == 1) { // "Forward"
+        if (time_sig < TSIG_MAX - 1) {
+            ++time_sig;
+        } else {
+            time_sig = 0;
+        }
+    } else { // Backward
+        if (time_sig > 0) {
+            --time_sig;
+        } else {
+            time_sig = TSIG_MAX - 1;
+        }
+    }
+    max_beat = time_signatures[time_sig].max_ticks;
 }
 
 
