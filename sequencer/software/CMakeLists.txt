@@ -25,6 +25,7 @@ cmake_minimum_required(VERSION 3.12)
 # Pull in SDK (must be before project)
 include(pico_sdk_import.cmake)
 
+# Sets PROJECT_NAME
 project(drum_sequencer C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -39,7 +40,7 @@ set(DRUM_SEQUENCER_PATH ${PROJECT_SOURCE_DIR})
 pico_sdk_init()
 
 # Set up our executable/build stuff
-add_executable(sequencer
+add_executable(${PROJECT_NAME}
   Adafruit_Lib/Arduino.cpp
   Arduino_Lib/Print.cpp
   Arduino_Lib/String.cpp
@@ -53,11 +54,21 @@ add_executable(sequencer
   sequencer.cpp
   )
 
+# Create a header based on the PIO file
+# the header is called <name>.pio.h
+pico_generate_pio_header(${PROJECT_NAME} sequencer.pio)
+
 # Pull in dependencies
-target_link_libraries(sequencer pico_stdlib hardware_i2c pico_malloc pico_mem_ops)
+target_link_libraries(${PROJECT_NAME}
+  pico_stdlib
+  hardware_i2c
+  hardware_pio
+  pico_malloc
+  pico_mem_ops
+  )
 
 # create map/bin/hex file etc.
-pico_add_extra_outputs(sequencer)
+pico_add_extra_outputs(${PROJECT_NAME})
 
 add_compile_options(-Wall
         -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int

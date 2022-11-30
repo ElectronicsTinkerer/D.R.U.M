@@ -24,6 +24,7 @@
 // Fonts
 #include "Adafruit_Lib/Fonts/FreeMonoBoldOblique12pt7b.h"
 
+#include "sequencer.pio.h"
 #include "serbus.h"
 #include "sequencer.h"
 
@@ -38,7 +39,7 @@ time_sig_t time_signatures[] = {
 
 // All of these can be modified by the ISRs
 volatile bool is_running;
-volatile bool is_mod_selected;
+volatile bool is_mod_selected; // Indicates that a module's pattern is currently in the beats array
 volatile int bpm;
 volatile bool has_bpm_changed;
 volatile unsigned int time_sig;
@@ -88,6 +89,14 @@ int main ()
     gpio_set_dir(MOD_STAT_IRQ, GPIO_IN);
     gpio_pull_up(MOD_STAT_IRQ);
 
+    // PIO state machines
+    float PIO_SPEED_HZ = 1000000;
+    uint tx_offs = pio_add_program(pio0, 0, &seq_tx);
+    seq_tx_init(pio0, 0, tx_offs, GPIO_CBUS_SCK, GPIO_CBUS_SDOUT);
+
+    gpio_init(GPIO_CBUS_DRDY);
+    gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
+
     // Initialize Sequencer states
     is_running = false;
     is_mod_selected = false;
@@ -99,7 +108,7 @@ int main ()
     current_ubeat = 0;
 
     // Delay for power supply OLED issues
-    sleep_ms(100);
+    sleep_ms(250);
     
     // Casually ignoring the return value
     trellis.begin(NEO_TRELLIS_ADDR, -1);
@@ -310,6 +319,8 @@ bool isr_timer(repeating_timer_t *rt)
 void isr_module_status(unsigned int gpio, uint32_t event)
 {
     // TODO
+    // Set a flag to dump the contents of the remote module
+    // to the sequencer
 }
 
 

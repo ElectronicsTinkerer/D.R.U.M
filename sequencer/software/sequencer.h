@@ -12,36 +12,36 @@
 #define DRUM_SEQUENCER_H
 
 // PINS
-#define GPIO_TP9        0
-#define GPIO_ENC00      1
-#define GPIO_ENC01      2
-#define GPIO_TP10       3
-#define GPIO_I2C0_SDA0  4
-#define GPIO_I2C0_SCL0  5
-#define GPIO_ENC10      6
-#define GPIO_ENC11      7
-#define GPIO_BTN0       8
-#define GPIO_BTN1       9
-#define GPIO_ENC20      10
-#define GPIO_ENC21      11
-#define GPIO_I2C0_SDA1  12
-#define GPIO_I2C0_SCL1  13
-#define GPIO_ENC30      14
-#define GPIO_ENC31      15
-#define GPIO_CBUS_EXTRA 16
-#define GPIO_CBUS_DRDY  17
-#define GPIO_CBUS_SCK   18
-#define GPIO_CBUS_SDIN  19
-#define GPIO_CBUS_SDOUT 20
-// GPIO 21
-#define GPIO_CBUS_NXTPR 22
-// GPIO 23
-// GPIO 24
+#define GPIO_TP9         0
+#define GPIO_ENC00       1
+#define GPIO_ENC01       2
+#define GPIO_TP10        3
+#define GPIO_I2C0_SDA0   4
+#define GPIO_I2C0_SCL0   5
+#define GPIO_ENC10       6
+#define GPIO_ENC11       7
+#define GPIO_ENC0B       8
+#define GPIO_ENC2B       9
+#define GPIO_ENC20       10
+#define GPIO_ENC21       11
+#define GPIO_I2C0_SDA1   12 // DISCONNECTED on PCB!
+#define GPIO_I2C0_SCL1   13 // DISCONNECTED on PCB!
+#define GPIO_ENC30       14
+#define GPIO_ENC31       15
+#define GPIO_CBUS_EXTRA0 16
+#define GPIO_CBUS_DRDY   17
+#define GPIO_CBUS_SCK    18
+#define GPIO_CBUS_SDIN   19
+#define GPIO_CBUS_SDOUT  20
+#define GPIO_CBUS_EXTRA1 21
+#define GPIO_CBUS_NXTPR  22
+#define GPIO_BTN0        23
+#define GPIO_BTN1        24
 // GPIO 25
-#define GPIO_ADC0       26
-#define GPIO_ADC1       27
-#define GPIO_ADC2       28
-#define GPIO_ADC3       29
+#define GPIO_ADC0        26
+#define GPIO_ADC1        27
+#define GPIO_ADC2        28
+#define GPIO_ADC3        29
 
 
 // Named pin mapping
@@ -49,9 +49,9 @@
 #define TEMPO_ENC1      GPIO_ENC01
 #define TSIG_ENC0       GPIO_ENC20
 #define TSIG_ENC1       GPIO_ENC21
-#define PLYSTP_BTN      GPIO_BTN0
-#define CLEAR_BTN       GPIO_BTN1
-#define MOD_STAT_IRQ    GPIO_CBUS_EXTRA
+#define PLYSTP_BTN      GPIO_ENC0B
+#define CLEAR_BTN       GPIO_ENC2B
+#define MOD_STAT_IRQ    GPIO_CBUS_EXTRA0
 #define KEYPAD_SDA      GPIO_I2C0_SDA0
 #define KEYPAD_SCL      GPIO_I2C0_SCL0
 

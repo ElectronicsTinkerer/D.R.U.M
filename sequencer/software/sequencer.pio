@@ -1,0 +1,57 @@
+; Sequencer RX
+.program seq_rx
+
+.wrap_target
+idle:
+    jmp PIN idle        ; Wait for data ready signal
+shift_loop:
+    wait 0 PIN 0        ; Capture rising edge of clock
+    wait 1 PIN 0
+    in PINS, 1          ; Shift in the next bit
+    jmp PIN shift_loop  ; Keep shifting until data ready pin goes low
+    push noblock
+.wrap
+
+
+; Sequencer TX
+.program seq_tx
+    
+    ; External code must control the DRDY pin
+.wrap_target
+    pull ifempty block  ; Get value to send and put it in the OSR
+shift_loop:
+    set PINS, 0         ; Set clock low
+    out PINS, 1         ; Shift 1 bit
+    set PINS, 1         ; Set clock high
+    jmp !OSRE shift_loop ; Keep shifting until OSR is empty
+.wrap
+
+
+% c-sdk {
+#include "hardware/gpio.h"
+static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint tx_pin, fload frequency)
+{
+
+    // Config "object"
+    pio_sm_config cfg = __program_get_default_config(offset);
+
+    // Config output pins
+    sm_config_set_out_ins(&cfg, clk_pin, 1); // One pin
+    sm_config_set_out_ins(&cfg, tx_pin, 1); // One pin
+
+    // Configure PIO clock rate
+    float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
+    sm_config_set_clkdiv(&cfg, clk_div);
+
+    // Output shift register
+    // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
+    sm_config_set_out_shift(&config, true, false, 32);
+
+    pio_sm_init(pio, sm, offset, &cfg);
+
+    // Start state machine
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}
+
+    
