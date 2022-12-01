@@ -75,7 +75,22 @@ typedef struct time_sig_t {
     uint8_t measure;   // Denominator of time signature
     uint8_t max_ticks; // Number of pads to use
 } time_sig_t;
-        
+
+
+// PIO Tx/Rx config
+#define PIO_SPEED_HZ ((float)1000000)
+
+typedef struct beat_data {
+    unsigned int beat   : 4;
+    signed int ubeat    : 4;
+    unsigned int veloc  : 4; // 0 = no hit
+    unsigned int sample : 4;
+} beat_data_t;
+
+typedef struct beat_update {
+    beat_data_t data;
+} beat_update_t;
+
 
 // Display
 #define SCREEN_WIDTH 128
@@ -94,6 +109,7 @@ void isr_tempo_encoder(unsigned int, uint32_t);
 void isr_play_pause(unsigned int, uint32_t);
 void isr_time_sig_encoder(unsigned int, uint32_t);
 TrellisCallback isr_pad_event(keyEvent);
+void module_data_controller(void);
 
 #endif
 

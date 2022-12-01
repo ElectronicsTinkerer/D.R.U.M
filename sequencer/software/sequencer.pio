@@ -13,6 +13,52 @@ shift_loop:
 .wrap
 
 
+% c-sdk {
+#include "hardware/clocks.h"
+#include "hardware/gpio.h"
+static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint rx_pin, uint drdy_pin, float frequency)
+{
+
+    // Config "object"
+    pio_sm_config cfg = seq_rx_program_get_default_config(offset);
+
+    // Config input pins
+    sm_config_set_in_pins(&cfg, drdy_pin, 1);
+    sm_config_set_in_pins(&cfg, clk_pin, 1); // One pin
+    sm_config_set_in_pins(&cfg, rx_pin, 1); // One pin
+
+    // Set output pins as outputs
+    pio_sm_set_pindirs_with_mask(
+        pio,
+        sm,
+        0, // All inputs
+        (1u << tx_pin) | (1u << clk_pin) | (1u << drdy_pin)
+      );
+
+    // More IO init
+    pio_gpio_init(pio, rx_pin);
+    pio_gpio_init(pio, drdy_pin);
+    pio_gpio_init(pio, clk_pin);
+    
+    // Configure PIO clock rate
+    float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
+    sm_config_set_clkdiv(&cfg, clk_div);
+
+    // Output shift register
+    // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
+    sm_config_set_in_shift(&cfg, true, false, 32);
+
+    // Join TX and RX fifos to give us 8 words of depth
+    sm_condif_set_fifo_join(&cfg, PIO_FIFO_JOIN_RX);
+
+    pio_sm_init(pio, sm, offset, &cfg);
+
+    // Start state machine
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}
+
+    
 ; Sequencer TX
 .program seq_tx
     
@@ -28,24 +74,43 @@ shift_loop:
 
 
 % c-sdk {
+#include "hardware/clocks.h"
 #include "hardware/gpio.h"
-static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint tx_pin, fload frequency)
+static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint tx_pin, float frequency)
 {
 
     // Config "object"
-    pio_sm_config cfg = __program_get_default_config(offset);
+    pio_sm_config cfg = seq_tx_program_get_default_config(offset);
 
     // Config output pins
-    sm_config_set_out_ins(&cfg, clk_pin, 1); // One pin
-    sm_config_set_out_ins(&cfg, tx_pin, 1); // One pin
+    sm_config_set_out_pins(&cfg, clk_pin, 1); // One pin
+    sm_config_set_out_pins(&cfg, tx_pin, 1); // One pin
 
+    // Set outputs to 0 initially
+    pio_sm_set_pins_with_mask(pio, sm, 0, (1u << tx_pin) | (1u << clk_pin));
+
+    // Set output pins as outputs
+    pio_sm_set_pindirs_with_mask(
+        pio,
+        sm,
+        (1u << tx_pin) | (1u << clk_pin),
+        (1u << tx_pin) | (1u << clk_pin)
+      );
+
+    // More IO init
+    pio_gpio_init(pio, tx_pin);
+    pio_gpio_init(pio, clk_pin);
+    
     // Configure PIO clock rate
     float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
     sm_config_set_clkdiv(&cfg, clk_div);
 
     // Output shift register
     // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
-    sm_config_set_out_shift(&config, true, false, 32);
+    sm_config_set_out_shift(&cfg, true, false, 32);
+
+    // Join TX and RX fifos to give us 8 words of depth
+    sm_condif_set_fifo_join(&cfg, PIO_FIFO_JOIN_TX);
 
     pio_sm_init(pio, sm, offset, &cfg);
 

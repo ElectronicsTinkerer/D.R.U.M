@@ -70,20 +70,28 @@ static inline pio_sm_config seq_tx_program_get_default_config(uint offset) {
     return c;
 }
 
+#include "hardware/clocks.h"
 #include "hardware/gpio.h"
-static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint tx_pin, fload frequency)
+static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint tx_pin, float frequency)
 {
     // Config "object"
-    pio_sm_config cfg = __program_get_default_config(offset);
+    pio_sm_config cfg = seq_tx_program_get_default_config(offset);
     // Config output pins
-    sm_config_set_out_ins(&cfg, clk_pin, 1); // One pin
-    sm_config_set_out_ins(&cfg, tx_pin, 1); // One pin
+    sm_config_set_out_pins(&cfg, clk_pin, 1); // One pin
+    sm_config_set_out_pins(&cfg, tx_pin, 1); // One pin
+    // Set outputs to 0 initially
+    pio_sm_set_pins_with_mask(pio, sm, 0, (1u << tx_pin) | (1u << clk_pin));
+    // Set output pins as outputs
+    pio_sm_set_pindirs_with_mask(pio, sm, (1u << tx_pin) | (1u << clk_pin));
+    // More IO init
+    pio_gpio_init(pio, tx_pin);
+    pio_gpio_init(pio, clk_pin);
     // Configure PIO clock rate
     float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
     sm_config_set_clkdiv(&cfg, clk_div);
     // Output shift register
     // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
-    sm_config_set_out_shift(&config, true, false, 32);
+    sm_config_set_out_shift(&cfg, true, false, 32);
     pio_sm_init(pio, sm, offset, &cfg);
     // Start state machine
     pio_sm_set_enabled(pio, sm, true);

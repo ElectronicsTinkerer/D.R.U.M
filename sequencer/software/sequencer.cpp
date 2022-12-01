@@ -10,8 +10,10 @@
 
 
 #include "pico/stdlib.h"
-#include "hardware/gpio.h"
 #include "pico/binary_info.h"
+#include "pico/util/queue.h"
+#include "pico/multicore.h"
+#include "hardware/gpio.h"
 #include "hardware/i2c.h"
 
 #include "Adafruit_Lib/Adafruit_NeoTrellis.h"
@@ -40,14 +42,17 @@ time_sig_t time_signatures[] = {
 // All of these can be modified by the ISRs
 volatile bool is_running;
 volatile bool is_mod_selected; // Indicates that a module's pattern is currently in the beats array
+volatile bool selected_mod_changed;
 volatile int bpm;
 volatile bool has_bpm_changed;
 volatile unsigned int time_sig;
 volatile unsigned int current_beat;
 volatile signed int current_ubeat;
 volatile unsigned int max_beat;
-repeating_timer_t timer;
-volatile uint8_t beats[16]; // TODO: Make beats a struct
+volatile repeating_timer_t timer;
+volatile beat_data_t beats[16];
+queue_t button_event_queue;
+mutex_t mod_sel_mutex;
 
 Adafruit_NeoTrellis trellis;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
@@ -62,10 +67,6 @@ int main ()
     gpio_set_function(KEYPAD_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(KEYPAD_SDA);
     gpio_pull_up(KEYPAD_SCL);
-    // gpio_set_function(OLED_SDA, GPIO_FUNC_I2C);
-    // gpio_set_function(OLED_SCL, GPIO_FUNC_I2C);
-    // gpio_pull_up(OLED_SDA);
-    // gpio_pull_up(OLED_SCL);
 
     // Output pins
     gpio_init(GPIO_CBUS_DRDY);
@@ -89,23 +90,33 @@ int main ()
     gpio_set_dir(MOD_STAT_IRQ, GPIO_IN);
     gpio_pull_up(MOD_STAT_IRQ);
 
-    // PIO state machines
-    float PIO_SPEED_HZ = 1000000;
-    uint tx_offs = pio_add_program(pio0, 0, &seq_tx);
-    seq_tx_init(pio0, 0, tx_offs, GPIO_CBUS_SCK, GPIO_CBUS_SDOUT);
+    // PIO state machines for intermodule communication (IMC)
+    // NOTE: the TX and RX programs MUST be run on separate
+    // state machines since each requires an 8-word deep FIFO
+    uint tx_offs = pio_add_program(pio0, &seq_tx_program);
+    seq_tx_init(pio0, 0, tx_offs, GPIO_CBUS_SCK, GPIO_CBUS_SDOUT, PIO_SPEED_HZ);
 
+    uint rx_offs = pio_add_program(pio1, &seq_rx_program);
+    seq_rx_init(pio0, 0, rx_offs, GPIO_CBUS_SCK, GPIO_CBUS_SDOUT, PIO_SPEED_HZ);
+    
     gpio_init(GPIO_CBUS_DRDY);
     gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
 
     // Initialize Sequencer states
     is_running = false;
     is_mod_selected = false;
+    selected_mod_changed = false;
     has_bpm_changed = false;
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     max_beat = time_signatures[time_sig].max_ticks;
     current_beat = max_beat;
     current_ubeat = 0;
+
+    // Startup CORE 1 to handle the IMC
+    multicore_launch_core1(module_data_controller);
+    mutex_init(&mod_sel_mutex);
+    queue_init(&button_event_queue);
 
     // Delay for power supply OLED issues
     sleep_ms(250);
@@ -318,9 +329,9 @@ bool isr_timer(repeating_timer_t *rt)
  * @param The GPIO event type */
 void isr_module_status(unsigned int gpio, uint32_t event)
 {
-    // TODO
-    // Set a flag to dump the contents of the remote module
-    // to the sequencer
+    mutex_enter_blocking(&mod_sel_mutex); // might not be a great idea in an ISR
+    selected_mod_changed = true;
+    mutex_exit(&mod_sel_mutex);
 }
 
 
@@ -401,8 +412,41 @@ void isr_time_sig_encoder(unsigned int gpio, uint32_t event)
 TrellisCallback isr_pad_event(keyEvent evt)
 {
     // TODO
+    // push the event into the button_event_queue
     return 0; // Does something...
 }
+
+
+/**
+ * Runs on CORE1 (the second core)
+ * Handles sending data to modues and reading data
+ * back from the modules.
+ */
+void module_data_controller(void)
+{
+    beat_update_t msg;
+    while (true) {
+        // Try to read the module status change
+        // It's OK if we can't for a few tries
+        if (mutex_try_enter(&mod_sel_mutex) &&
+            queue_is_empty(&button_event_queue))
+        {
+            if (selected_mod_changed) {
+                // TODO: handle writing of all pending data
+                // TODO: read in new module's data
+                selected_mod_changed = false;
+            }
+            mutex_exit(&mod_sel_mutex);
+        }
+        // See if the user pushed a button. If so, update
+        // that beat's data
+        while (queue_try_remove(&button_event_queue, &msg)) {
+            // TODO: handle message
+            // TODO: add another mutex for locking of beat array data
+        }
+    }
+}
+
 
 
 
