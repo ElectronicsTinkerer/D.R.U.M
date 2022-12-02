@@ -1,3 +1,7 @@
+// PIO state machines for intermodule communication (IMC)
+// NOTE: the TX and RX programs MUST be run on separate
+// state machines since each requires an 8-word deep FIFO
+
 ; Sequencer RX
 .program seq_rx
 
@@ -23,16 +27,17 @@ static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     pio_sm_config cfg = seq_rx_program_get_default_config(offset);
 
     // Config input pins
-    sm_config_set_in_pins(&cfg, drdy_pin, 1);
-    sm_config_set_in_pins(&cfg, clk_pin, 1); // One pin
-    sm_config_set_in_pins(&cfg, rx_pin, 1); // One pin
+    sm_config_set_in_pins(&cfg, drdy_pin);
+    sm_config_set_in_pins(&cfg, clk_pin);
+    sm_config_set_in_pins(&cfg, rx_pin);
 
-    // Set output pins as outputs
+    // Set input pins as inputs
     pio_sm_set_pindirs_with_mask(
         pio,
         sm,
         0, // All inputs
-        (1u << tx_pin) | (1u << clk_pin) | (1u << drdy_pin)
+        (1u << rx_pin)
+    //| (1u << clk_pin) | (1u << drdy_pin) // Don't set clk and drdy since they need to also be outputs
       );
 
     // More IO init
@@ -49,7 +54,7 @@ static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     sm_config_set_in_shift(&cfg, true, false, 32);
 
     // Join TX and RX fifos to give us 8 words of depth
-    sm_condif_set_fifo_join(&cfg, PIO_FIFO_JOIN_RX);
+    sm_config_set_fifo_join(&cfg, PIO_FIFO_JOIN_RX);
 
     pio_sm_init(pio, sm, offset, &cfg);
 
@@ -110,7 +115,7 @@ static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     sm_config_set_out_shift(&cfg, true, false, 32);
 
     // Join TX and RX fifos to give us 8 words of depth
-    sm_condif_set_fifo_join(&cfg, PIO_FIFO_JOIN_TX);
+    sm_config_set_fifo_join(&cfg, PIO_FIFO_JOIN_TX);
 
     pio_sm_init(pio, sm, offset, &cfg);
 

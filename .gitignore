@@ -54,6 +54,7 @@ generated
 *.elf.map
 *.hex
 *.uf2
+*.pio.h
 pico-sdk
 pioasm
 .emacs.desktop*

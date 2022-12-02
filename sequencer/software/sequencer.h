@@ -80,15 +80,27 @@ typedef struct time_sig_t {
 // PIO Tx/Rx config
 #define PIO_SPEED_HZ ((float)1000000)
 
+// Number of entries in the queue between core 0 and core 1
+// This queue stores the updates that the user has entered on core 0
+// Then core 1 reads the updates, applies them to the main 'beats'
+// array and also pushes the change to the currently selected module
+#define BEAT_DATA_QUEUE_LEN 16
+
 typedef struct beat_data {
-    unsigned int beat   : 4;
     signed int ubeat    : 4;
     unsigned int veloc  : 4; // 0 = no hit
     unsigned int sample : 4;
 } beat_data_t;
 
+typedef enum {
+    CHANGE_VELOC,
+    CLEAR_GRID
+} update_type_t;
+
 typedef struct beat_update {
-    beat_data_t data;
+    update_type_t op;
+    unsigned int beat;
+    int delta_veloc; // 0 = no hit
 } beat_update_t;
 
 
@@ -109,6 +121,7 @@ void isr_tempo_encoder(unsigned int, uint32_t);
 void isr_play_pause(unsigned int, uint32_t);
 void isr_time_sig_encoder(unsigned int, uint32_t);
 TrellisCallback isr_pad_event(keyEvent);
+void isr_clear_pattern(unsigned int, uint32_t);
 void module_data_controller(void);
 
 #endif

@@ -63,6 +63,7 @@ target_link_libraries(${PROJECT_NAME}
   pico_stdlib
   hardware_i2c
   hardware_pio
+  pico_multicore
   pico_malloc
   pico_mem_ops
   )
