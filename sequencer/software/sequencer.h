@@ -104,6 +104,8 @@ typedef struct beat_update {
 } beat_update_t;
 
 
+#define MAX_VELOCITY 8
+
 // Display
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -123,6 +125,7 @@ void isr_time_sig_encoder(unsigned int, uint32_t);
 TrellisCallback isr_pad_event(keyEvent);
 void isr_clear_pattern(unsigned int, uint32_t);
 void module_data_controller(void);
+void handle_beat_data_change(beat_update_t *);
 
 #endif
 

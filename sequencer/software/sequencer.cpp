@@ -13,6 +13,7 @@
 #include "pico/binary_info.h"
 #include "pico/util/queue.h"
 #include "pico/multicore.h"
+#include "pico/critical_section.h"
 #include "hardware/gpio.h"
 #include "hardware/i2c.h"
 
@@ -41,7 +42,6 @@ time_sig_t time_signatures[] = {
 
 // All of these can be modified by the ISRs
 volatile bool is_running;
-volatile bool do_screen_update;
 volatile int bpm;
 volatile bool has_bpm_changed;
 volatile unsigned int time_sig;
@@ -49,15 +49,20 @@ volatile unsigned int current_beat;
 volatile signed int current_ubeat;
 volatile unsigned int max_beat;
 repeating_timer_t timer;
+critical_section_t oled_spinlock;
 
 struct {
     volatile beat_data_t beats[16];
     volatile bool has_mod_irq;
     volatile bool is_mod_selected; // Indicates that a module's pattern is currently in the beats array
+    int last_veloc; // The result of the last velocity change
+    volatile bool do_screen_update;
     queue_t button_event_queue;
     mutex_t mod_irq_mutex;
     mutex_t mod_sel_mutex;
     mutex_t beat_mutex;
+    mutex_t veloc_mod_mutex;
+    mutex_t screen_update_mutex;
 } mod_data;
     
 
@@ -111,21 +116,26 @@ int main ()
 
     // Initialize Sequencer states
     is_running = false;
-    mod_data.is_mod_selected = false;
+    mod_data.is_mod_selected = true; // false; FIXME: change back to false after module has been written
     mod_data.has_mod_irq = false;
+    mod_data.do_screen_update = true;
+    mod_data.last_veloc = 0;
     has_bpm_changed = false;
-    do_screen_update = true;
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
     max_beat = time_signatures[time_sig].max_ticks;
     current_beat = max_beat;
     current_ubeat = 0;
 
+    critical_section_init(&oled_spinlock);
+
     // Startup CORE 1 to handle the IMC
     multicore_launch_core1(module_data_controller);
     mutex_init(&mod_data.mod_sel_mutex);
     mutex_init(&mod_data.mod_irq_mutex);
     mutex_init(&mod_data.beat_mutex);
+    mutex_init(&mod_data.veloc_mod_mutex);
+    mutex_init(&mod_data.screen_update_mutex);
     queue_init(
         &mod_data.button_event_queue,
         sizeof(beat_update_t),
@@ -222,16 +232,43 @@ int main ()
  */
 void update_screen(void)
 {
-    if (do_screen_update) {
+    uint32_t owner;
+    bool update;
+
+    // Check if there needs to be updates sent to the screen
+    critical_section_enter_blocking(&oled_spinlock);
+    update = mutex_try_enter(&mod_data.screen_update_mutex, &owner);
+    mutex_exit(&mod_data.screen_update_mutex);
+    critical_section_exit(&oled_spinlock);
+    if (update) {
+        update = mod_data.do_screen_update;
+    }
+
+    // If there's updates to do, send them
+    if (update) {
         display.clearDisplay();
+
+        // Display BPM
         display.setCursor(0,18); // Magic numbers for field locations on screen
         display.print(bpm, DEC);
+
+        // Display time signature
         display.setCursor(84, 18);
         display.print(time_signatures[time_sig].beats, DEC);
         display.print('/');
         display.print(time_signatures[time_sig].measure, DEC);
+
+        // Display last velocity update
+        display.setCursor(0, 60);
+        mutex_enter_blocking(&mod_data.veloc_mod_mutex);
+        display.print(mod_data.last_veloc, DEC);
+        mutex_exit(&mod_data.veloc_mod_mutex);
+
+        // Send data to display
         display.display();
-        do_screen_update = false;
+
+        // Done with update
+        mod_data.do_screen_update = false;
     }
 }
 
@@ -275,9 +312,7 @@ void update_buttons(void)
             trellis.pixels.setPixelColor(i, 127, 0, 0); // Light red
         }
         else if (mod_data.beats[i].veloc > 0) {
-            unsigned int c = mod_data.beats[i].veloc;
-            c *= 16; // Magic number :( -> maps velocity [0..15] to [0..240]
-            trellis.pixels.setPixelColor(i, 0, c, c); // A "nice" teal
+            trellis.pixels.setPixelColor(i, 30, 127, 127); // A "nice" teal
         }
         else {
             trellis.pixels.setPixelColor(i, 0, 0, 0);
@@ -382,7 +417,11 @@ void isr_tempo_encoder(unsigned int gpio, uint32_t event)
         }
     }
     has_bpm_changed = true;
-    do_screen_update = true;
+
+    // Tell screen to do an update
+    mutex_enter_blocking(&mod_data.screen_update_mutex);
+    mod_data.do_screen_update = true;
+    mutex_exit(&mod_data.screen_update_mutex);
 }
 
 
@@ -429,7 +468,11 @@ void isr_time_sig_encoder(unsigned int gpio, uint32_t event)
         }
     }
     max_beat = time_signatures[time_sig].max_ticks;
-    do_screen_update = true;
+    
+    // Tell screen to do an update
+    mutex_enter_blocking(&mod_data.screen_update_mutex);
+    mod_data.do_screen_update = true;
+    mutex_exit(&mod_data.screen_update_mutex);
 }
 
 
@@ -438,8 +481,6 @@ void isr_time_sig_encoder(unsigned int gpio, uint32_t event)
  */
 TrellisCallback isr_pad_event(keyEvent evt)
 {
-    is_running = false;
-
     // On rising edge, send the update only if
     // the user pressed a valid beat for this
     // time signature
@@ -482,51 +523,95 @@ void module_data_controller(void)
 {
     beat_update_t msg;
     uint32_t owner;
-    size_t i;
     while (true) {
         // Try to read the module status change
         // It's OK if we can't for a few tries
-        if (mutex_try_enter(&mod_data.mod_sel_mutex, &owner) &&
-            queue_is_empty(&mod_data.button_event_queue))
-        {
-            if (mod_data.has_mod_irq) {
-                // TODO: handle writing of all pending data
-                // TODO: read in new module's data
-                mod_data.has_mod_irq = false;
+        if (mutex_try_enter(&mod_data.mod_sel_mutex, &owner)) {
+            if (queue_is_empty(&mod_data.button_event_queue)) {
+                if (mod_data.has_mod_irq) {
+                    // TODO: handle writing of all pending data
+                    // TODO: read in new module's data
+                    mod_data.has_mod_irq = false;
+                }
             }
             mutex_exit(&mod_data.mod_sel_mutex);
         }
+
         // See if the user pushed a button. If so, update
         // that beat's data
         while (queue_try_remove(&mod_data.button_event_queue, &msg)) {
-            // Handle message
-            // Wait until able to access beat array, then update it
-            mutex_enter_blocking(&mod_data.beat_mutex);
-
-            // Determine what op this wants to do and do it
-            switch (msg.op) {
-            case CHANGE_VELOC:
-                mod_data.beats[msg.beat].veloc += msg.delta_veloc; // Appply relative change
-                // TODO: send back modified beat data to module
-                break;
-
-            case CLEAR_GRID:
-                for (i = 0; i < 16; ++i) {
-                    mod_data.beats[i].veloc = 0;
-                    mod_data.beats[i].ubeat = 0;
-                    mod_data.beats[i].sample = 0;
-                }
-                // TODO: send back beat array to module
-                break;
-                
-            default:
-                break;
-            }
-            mutex_exit(&mod_data.beat_mutex);
+            handle_beat_data_change(&msg);
         }
     }
 }
 
+
+/**
+ * Handles updates to the beat array and synchronization of that data
+ * with the modules
+ */
+void handle_beat_data_change(beat_update_t *msg)
+{
+    size_t i;
+    
+    // Check to make sure that a module is actually selected
+    // before updating any beat data
+    mutex_enter_blocking(&mod_data.mod_sel_mutex);
+    if (!mod_data.is_mod_selected) {
+        mutex_exit(&mod_data.mod_sel_mutex);
+        return;
+    }
+    mutex_exit(&mod_data.mod_sel_mutex);
+
+                
+    // Handle message
+    // Wait until able to access beat array, then update it
+    mutex_enter_blocking(&mod_data.beat_mutex);
+
+    // Determine what op this wants to do and do it
+    switch (msg->op) {
+    case CHANGE_VELOC:
+        i = mod_data.beats[msg->beat].veloc + msg->delta_veloc; // Appply relative change
+        i %= MAX_VELOCITY;
+        mod_data.beats[msg->beat].veloc = i;
+
+        // Tell screen to do an update
+        mutex_enter_blocking(&mod_data.screen_update_mutex);
+        mod_data.do_screen_update = true;
+        mutex_exit(&mod_data.screen_update_mutex);
+        // Update the last velocity value
+        mutex_enter_blocking(&mod_data.veloc_mod_mutex);
+        mod_data.last_veloc = i;
+        mutex_exit(&mod_data.veloc_mod_mutex);
+
+        // TODO: send back modified beat data to module
+        break;
+
+    case CLEAR_GRID:
+        // Zero the entire beat grid
+        for (i = 0; i < 16; ++i) {
+            mod_data.beats[i].veloc = 0;
+            mod_data.beats[i].ubeat = 0;
+            mod_data.beats[i].sample = 0;
+        }
+
+        // Tell screen to do an update
+        mutex_enter_blocking(&mod_data.screen_update_mutex);
+        mod_data.do_screen_update = true;
+        mutex_exit(&mod_data.screen_update_mutex);
+        // Update the last velocity value
+        mutex_enter_blocking(&mod_data.veloc_mod_mutex);
+        mod_data.last_veloc = 0;
+        mutex_exit(&mod_data.veloc_mod_mutex);
+
+        // TODO: send back beat array to module
+        break;
+                
+    default:
+        break;
+    }
+    mutex_exit(&mod_data.beat_mutex);
+}
 
 
 
