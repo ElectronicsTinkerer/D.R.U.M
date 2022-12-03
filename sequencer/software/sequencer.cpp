@@ -269,7 +269,8 @@ int main ()
             rx,
             tx,
             4,
-            GPIO_CBUS_DRDY
+            GPIO_CBUS_DRDY,
+            GPIO_CBUS_SCK
             );
         for (size_t i = 0; i < 4; ++i) {
             if (tx[i] != rx[i]) {

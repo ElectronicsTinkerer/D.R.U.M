@@ -27,7 +27,8 @@ void intermodule_serbus_txrx(
     uint32_t *rx_buf,
     uint32_t *tx_buf,
     size_t buf_len,
-    uint drdy_pin
+    uint drdy_pin,
+    uint clk_pin
     )
 {
     // io_rw_32 *txfifo = (io_rw_32 *) pio->txf[sm];
@@ -50,6 +51,7 @@ void intermodule_serbus_txrx(
         rx_buf[i++] = pio_sm_get_blocking(rx_pio, rx_sm);
     }
     gpio_put(drdy_pin, 1); // End of data
+    gpio_put(clk_pin, 0); // Reset clock to advance state machines on the modules
 }
 
 

@@ -35,6 +35,7 @@ void intermodule_serbus_txrx(
     uint32_t *,
     uint32_t *,
     size_t,
+    uint,
     uint
     );
 
