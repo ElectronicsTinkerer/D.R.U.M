@@ -27,7 +27,16 @@ typedef struct ctlword {
 } ctlword_t;
 
 
-void intermodule_serbus_txrx(const PIO, const uint, const PIO, const uint, uint32_t *, uint32_t *, size_t);
+void intermodule_serbus_txrx(
+    const PIO,
+    const uint,
+    const PIO,
+    const uint,
+    uint32_t *,
+    uint32_t *,
+    size_t,
+    uint
+    );
 
 #endif
 

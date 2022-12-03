@@ -2,19 +2,20 @@
 // NOTE: the TX and RX programs MUST be run on separate
 // state machines since each requires an 8-word deep FIFO
 
+    
 ; Sequencer RX
+    // NOTE: the clock is assumed to be the next sequentially
+    // numbered GPIO pin after the drdy pin. if not, the
+    // relative offset on the wait instructions in the RX
+    // program will need to be adjusted
 .program seq_rx
 
 .wrap_target
 idle:
-    jmp PIN idle        [8] ; Wait for data ready signal
-    
-shift_loop:
-    wait 0 PIN 0            ; Capture rising edge of clock
-    wait 1 PIN 0        [8]
-    in PINS, 1              ; Shift in the next bit
-    jmp PIN shift_loop      ; Keep shifting until data ready pin goes low
-    ;; push noblock
+    jmp PIN idle            ; Wait for data ready signal
+    wait 0 GPIO 18            ; Capture rising edge of clock
+    wait 1 GPIO 18        [8]
+    in PINS, 1              ; Shift in the next bit (uses autopush for words)
 .wrap
 
 
@@ -28,23 +29,23 @@ static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     pio_sm_config cfg = seq_rx_program_get_default_config(offset);
 
     // Config input pins
-    sm_config_set_jmp_pin(&cfg, drdy_pin);
-    sm_config_set_in_pins(&cfg, clk_pin);
     sm_config_set_in_pins(&cfg, rx_pin);
+    sm_config_set_jmp_pin(&cfg, drdy_pin);
+    // sm_config_set_in_pins(&cfg, clk_pin); 
 
     // Set input pins as inputs
-    pio_sm_set_pindirs_with_mask(
-        pio,
-        sm,
-        0, // All inputs
-        (1u << rx_pin)
-    //| (1u << clk_pin) | (1u << drdy_pin) // Don't set clk and drdy since they need to also be outputs
-      );
+   pio_sm_set_pindirs_with_mask(
+       pio,
+       sm,
+       0, // All inputs
+       (1u << rx_pin)
+   //| (1u << clk_pin) | (1u << drdy_pin) // Don't set clk and drdy since they need to also be outputs
+     );
 
     // More IO init
     pio_gpio_init(pio, rx_pin);
-    pio_gpio_init(pio, drdy_pin);
-    pio_gpio_init(pio, clk_pin);
+    // pio_gpio_init(pio, drdy_pin);
+    // pio_gpio_init(pio, clk_pin);
     
     // Configure PIO clock rate
     // float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
@@ -76,6 +77,7 @@ shift_loop:
     out PINS, 1          [16] ; Shift 1 bit
     set PINS, 1          [16] ; Set clock high
     jmp !OSRE shift_loop [16] ; Keep shifting until OSR is empty
+    
 .wrap
 
 

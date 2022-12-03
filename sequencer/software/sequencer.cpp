@@ -93,6 +93,7 @@ int main ()
     // Output pins
     gpio_init(GPIO_CBUS_DRDY);
     gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
+    gpio_put(GPIO_CBUS_DRDY, 1); // Initially not transmitting. This signal is inverted
 
     // Inputs
     gpio_init(TEMPO_ENC0);
@@ -131,14 +132,14 @@ int main ()
     intermodule_pio.rx_pio = pio1;
     intermodule_pio.rx_sm = pio_claim_unused_sm(intermodule_pio.rx_pio, true);
     intermodule_pio.rx_offs = pio_add_program(intermodule_pio.rx_pio, &seq_rx_program);
-    // seq_rx_init(
-    //     intermodule_pio.rx_pio,
-    //     intermodule_pio.rx_sm,
-    //     intermodule_pio.rx_offs,
-    //     GPIO_CBUS_SCK,
-    //     GPIO_CBUS_SDIN,
-    //     GPIO_CBUS_DRDY
-    //     );
+    seq_rx_init(
+        intermodule_pio.rx_pio,
+        intermodule_pio.rx_sm,
+        intermodule_pio.rx_offs,
+        GPIO_CBUS_SCK,
+        GPIO_CBUS_SDIN,
+        GPIO_CBUS_DRDY
+        );
     
     gpio_init(GPIO_CBUS_DRDY);
     gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
@@ -267,8 +268,14 @@ int main ()
             intermodule_pio.tx_sm,
             rx,
             tx,
-            4
+            4,
+            GPIO_CBUS_DRDY
             );
+        for (size_t i = 0; i < 4; ++i) {
+            if (tx[i] != rx[i]) {
+                is_running = false;
+            }
+        }
     }
 }
 
@@ -403,9 +410,6 @@ void isr_gpio_handler(unsigned int gpio, uint32_t event)
  */
 bool isr_timer(repeating_timer_t *rt)
 {
-    // bool s = !gpio_get(GPIO_CBUS_DRDY);
-    // gpio_put(GPIO_CBUS_DRDY, s);
-
     // Update the current beat
     if (is_running) {
         if (current_ubeat == 0) {

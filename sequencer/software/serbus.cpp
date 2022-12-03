@@ -26,7 +26,8 @@ void intermodule_serbus_txrx(
     const uint tx_sm,
     uint32_t *rx_buf,
     uint32_t *tx_buf,
-    size_t buf_len
+    size_t buf_len,
+    uint drdy_pin
     )
 {
     // io_rw_32 *txfifo = (io_rw_32 *) pio->txf[sm];
@@ -35,18 +36,20 @@ void intermodule_serbus_txrx(
 
     // Reset all input or output data
     pio_sm_clear_fifos(tx_pio, tx_sm);
-    // pio_sm_clear_fifos(rx_pio, rx_sm);
+    pio_sm_clear_fifos(rx_pio, rx_sm);
 
     // Send data
+    gpio_put(drdy_pin, 0); // Signal start of data
     while (i > 0) {
         pio_sm_put_blocking(tx_pio, tx_sm, *tx_buf++);
         --i;
     }
 
     // Get received data
-    // while (i < buf_len) {
-        // rx_buf[i++] = pio_sm_get_blocking(rx_pio, rx_sm);
-    // }
+    while (i < buf_len) {
+        rx_buf[i++] = pio_sm_get_blocking(rx_pio, rx_sm);
+    }
+    gpio_put(drdy_pin, 1); // End of data
 }
 
 
