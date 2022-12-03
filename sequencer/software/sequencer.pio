@@ -4,16 +4,15 @@
 
     
 ; Sequencer RX
-    // NOTE: the clock is assumed to be the next sequentially
-    // numbered GPIO pin after the drdy pin. if not, the
-    // relative offset on the wait instructions in the RX
-    // program will need to be adjusted
+    // NOTE: the clock is assumed to be GPIO pin 18. If
+    // not then the number on the wait instructions below
+    // will need to be adjusted
 .program seq_rx
 
 .wrap_target
 idle:
     jmp PIN idle            ; Wait for data ready signal
-    wait 0 GPIO 18            ; Capture rising edge of clock
+    wait 0 GPIO 18          ; Capture rising edge of clock
     wait 1 GPIO 18        [8]
     in PINS, 1              ; Shift in the next bit (uses autopush for words)
 .wrap

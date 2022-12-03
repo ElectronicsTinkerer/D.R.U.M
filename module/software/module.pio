@@ -1,0 +1,86 @@
+    ;;  MODULE PIO program
+    ;;  Handles intermodule communication
+
+    .program module_sio
+    
+    .wrap_target
+idle:
+    jump PIN idle           ; Wait for data ready signal
+    pull noblock            ; If there's TX data, put it into the shift stream
+    mov OSR, ISR            ; ISR will be copied to OSR during the shift loop
+shift_loop:
+    wait 0 PIN 0            ; Capture rising edge of clock
+    wait 1 PIN 0
+    mov OSR, ISR            ; Copy current data to allow for transparent loopback shifting
+    out PINS            [8] ; Get the data in
+    in PINS                 ; Shift out the next bit
+    jmp PIN shift_loop      ; Keep shifting as long as the data ready signal is high
+    push noblock            ; Move shifted data into RX FIFO
+    irq SET 0               ; Done shifting, trigger an interrupt
+    .wrap
+
+
+
+
+% c-sdk {
+#include "hardware/clocks.h"
+#include "hardware/gpio.h"
+static inline void module_sio_init(
+    PIO pio,
+    uint sm,
+    uint offset,
+    uint clk_pin,
+    uint drdy_pin
+    uint tx_pin,
+    uint rx_pin
+    )
+{
+    // Config "object"
+    pio_sm_config cfg = seq_tx_program_get_default_config(offset);
+
+    // Config output pins
+    sm_config_set_set_pins(&cfg, clk_pin, 1); // One pin
+    sm_config_set_out_pins(&cfg, tx_pin, 1); // One pin
+    sm_config_set_in_pins(&cfg, rx_pin, 1);
+    
+    // Set outputs to 0 initially
+    pio_sm_set_pins_with_mask(
+        pio,
+        sm,
+        0,
+        (1u << tx_pin) | (1u << clk_pin)
+    );
+
+    // Set output pins as outputs
+    pio_sm_set_pindirs_with_mask(
+        pio,
+        sm,
+        (1u << tx_pin) | (1u << clk_pin),
+        (1u << tx_pin) | (1u << clk_pin) | (1u << rx_pin)
+      );
+
+    // More IO init
+    pio_gpio_init(pio, tx_pin);
+    pio_gpio_init(pio, rx_pin);
+    pio_gpio_init(pio, clk_pin);
+    
+    // Configure PIO clock rate
+    // float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
+    // sm_config_set_clkdiv(&cfg, clk_div);
+
+    // Output shift register
+    // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
+    sm_config_set_out_shift(&cfg, true, false, 32);
+
+    // Join TX and RX fifos to give us 8 words of depth
+    sm_config_set_fifo_join(&cfg, PIO_FIFO_JOIN_TX);
+
+    pio_sm_init(pio, sm, offset, &cfg);
+
+    // Start state machine
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}
+
+
+    

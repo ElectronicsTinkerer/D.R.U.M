@@ -4,4 +4,6 @@
 * I2C0 needs to be common between OLED and button pad
 * Rotate button footprint
 * Update USB micro connector footprints (the pegs don't have holes)
+* Fix silk error on debug header (incorrect pin labels)
+* Move output level pot header to right side of board (near output jack)
 

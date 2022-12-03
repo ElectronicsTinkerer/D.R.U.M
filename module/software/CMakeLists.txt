@@ -25,6 +25,7 @@ cmake_minimum_required(VERSION 3.12)
 # Pull in SDK (must be before project)
 include(pico_sdk_import.cmake)
 
+# Sets PROJECT_NAME
 project(drum_module C CXX ASM)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -39,13 +40,24 @@ set(DRUM_MODULE_PATH ${PROJECT_SOURCE_DIR})
 pico_sdk_init()
 
 # Set up our executable/build stuff
-add_executable(module module.c)
+add_executable(${PROJECT_NAME}
+  serbus.cpp
+  sequencer.cpp
+  )
+
+# Create a header based on the PIO file
+# the header is called <name>.pio.h
+pico_generate_pio_header(${PROJECT_NAME} module.pio)
 
 # Pull in dependencies
-target_link_libraries(module pico_stdlib)
+target_link_libraries(${PROJECT_NAME}
+  pico_stdlib
+  hardware_pio
+  pico_multicore
+  )
 
 # create map/bin/hex file etc.
-pico_add_extra_outputs(module)
+pico_add_extra_outputs(${PROJECT_NAME})
 
 add_compile_options(-Wall
         -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
