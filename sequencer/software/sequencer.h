@@ -126,6 +126,7 @@ TrellisCallback isr_pad_event(keyEvent);
 void isr_clear_pattern(unsigned int, uint32_t);
 void module_data_controller(void);
 void handle_beat_data_change(beat_update_t *);
+int get_connected_module_count(void);
 
 #endif
 

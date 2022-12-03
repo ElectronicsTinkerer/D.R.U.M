@@ -50,6 +50,7 @@ volatile signed int current_ubeat;
 volatile unsigned int max_beat;
 repeating_timer_t timer;
 critical_section_t oled_spinlock;
+int connected_module_count;
 
 struct {
     volatile beat_data_t beats[16];
@@ -64,7 +65,16 @@ struct {
     mutex_t veloc_mod_mutex;
     mutex_t screen_update_mutex;
 } mod_data;
-    
+
+
+struct {
+    uint tx_sm;
+    PIO tx_pio;
+    uint tx_offs;
+    uint rx_sm;
+    PIO rx_pio;
+    uint rx_offs;
+} intermodule_pio;
 
 Adafruit_NeoTrellis trellis;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
@@ -91,12 +101,14 @@ int main ()
     gpio_init(TSIG_ENC0);
     gpio_init(TSIG_ENC1);
     gpio_init(CLEAR_BTN);
+    gpio_init(GPIO_CBUS_NXTPR);
     gpio_set_dir(TEMPO_ENC0, GPIO_IN);
     gpio_set_dir(TEMPO_ENC1, GPIO_IN);
     gpio_set_dir(PLYSTP_BTN, GPIO_IN);
     gpio_set_dir(TSIG_ENC0, GPIO_IN);
     gpio_set_dir(TSIG_ENC1, GPIO_IN);
     gpio_set_dir(CLEAR_BTN, GPIO_IN);
+    gpio_set_dir(GPIO_CBUS_NXTPR, GPIO_IN);
 
     gpio_init(MOD_STAT_IRQ);
     gpio_set_dir(MOD_STAT_IRQ, GPIO_IN);
@@ -105,11 +117,28 @@ int main ()
     // PIO state machines for intermodule communication (IMC)
     // NOTE: the TX and RX programs MUST be run on separate
     // state machines since each requires an 8-word deep FIFO
-    uint tx_offs = pio_add_program(pio0, &seq_tx_program);
-    seq_tx_init(pio0, 0, tx_offs, GPIO_CBUS_SCK, GPIO_CBUS_SDOUT, PIO_SPEED_HZ);
+    intermodule_pio.tx_pio = pio0;
+    intermodule_pio.tx_sm = pio_claim_unused_sm(intermodule_pio.tx_pio, true);
+    intermodule_pio.tx_offs = pio_add_program(intermodule_pio.tx_pio, &seq_tx_program);
+    seq_tx_init(
+        intermodule_pio.tx_pio,
+        intermodule_pio.tx_sm,
+        intermodule_pio.tx_offs,
+        GPIO_CBUS_SCK,
+        GPIO_CBUS_SDOUT
+        );
 
-    uint rx_offs = pio_add_program(pio1, &seq_rx_program);
-    seq_rx_init(pio0, 0, rx_offs, GPIO_CBUS_SCK, GPIO_CBUS_SDIN, GPIO_CBUS_DRDY, PIO_SPEED_HZ);
+    intermodule_pio.rx_pio = pio1;
+    intermodule_pio.rx_sm = pio_claim_unused_sm(intermodule_pio.rx_pio, true);
+    intermodule_pio.rx_offs = pio_add_program(intermodule_pio.rx_pio, &seq_rx_program);
+    // seq_rx_init(
+    //     intermodule_pio.rx_pio,
+    //     intermodule_pio.rx_sm,
+    //     intermodule_pio.rx_offs,
+    //     GPIO_CBUS_SCK,
+    //     GPIO_CBUS_SDIN,
+    //     GPIO_CBUS_DRDY
+    //     );
     
     gpio_init(GPIO_CBUS_DRDY);
     gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
@@ -126,6 +155,7 @@ int main ()
     max_beat = time_signatures[time_sig].max_ticks;
     current_beat = max_beat;
     current_ubeat = 0;
+    connected_module_count = get_connected_module_count();
 
     critical_section_init(&oled_spinlock);
 
@@ -216,12 +246,29 @@ int main ()
         true // Enable interrupt
         );
 
+    uint32_t tx[] = {
+        (const uint32_t)0xaaaaaaaa,
+        (const uint32_t)0xffffffff,
+        (const uint32_t)0x80808080,
+        (const uint32_t)0xc3c3c3c3
+    };
+    uint32_t rx[4];
+    
     // Main event loop
     while (1) {
         update_screen();
         trellis.read();  // interrupt management does all the work! :)
         update_buttons();
         sleep_ms(20);
+        intermodule_serbus_txrx(
+            intermodule_pio.rx_pio,
+            intermodule_pio.rx_sm,
+            intermodule_pio.tx_pio,
+            intermodule_pio.tx_sm,
+            rx,
+            tx,
+            4
+            );
     }
 }
 
@@ -613,5 +660,24 @@ void handle_beat_data_change(beat_update_t *msg)
     mutex_exit(&mod_data.beat_mutex);
 }
 
+
+/**
+ * Perform a scan of the intermodule scan chain and determine how
+ * many modules are connected
+ * 
+ * @return The number of modules connected (
+ */
+int get_connected_module_count(void)
+{
+    // Can't scan for 0 modules, but we can check if the
+    // "Next present" pin is low (it is pulled down when
+    // no module is present)
+    if (!gpio_get(GPIO_CBUS_NXTPR)) {
+        return 0;
+    }
+
+    // TODO!
+    return 1;
+}
 
 

@@ -7,27 +7,28 @@
 
 .wrap_target
 idle:
-    jmp PIN idle        ; Wait for data ready signal
+    jmp PIN idle        [8] ; Wait for data ready signal
+    
 shift_loop:
-    wait 0 PIN 0        ; Capture rising edge of clock
-    wait 1 PIN 0
-    in PINS, 1          ; Shift in the next bit
-    jmp PIN shift_loop  ; Keep shifting until data ready pin goes low
-    push noblock
+    wait 0 PIN 0            ; Capture rising edge of clock
+    wait 1 PIN 0        [8]
+    in PINS, 1              ; Shift in the next bit
+    jmp PIN shift_loop      ; Keep shifting until data ready pin goes low
+    ;; push noblock
 .wrap
 
 
 % c-sdk {
 #include "hardware/clocks.h"
 #include "hardware/gpio.h"
-static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint rx_pin, uint drdy_pin, float frequency)
+static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint rx_pin, uint drdy_pin)
 {
 
     // Config "object"
     pio_sm_config cfg = seq_rx_program_get_default_config(offset);
 
     // Config input pins
-    sm_config_set_in_pins(&cfg, drdy_pin);
+    sm_config_set_jmp_pin(&cfg, drdy_pin);
     sm_config_set_in_pins(&cfg, clk_pin);
     sm_config_set_in_pins(&cfg, rx_pin);
 
@@ -46,12 +47,12 @@ static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     pio_gpio_init(pio, clk_pin);
     
     // Configure PIO clock rate
-    float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
-    sm_config_set_clkdiv(&cfg, clk_div);
+    // float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
+    // sm_config_set_clkdiv(&cfg, clk_div);
 
     // Output shift register
     // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
-    sm_config_set_in_shift(&cfg, true, false, 32);
+    sm_config_set_in_shift(&cfg, true, true, 32);
 
     // Join TX and RX fifos to give us 8 words of depth
     sm_config_set_fifo_join(&cfg, PIO_FIFO_JOIN_RX);
@@ -69,26 +70,26 @@ static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     
     ; External code must control the DRDY pin
 .wrap_target
-    pull ifempty block  ; Get value to send and put it in the OSR
+    pull ifempty block   [16]; Get value to send and put it in the OSR
 shift_loop:
-    set PINS, 0         ; Set clock low
-    out PINS, 1         ; Shift 1 bit
-    set PINS, 1         ; Set clock high
-    jmp !OSRE shift_loop ; Keep shifting until OSR is empty
+    set PINS, 0          [16] ; Set clock low
+    out PINS, 1          [16] ; Shift 1 bit
+    set PINS, 1          [16] ; Set clock high
+    jmp !OSRE shift_loop [16] ; Keep shifting until OSR is empty
 .wrap
 
 
 % c-sdk {
 #include "hardware/clocks.h"
 #include "hardware/gpio.h"
-static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint tx_pin, float frequency)
+static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint tx_pin)
 {
 
     // Config "object"
     pio_sm_config cfg = seq_tx_program_get_default_config(offset);
 
     // Config output pins
-    sm_config_set_out_pins(&cfg, clk_pin, 1); // One pin
+    sm_config_set_set_pins(&cfg, clk_pin, 1); // One pin
     sm_config_set_out_pins(&cfg, tx_pin, 1); // One pin
 
     // Set outputs to 0 initially
@@ -107,8 +108,8 @@ static inline void seq_tx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     pio_gpio_init(pio, clk_pin);
     
     // Configure PIO clock rate
-    float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
-    sm_config_set_clkdiv(&cfg, clk_div);
+    // float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
+    // sm_config_set_clkdiv(&cfg, clk_div);
 
     // Output shift register
     // BOOL right_shift, BOOL auto_push, 1..32 push_threshold

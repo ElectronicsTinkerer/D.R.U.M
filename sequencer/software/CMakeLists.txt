@@ -51,6 +51,7 @@ add_executable(${PROJECT_NAME}
   Adafruit_Lib/Adafruit_NeoTrellis.cpp
   Adafruit_Lib/Adafruit_GFX.cpp
   Adafruit_Lib/Adafruit_SSD1306.cpp
+  serbus.cpp
   sequencer.cpp
   )
 
