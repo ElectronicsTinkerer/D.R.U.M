@@ -54,8 +54,8 @@ unsigned int read_variability_pot(void);
 void isr_gpio_handler(unsigned int, uint32_t);
 // void isr_serbus(void);
 void isr_mod_sel_btn(unsigned int, uint32_t);
-uint64_t alarm_mod_stat_callback(alarm_id_t , void *);
-void set_mod_stat(uint);
+int64_t alarm_mod_stat_callback(alarm_id_t, void *);
+void set_mod_stat(bool);
 
 #endif
 

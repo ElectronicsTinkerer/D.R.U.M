@@ -272,8 +272,8 @@ int main ()
             GPIO_CBUS_DRDY,
             GPIO_CBUS_SCK
             );
-        for (size_t i = 0; i < 4; ++i) {
-            if (tx[i] != rx[i]) {
+        for (size_t i = 0; i < 3; ++i) {
+            if (tx[i] != rx[i+1]) {
                 is_running = false;
             }
         }

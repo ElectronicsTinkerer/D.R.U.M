@@ -41,8 +41,8 @@ pico_sdk_init()
 
 # Set up our executable/build stuff
 add_executable(${PROJECT_NAME}
-  serbus.cpp
-  sequencer.cpp
+  # serbus.cpp
+  module.cpp
   )
 
 # Create a header based on the PIO file

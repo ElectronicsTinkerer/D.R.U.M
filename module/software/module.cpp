@@ -33,11 +33,11 @@ int main ()
     stdio_init_all();
 
     // Output Pins
-    gpio_init(GPIO_DAC_LDAC);
+    gpio_init(GPIO_DAC_LDACB);
     gpio_init(GPIO_DAC_CSB);
     gpio_init(GPIO_DAC_SCK);
     gpio_init(GPIO_DAC_SDAT);
-    gpio_set_dir(GPIO_DAC_LDAC, GPIO_OUT);
+    gpio_set_dir(GPIO_DAC_LDACB, GPIO_OUT);
     gpio_set_dir(GPIO_DAC_CSB, GPIO_OUT);
     gpio_set_dir(GPIO_DAC_SCK, GPIO_OUT);
     gpio_set_dir(GPIO_DAC_SDAT, GPIO_OUT);
@@ -49,16 +49,27 @@ int main ()
     // The "Hey, I've changed status" line
     gpio_init(MOD_STAT_IRQ);
     gpio_put(MOD_STAT_IRQ, 0);
-    gpio_set_dir(GPIO_IN);
+    gpio_set_dir(MOD_STAT_IRQ, GPIO_IN);
     
     // Init
-    is_selected = False;
+    is_selected = false;
     variability = 0;
     clear_beats();
 
     // Init the PIO state machine which handles
     // intermodule communication
-
+    intermodule_pio.pio = pio0;
+    intermodule_pio.sm = pio_claim_unused_sm(intermodule_pio.pio, true);
+    intermodule_pio.offs = pio_add_program(intermodule_pio.pio, &module_sio_program);
+    module_sio_init(
+        intermodule_pio.pio,
+        intermodule_pio.sm,
+        intermodule_pio.offs,
+        GPIO_CBUS_SCK,
+        GPIO_CBUS_DRDY,
+        GPIO_CBUS_SDOUT,
+        GPIO_CBUS_SDIN
+        );
 
     // Set up all the interrupt handlers for the GPIOs
     gpio_set_irq_enabled_with_callback(
@@ -93,7 +104,8 @@ void clear_beats(void)
  */
 unsigned int read_variability_pot(void)
 {
-
+    // TODO!
+    return 0;
 }
 
 
@@ -153,7 +165,7 @@ void isr_mod_sel_btn(unsigned int gpio, uint32_t event)
  * @param *user_data 
  * @return Time in us to fire again. 0 if disabled (see Pico SDK docs)
  */
-uint64_t alarm_mod_stat_callback(alarm_id_t id, void *user_data)
+int64_t alarm_mod_stat_callback(alarm_id_t id, void *user_data)
 {
     set_mod_stat(true); // Set back HIGH
     return 0; // Time in us to fire again in the future. 0 disables this
@@ -170,9 +182,9 @@ uint64_t alarm_mod_stat_callback(alarm_id_t id, void *user_data)
 void set_mod_stat(bool state)
 {
     if (state) {
-        gpio_set_dir(GPIO_IN);
+        gpio_set_dir(MOD_STAT_IRQ, GPIO_IN);
     } else {
-        gpio_set_dir(GPIO_OUT);
+        gpio_set_dir(MOD_STAT_IRQ, GPIO_OUT);
     }
 }
 
