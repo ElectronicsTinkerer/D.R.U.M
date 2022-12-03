@@ -319,6 +319,9 @@ void update_screen(void)
         display.print(mod_data.last_veloc, DEC);
         mutex_exit(&mod_data.veloc_mod_mutex);
 
+        display.setCursor(30, 60);
+        display.print(connected_module_count);
+
         // Send data to display
         display.display();
 
@@ -444,7 +447,8 @@ bool isr_timer(repeating_timer_t *rt)
  * @param The GPIO event type */
 void isr_module_status(unsigned int gpio, uint32_t event)
 {
-    mutex_enter_blocking(&mod_data.mod_sel_mutex); // might not be a great idea in an ISR
+    uint32_t owner;
+    mutex_try_enter(&mod_data.mod_sel_mutex, &owner);
     mod_data.has_mod_irq = true;
     mutex_exit(&mod_data.mod_sel_mutex);
 }
@@ -681,8 +685,54 @@ int get_connected_module_count(void)
         return 0;
     }
 
-    // TODO!
-    return 1;
+    // We need a magic number. The code below
+    // sends out the magic number and waits for it
+    // to return. It counts the number of words read
+    // in and uses that as the number of modules
+    // that are connected
+    uint32_t pattern = 0x12dac48f;
+    uint32_t rx = 0;
+
+    int i = 1;
+
+    // Using 9 as the "max" since only 8 modules
+    // are supported in hardware
+    while (rx != pattern && i < 9) {
+        serbus_txrx(&pattern, &rx, 1);
+    }
+
+    // Error condition, IDK what happened
+    if (i == 9) {
+        return 0;
+    }
+    
+    return i;
 }
+
+
+/**
+ * Simplified wrapper to send and receive data from the intermodule bus
+ * 
+ * @param *tx A buffer to send
+ * @param *rx A buffer to put received data into
+ * @param count The number of words to send/receive
+ * @return none
+ */
+void serbus_txrx(uint32_t *tx, uint32_t *rx, size_t count)
+{
+    intermodule_serbus_txrx(
+        intermodule_pio.rx_pio,
+        intermodule_pio.rx_sm,
+        intermodule_pio.tx_pio,
+        intermodule_pio.tx_sm,
+        rx,
+        tx,
+        count,
+        GPIO_CBUS_DRDY,
+        GPIO_CBUS_SCK
+        );
+}
+
+
 
 

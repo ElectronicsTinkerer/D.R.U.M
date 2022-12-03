@@ -127,6 +127,7 @@ void isr_clear_pattern(unsigned int, uint32_t);
 void module_data_controller(void);
 void handle_beat_data_change(beat_update_t *);
 int get_connected_module_count(void);
+void serbus_txrx(uint32_t *, uint32_t *, size_t);
 
 #endif
 
