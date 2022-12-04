@@ -6,7 +6,7 @@
 ;;; NOTE: This uses an absolute pin number for the clock!
 idle:
     jmp PIN idle            ; Wait for data ready signal
-    pull noblock            ; If there's TX data, put it into the shift stream
+    pull ifempty noblock    ; If there's TX data, put it into the shift stream
     mov ISR, OSR            ; ISR will be copied to OSR during the shift loop
 
     wait 0 GPIO 10
