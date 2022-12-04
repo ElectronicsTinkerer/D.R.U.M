@@ -47,8 +47,15 @@ void intermodule_serbus_txrx(
     }
 
     // Get received data
+    uint32_t v;
     while (i < buf_len) {
-        rx_buf[i++] = pio_sm_get_blocking(rx_pio, rx_sm);
+        v = pio_sm_get_blocking(rx_pio, rx_sm);
+
+        // Allow null buffers to ignore return data
+        if (rx_buf) {
+            rx_buf[i] = v;
+        }
+        ++i;
     }
     gpio_put(drdy_pin, 1); // End of data
     gpio_put(clk_pin, 0); // Reset clock to advance state machines on the modules

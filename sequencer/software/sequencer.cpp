@@ -8,7 +8,6 @@
  *
  */
 
-
 #include "pico/stdlib.h"
 #include "pico/binary_info.h"
 #include "pico/util/queue.h"
@@ -58,12 +57,13 @@ struct {
     volatile bool is_mod_selected; // Indicates that a module's pattern is currently in the beats array
     int last_veloc; // The result of the last velocity change
     volatile bool do_screen_update;
-    queue_t button_event_queue;
-    mutex_t mod_irq_mutex;
-    mutex_t mod_sel_mutex;
-    mutex_t beat_mutex;
-    mutex_t veloc_mod_mutex;
-    mutex_t screen_update_mutex;
+    int selected_mod_index;
+    queue_t queue_button_event;
+    mutex_t mutex_has_mod_irq;
+    mutex_t mutex_beats;
+    mutex_t mutex_last_veloc;
+    mutex_t mutex_do_screen_update;
+    mutex_t mutex_selected_mod_index;
 } mod_data;
 
 
@@ -146,7 +146,7 @@ int main ()
 
     // Initialize Sequencer states
     is_running = false;
-    mod_data.is_mod_selected = true; // false; FIXME: change back to false after module has been written
+    mod_data.is_mod_selected = true; //false; // FIXME ************************************
     mod_data.has_mod_irq = false;
     mod_data.do_screen_update = true;
     mod_data.last_veloc = 0;
@@ -162,13 +162,13 @@ int main ()
 
     // Startup CORE 1 to handle the IMC
     multicore_launch_core1(module_data_controller);
-    mutex_init(&mod_data.mod_sel_mutex);
-    mutex_init(&mod_data.mod_irq_mutex);
-    mutex_init(&mod_data.beat_mutex);
-    mutex_init(&mod_data.veloc_mod_mutex);
-    mutex_init(&mod_data.screen_update_mutex);
+    mutex_init(&mod_data.mutex_has_mod_irq);
+    mutex_init(&mod_data.mutex_beats);
+    mutex_init(&mod_data.mutex_last_veloc);
+    mutex_init(&mod_data.mutex_do_screen_update);
+    mutex_init(&mod_data.mutex_selected_mod_index);
     queue_init(
-        &mod_data.button_event_queue,
+        &mod_data.queue_button_event,
         sizeof(beat_update_t),
         BEAT_DATA_QUEUE_LEN
         );
@@ -253,30 +253,31 @@ int main ()
         (const uint32_t)0x80808080,
         (const uint32_t)0xc3c3c3c3
     };
-    uint32_t rx[4];
-    
+
+    uint32_t rx[8];
+
     // Main event loop
     while (1) {
         update_screen();
         trellis.read();  // interrupt management does all the work! :)
         update_buttons();
         sleep_ms(20);
-        intermodule_serbus_txrx(
-            intermodule_pio.rx_pio,
-            intermodule_pio.rx_sm,
-            intermodule_pio.tx_pio,
-            intermodule_pio.tx_sm,
-            rx,
-            tx,
-            4,
-            GPIO_CBUS_DRDY,
-            GPIO_CBUS_SCK
-            );
-        for (size_t i = 0; i < 3; ++i) {
-            if (tx[i] != rx[i+1]) {
-                is_running = false;
-            }
-        }
+        // intermodule_serbus_txrx(
+        //     intermodule_pio.rx_pio,
+        //     intermodule_pio.rx_sm,
+        //     intermodule_pio.tx_pio,
+        //     intermodule_pio.tx_sm,
+        //     rx,
+        //     tx,
+        //     4,
+        //     GPIO_CBUS_DRDY,
+        //     GPIO_CBUS_SCK
+        //     );
+        // for (size_t i = 0; i < 3; ++i) {
+        //     if (tx[i] != rx[i+1]) {
+        //         is_running = false;
+        //     }
+        // }
     }
 }
 
@@ -292,8 +293,8 @@ void update_screen(void)
 
     // Check if there needs to be updates sent to the screen
     critical_section_enter_blocking(&oled_spinlock);
-    update = mutex_try_enter(&mod_data.screen_update_mutex, &owner);
-    mutex_exit(&mod_data.screen_update_mutex);
+    update = mutex_try_enter(&mod_data.mutex_do_screen_update, &owner);
+    mutex_exit(&mod_data.mutex_do_screen_update);
     critical_section_exit(&oled_spinlock);
     if (update) {
         update = mod_data.do_screen_update;
@@ -315,9 +316,9 @@ void update_screen(void)
 
         // Display last velocity update
         display.setCursor(0, 60);
-        mutex_enter_blocking(&mod_data.veloc_mod_mutex);
+        mutex_enter_blocking(&mod_data.mutex_last_veloc);
         display.print(mod_data.last_veloc, DEC);
-        mutex_exit(&mod_data.veloc_mod_mutex);
+        mutex_exit(&mod_data.mutex_last_veloc);
 
         display.setCursor(30, 60);
         display.print(connected_module_count);
@@ -361,7 +362,7 @@ bool stop_timer()
  */
 void update_buttons(void)
 {
-    mutex_enter_blocking(&mod_data.beat_mutex);
+    mutex_enter_blocking(&mod_data.mutex_beats);
     for (size_t i = 0; i < 16; ++i) {
         if (is_running && i == current_beat) {
             trellis.pixels.setPixelColor(i, 255, 255, 255);
@@ -376,7 +377,7 @@ void update_buttons(void)
             trellis.pixels.setPixelColor(i, 0, 0, 0);
         }
     }
-    mutex_exit(&mod_data.beat_mutex);
+    mutex_exit(&mod_data.mutex_beats);
     trellis.pixels.show();
 }
 
@@ -402,7 +403,11 @@ void isr_gpio_handler(unsigned int gpio, uint32_t event)
     case CLEAR_BTN:
         isr_clear_pattern(gpio, event);
         break;
-            
+
+    case MOD_STAT_IRQ:
+        isr_module_status(gpio, event);
+        break;
+        
     default:
         return;
     }
@@ -448,9 +453,9 @@ bool isr_timer(repeating_timer_t *rt)
 void isr_module_status(unsigned int gpio, uint32_t event)
 {
     uint32_t owner;
-    mutex_try_enter(&mod_data.mod_sel_mutex, &owner);
+    mutex_try_enter(&mod_data.mutex_has_mod_irq, &owner);
     mod_data.has_mod_irq = true;
-    mutex_exit(&mod_data.mod_sel_mutex);
+    mutex_exit(&mod_data.mutex_has_mod_irq);
 }
 
 
@@ -475,9 +480,9 @@ void isr_tempo_encoder(unsigned int gpio, uint32_t event)
     has_bpm_changed = true;
 
     // Tell screen to do an update
-    mutex_enter_blocking(&mod_data.screen_update_mutex);
+    mutex_enter_blocking(&mod_data.mutex_do_screen_update);
     mod_data.do_screen_update = true;
-    mutex_exit(&mod_data.screen_update_mutex);
+    mutex_exit(&mod_data.mutex_do_screen_update);
 }
 
 
@@ -526,9 +531,9 @@ void isr_time_sig_encoder(unsigned int gpio, uint32_t event)
     max_beat = time_signatures[time_sig].max_ticks;
     
     // Tell screen to do an update
-    mutex_enter_blocking(&mod_data.screen_update_mutex);
+    mutex_enter_blocking(&mod_data.mutex_do_screen_update);
     mod_data.do_screen_update = true;
-    mutex_exit(&mod_data.screen_update_mutex);
+    mutex_exit(&mod_data.mutex_do_screen_update);
 }
 
 
@@ -549,7 +554,7 @@ TrellisCallback isr_pad_event(keyEvent evt)
         };
         // Send the event to the other core
         // If the queue is full, ignore the data...
-        queue_try_add(&mod_data.button_event_queue, &msg);
+        queue_try_add(&mod_data.queue_button_event, &msg);
     }
         
     return 0; // Does something...
@@ -566,7 +571,7 @@ void isr_clear_pattern(unsigned int gpio, uint32_t event)
         .beat = 0,
         .delta_veloc = 0
     };    
-    queue_add_blocking(&mod_data.button_event_queue, &msg);
+    queue_add_blocking(&mod_data.queue_button_event, &msg);
 }
 
 
@@ -579,25 +584,50 @@ void module_data_controller(void)
 {
     beat_update_t msg;
     uint32_t owner;
+    ctlword_t _mods[connected_module_count];
+    ctlword_t *mods = _mods;
+    size_t i;
+    
     while (true) {
+        // See if the user pushed a button. If so, update
+        // that beat's data
+        while (queue_try_remove(&mod_data.queue_button_event, &msg)) {
+            handle_beat_data_change(&msg);
+        }
+        
         // Try to read the module status change
         // It's OK if we can't for a few tries
-        if (mutex_try_enter(&mod_data.mod_sel_mutex, &owner)) {
-            if (queue_is_empty(&mod_data.button_event_queue)) {
+        if (mutex_try_enter(&mod_data.mutex_has_mod_irq, &owner)) {
+            if (queue_is_empty(&mod_data.queue_button_event)) {
                 if (mod_data.has_mod_irq) {
-                    // TODO: handle writing of all pending data
+
+                    // Get the selection status of all modules
+                    serbus_read_cmd_all(mods);
+
+                    // Go through the modules and find the first one
+                    // which is selected
+                    for (i = 0; i < connected_module_count && !mods[i].data.modsel; ++i) {
+                        /* loop */
+                    }
+                    if (mods[i].data.modsel) {
+                        serbus_select_module(i);
+                        is_running = true; // DEBUG
+                        // Signal that a module is selected
+                        mod_data.is_mod_selected = true;
+                    } else {
+                        serbus_select_module(-1); // Deselect all
+                        is_running = false; // DEBUG
+                        // Signal that no modules are selected
+                        mod_data.is_mod_selected = false;
+                    }
+                    
                     // TODO: read in new module's data
                     mod_data.has_mod_irq = false;
                 }
             }
-            mutex_exit(&mod_data.mod_sel_mutex);
+            mutex_exit(&mod_data.mutex_has_mod_irq);
         }
 
-        // See if the user pushed a button. If so, update
-        // that beat's data
-        while (queue_try_remove(&mod_data.button_event_queue, &msg)) {
-            handle_beat_data_change(&msg);
-        }
     }
 }
 
@@ -612,17 +642,13 @@ void handle_beat_data_change(beat_update_t *msg)
     
     // Check to make sure that a module is actually selected
     // before updating any beat data
-    mutex_enter_blocking(&mod_data.mod_sel_mutex);
     if (!mod_data.is_mod_selected) {
-        mutex_exit(&mod_data.mod_sel_mutex);
         return;
     }
-    mutex_exit(&mod_data.mod_sel_mutex);
-
                 
     // Handle message
     // Wait until able to access beat array, then update it
-    mutex_enter_blocking(&mod_data.beat_mutex);
+    mutex_enter_blocking(&mod_data.mutex_beats);
 
     // Determine what op this wants to do and do it
     switch (msg->op) {
@@ -632,15 +658,16 @@ void handle_beat_data_change(beat_update_t *msg)
         mod_data.beats[msg->beat].veloc = i;
 
         // Tell screen to do an update
-        mutex_enter_blocking(&mod_data.screen_update_mutex);
+        mutex_enter_blocking(&mod_data.mutex_do_screen_update);
         mod_data.do_screen_update = true;
-        mutex_exit(&mod_data.screen_update_mutex);
+        mutex_exit(&mod_data.mutex_do_screen_update);
         // Update the last velocity value
-        mutex_enter_blocking(&mod_data.veloc_mod_mutex);
+        mutex_enter_blocking(&mod_data.mutex_last_veloc);
         mod_data.last_veloc = i;
-        mutex_exit(&mod_data.veloc_mod_mutex);
+        mutex_exit(&mod_data.mutex_last_veloc);
 
         // TODO: send back modified beat data to module
+        // Figure out which module we need
         break;
 
     case CLEAR_GRID:
@@ -652,13 +679,13 @@ void handle_beat_data_change(beat_update_t *msg)
         }
 
         // Tell screen to do an update
-        mutex_enter_blocking(&mod_data.screen_update_mutex);
+        mutex_enter_blocking(&mod_data.mutex_do_screen_update);
         mod_data.do_screen_update = true;
-        mutex_exit(&mod_data.screen_update_mutex);
+        mutex_exit(&mod_data.mutex_do_screen_update);
         // Update the last velocity value
-        mutex_enter_blocking(&mod_data.veloc_mod_mutex);
+        mutex_enter_blocking(&mod_data.mutex_last_veloc);
         mod_data.last_veloc = 0;
-        mutex_exit(&mod_data.veloc_mod_mutex);
+        mutex_exit(&mod_data.mutex_last_veloc);
 
         // TODO: send back beat array to module
         break;
@@ -666,7 +693,7 @@ void handle_beat_data_change(beat_update_t *msg)
     default:
         break;
     }
-    mutex_exit(&mod_data.beat_mutex);
+    mutex_exit(&mod_data.mutex_beats);
 }
 
 
@@ -714,6 +741,149 @@ int get_connected_module_count(void)
 
 
 /**
+ * Send a command to a specific module, ignoring the data
+ * which gets shifted back during the write cycle
+ * NOTE: There is no error checking on the module index.
+ * 
+ * @param mod_index The index of the module to send data to.
+ * @param cmd The command to send to the module
+ */
+void serbus_write_cmd(size_t mod_index, ctlword_t cmd)
+{
+    if (connected_module_count == 0) {
+        return;
+    }
+    
+    ctlword_t cmds[connected_module_count];
+    size_t i;
+
+    // Reset the control words to be sent
+    // While not strictly necessary, it is good to be safe
+    for (i = 0; i < connected_module_count; i++) {
+        cmds[i].raw = 0;
+    }
+
+    // Copy in the data to be sent
+    cmds[mod_index].raw = cmd.raw;
+    cmds[mod_index].data.cs = 1;
+    cmds[mod_index].data.rwb = 0; // write
+
+    // Send the command
+    serbus_txrx(&cmds[0].raw, NULL, connected_module_count);
+}
+
+
+/**
+ * Send a command to read back data from a specific module.
+ * NOTE: there is no error checking on the module index.
+ * 
+ * @param mod_index The index of the module to read from
+ * @param cmd The command to send to the module
+ * @param *response The response from the module
+ */
+void serbus_read_cmd(size_t mod_index, ctlword_t cmd, ctlword_t *response)
+{
+    if (connected_module_count == 0) {
+        return;
+    }
+
+    ctlword_t cmds[connected_module_count];
+    size_t i;
+
+    // Reset the control words to be sent
+    // While not strictly necessary, it is good to be safe
+    for (i = 0; i < connected_module_count; i++) {
+        cmds[i].raw = 0;
+    }
+
+    // Copy in the data to be sent
+    cmds[mod_index].raw = cmd.raw;
+    cmds[mod_index].data.cs = 1;
+    cmds[mod_index].data.rwb = 1; // read
+
+    // Send the command
+    serbus_txrx(&cmds[0].raw, NULL, connected_module_count);
+
+    // There's no acknowledge on the module communication
+    // so sleep for a bit and *hope* the module is ready...
+    sleep_us(100);
+
+    // Get the response from the module
+    serbus_txrx(&cmds[0].raw, &cmds[0].raw, connected_module_count);
+    
+    response->raw = cmds[mod_index].raw;
+}
+
+
+/**
+ * Send a command to read back data from all connected modules
+ * NOTE: there is no error checking on the module index.
+ * 
+ * @param *response The response from the modules
+ */
+void serbus_read_cmd_all(ctlword_t *response)
+{
+    if (connected_module_count == 0) {
+        return;
+    }
+
+    ctlword_t cmds[connected_module_count];
+    size_t i;
+
+    // Reset the control words to be sent
+    // While not strictly necessary, it is good to be safe
+    for (i = 0; i < connected_module_count; i++) {
+        cmds[i].raw = 0;
+        cmds[i].data.cs = 1;
+        cmds[i].data.rwb = 1;
+    }
+
+    // Send the command
+    serbus_txrx(&cmds[0].raw, NULL, connected_module_count);
+
+    // There's no acknowledge on the module communication
+    // so sleep for a bit and *hope* the module is ready...
+    sleep_us(100);
+
+    // Get the response from the module
+    serbus_txrx(&cmds[0].raw, &response->raw, connected_module_count);
+}
+
+
+/**
+ * Select a single module by index. Forces all other modules to deselect
+ * NOTE: There is no error checking on the module index.
+ * 
+ * @param mod_index The module to select. -1 deselects all modues
+ */
+void serbus_select_module(int mod_index)
+{
+    if (connected_module_count == 0) {
+        return;
+    }
+    
+    ctlword_t cmds[connected_module_count];
+    size_t i;
+
+    // Reset the control words to be sent
+    // While not strictly necessary, it is good to be safe
+    for (i = 0; i < connected_module_count; i++) {
+        cmds[i].raw = 0;
+        cmds[i].data.fdesel = 1; // force deselection
+        cmds[i].data.cs = 1; // Execute the command
+    }
+
+    if (mod_index >= 0) {
+        cmds[mod_index].data.fdesel = 0;
+        cmds[mod_index].data.modsel = 1;
+    }
+
+    // Send the command
+    serbus_txrx(&cmds[0].raw, NULL, connected_module_count);
+}
+
+
+/**
  * Simplified wrapper to send and receive data from the intermodule bus
  * 
  * @param *tx A buffer to send
@@ -721,7 +891,7 @@ int get_connected_module_count(void)
  * @param count The number of words to send/receive
  * @return none
  */
-void serbus_txrx(uint32_t *tx, uint32_t *rx, size_t count)
+inline void serbus_txrx(uint32_t *tx, uint32_t *rx, size_t count)
 {
     intermodule_serbus_txrx(
         intermodule_pio.rx_pio,
