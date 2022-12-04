@@ -48,6 +48,11 @@
 #define MOD_STAT_IRQ     GPIO_CBUS_EXTRA0
 #define GPIO_SEL_BTN     GPIO_BTN0
 
+typedef struct beat_data {
+    signed int ubeat    : 4;
+    unsigned int veloc  : 4; // 0 = no hit
+    unsigned int sample : 4;
+} beat_data_t;
 
 void clear_beats(void);
 unsigned int read_variability_pot(void);
@@ -55,7 +60,9 @@ void isr_gpio_handler(unsigned int, uint32_t);
 // void isr_serbus(void);
 void isr_mod_sel_btn(unsigned int, uint32_t);
 int64_t alarm_mod_stat_callback(alarm_id_t, void *);
-void set_mod_stat(bool);
+void set_mod_stat_line(bool);
+void intermodule_command_handler(void);
+void execute_intermodule_command(ctlword_t);
 
 #endif
 

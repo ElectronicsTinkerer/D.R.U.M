@@ -23,7 +23,7 @@ shift_loop:
 
 push_word:
     push noblock            ; Move shifted data into RX FIFO
-    irq SET 0               ; Done shifting, trigger an interrupt
+    irq SET 0 rel           ; Done shifting, trigger an interrupt
     jmp idle
 
 
@@ -70,11 +70,21 @@ static inline void module_sio_init(
     pio_gpio_init(pio, rx_pin);
     pio_gpio_init(pio, clk_pin);
     pio_gpio_init(pio, drdy_pin);
-    
-    // Configure PIO clock rate
-    // float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
-    // sm_config_set_clkdiv(&cfg, clk_div);
 
+    // Enable the interrupt source for this state machine.
+    // Since rel is used on the IRQ instruction above,
+    // we need to take into account the state machine (sm)
+    // number. See:
+    // https://github.com/dangarbri/pico-pio-isr/blob/main/src/simply_isr.pio
+    // pio_set_irq0_source_enabled(pio, (pio_interrupt_source)(pis_interrupt0 + sm), true);
+    
+    // And make sure that the interrupt is initially cleared
+    // This can be done "after" enabling the interrupt because
+    // the interrupt does not actually get enabled until the
+    // pio_sm_init function is called later on and uses the
+    // config values to initialize the HW state machine.
+    // pio_interrupt_clear(pio, sm);
+    
     // Output shift register
     // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
     sm_config_set_out_shift(&cfg, true, false, 32);
