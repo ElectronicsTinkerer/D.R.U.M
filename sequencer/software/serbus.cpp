@@ -14,9 +14,15 @@
  * Flush the RX and TX FIFOs on the sequencer
  * This function BLOCKS
  * 
- * @param *rx_buf[] 
- * @param *tx_buf[]
+ * @param rx_pio 
+ * @param rx_sm 
+ * @param tx_pio 
+ * @param tx_sm 
+ * @param *rx_buf 
+ * @param *tx_buf 
  * @param buf_len The number of words to copy into rx buf and out of tx buf
+ * @param drdy_pin 
+ * @param clk_pin 
  * @return 
  */
 void intermodule_serbus_txrx(
@@ -31,6 +37,10 @@ void intermodule_serbus_txrx(
     uint clk_pin
     )
 {
+    if (buf_len == 0) {
+        return;
+    }
+    
     // io_rw_32 *txfifo = (io_rw_32 *) pio->txf[sm];
     // io_rw_32 *rxfifo = (io_rw_32 *) pio->rxf[sm];
     size_t i = buf_len;
@@ -42,9 +52,27 @@ void intermodule_serbus_txrx(
     // Send data
     gpio_put(drdy_pin, 0); // Signal start of data
     while (i > 0) {
+        pio_interrupt_clear(tx_pio, tx_sm);
         pio_sm_put_blocking(tx_pio, tx_sm, *tx_buf++);
         --i;
     }
+
+    // Wait for transmission to complete
+    // First, we wait for the FIFO to be emptied.
+    // Once that is empty, we have to wait for the
+    // shifting of the last word to complete. This
+    // is accomplished by waiting for IRQ flag 1
+    // in the TX state machine. The SM sets it once
+    // shifting is complete
+    while (!pio_sm_is_tx_fifo_empty(tx_pio, tx_sm)) {
+        /* spin */
+    }
+    pio_interrupt_clear(tx_pio, tx_sm+1);
+    while (!pio_interrupt_get(tx_pio, tx_sm+1)) {
+        // Spin, waiting for the completion of shifting        
+    }
+    gpio_put(drdy_pin, 1); // End of data
+    pio_interrupt_clear(tx_pio, tx_sm); // Reset clock to advance state machines on the modules
 
     // Get received data
     uint32_t v;
@@ -57,8 +85,6 @@ void intermodule_serbus_txrx(
         }
         ++i;
     }
-    gpio_put(drdy_pin, 1); // End of data
-    gpio_put(clk_pin, 0); // Reset clock to advance state machines on the modules
 }
 
 

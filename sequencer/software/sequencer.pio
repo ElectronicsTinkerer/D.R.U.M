@@ -11,7 +11,7 @@
 
 .wrap_target
 idle:
-    jmp PIN idle            ; Wait for data ready signal
+    jmp PIN idle            ; Wait for data ready signal (most likely not needed)
     wait 0 GPIO 18          ; Capture rising edge of clock
     wait 1 GPIO 18        [8]
     in PINS, 1              ; Shift in the next bit (uses autopush for words)
@@ -46,10 +46,6 @@ static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     // pio_gpio_init(pio, drdy_pin);
     // pio_gpio_init(pio, clk_pin);
     
-    // Configure PIO clock rate
-    // float clk_div = (float) clock_get_hz(clk_sys) / frequency * 1000;
-    // sm_config_set_clkdiv(&cfg, clk_div);
-
     // Output shift register
     // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
     sm_config_set_in_shift(&cfg, true, true, 32);
@@ -70,13 +66,15 @@ static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
     
     ; External code must control the DRDY pin
 .wrap_target
-    pull ifempty block   [16]; Get value to send and put it in the OSR
+    irq WAIT 0           [16] ; The controllng program will clear IRQ flag 0 to start the send
+    set PINS, 0               ; Set clock low
+    pull ifempty block   [16] ; Get value to send and put it in the OSR
 shift_loop:
     set PINS, 0          [16] ; Set clock low
     out PINS, 1          [16] ; Shift 1 bit
     set PINS, 1          [16] ; Set clock high
     jmp !OSRE shift_loop [16] ; Keep shifting until OSR is empty
-    
+    irq SET 1                 ; Indicate that the SM is done with the word
 .wrap
 
 

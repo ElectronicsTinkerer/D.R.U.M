@@ -140,9 +140,7 @@ int main ()
         GPIO_CBUS_SDIN,
         GPIO_CBUS_DRDY
         );
-    
-    gpio_init(GPIO_CBUS_DRDY);
-    gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
+
 
     // Initialize Sequencer states
     is_running = false;
@@ -701,7 +699,7 @@ void handle_beat_data_change(beat_update_t *msg)
  * Perform a scan of the intermodule scan chain and determine how
  * many modules are connected
  * 
- * @return The number of modules connected (
+ * @return The number of modules connected
  */
 int get_connected_module_count(void)
 {
@@ -720,9 +718,7 @@ int get_connected_module_count(void)
     uint32_t pattern = 0x12dac48f;
     uint32_t rx = 0;
 
-    // Start at -1 since the total number of words will be
-    // the scan chain length + 1
-    int i = -1;
+    int i = 0;
 
     // Using 9 as the "max" since only 8 modules
     // are supported in hardware
@@ -732,11 +728,11 @@ int get_connected_module_count(void)
     }
 
     // Error condition, IDK what happened
-    if (i == 9 || i == -1) {
+    if (i == 9) {
         return 0;
     }
     
-    return i;
+    return i-1;
 }
 
 
