@@ -693,16 +693,19 @@ int get_connected_module_count(void)
     uint32_t pattern = 0x12dac48f;
     uint32_t rx = 0;
 
-    int i = 1;
+    // Start at -1 since the total number of words will be
+    // the scan chain length + 1
+    int i = -1;
 
     // Using 9 as the "max" since only 8 modules
     // are supported in hardware
     while (rx != pattern && i < 9) {
         serbus_txrx(&pattern, &rx, 1);
+        ++i;
     }
 
     // Error condition, IDK what happened
-    if (i == 9) {
+    if (i == 9 || i == -1) {
         return 0;
     }
     
