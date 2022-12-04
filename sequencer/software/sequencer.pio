@@ -68,12 +68,12 @@ static inline void seq_rx_init(PIO pio, uint sm, uint offset, uint clk_pin, uint
 .wrap_target
     irq WAIT 0           [16] ; The controllng program will clear IRQ flag 0 to start the send
     set PINS, 0               ; Set clock low
-    pull ifempty block   [16] ; Get value to send and put it in the OSR
+    pull ifempty block        ; Get value to send and put it in the OSR
 shift_loop:
     set PINS, 0          [16] ; Set clock low
     out PINS, 1          [16] ; Shift 1 bit
     set PINS, 1          [16] ; Set clock high
-    jmp !OSRE shift_loop [16] ; Keep shifting until OSR is empty
+    jmp !OSRE shift_loop      ; Keep shifting until OSR is empty
     irq SET 1                 ; Indicate that the SM is done with the word
 .wrap
 

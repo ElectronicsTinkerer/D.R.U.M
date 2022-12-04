@@ -710,20 +710,32 @@ int get_connected_module_count(void)
         return 0;
     }
 
-    // We need a magic number. The code below
+    // We need a magic number that does not execute
+    // commands on the module. That's what this is.
+    // (Any word with the upper 4 bits zeroed will
+    // work for this task.) The code below
     // sends out the magic number and waits for it
     // to return. It counts the number of words read
     // in and uses that as the number of modules
     // that are connected
-    uint32_t pattern = 0x12dac48f;
-    uint32_t rx = 0;
+    uint32_t pattern = 0x02dac48f;
+    uint32_t rx[8]; // Max of 8 modules can be connected (HW limitation)
 
-    int i = 0;
+    size_t i = 0;
 
+    for (i = 0; i < 8; ++i) {
+        rx[i] = 0;
+    }
+
+    // Flush the scan chain
+    serbus_txrx(&rx[0], NULL, 8);
+
+    i = 0;
+    
     // Using 9 as the "max" since only 8 modules
     // are supported in hardware
-    while (rx != pattern && i < 9) {
-        serbus_txrx(&pattern, &rx, 1);
+    while (rx[0] != pattern && i < 9) {
+        serbus_txrx(&pattern, rx, 1);
         ++i;
     }
 

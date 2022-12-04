@@ -41,8 +41,6 @@ void intermodule_serbus_txrx(
         return;
     }
     
-    // io_rw_32 *txfifo = (io_rw_32 *) pio->txf[sm];
-    // io_rw_32 *rxfifo = (io_rw_32 *) pio->rxf[sm];
     size_t i = buf_len;
 
     // Reset all input or output data
@@ -57,7 +55,7 @@ void intermodule_serbus_txrx(
         --i;
     }
 
-    // Wait for transmission to complete
+    // Wait for transmission to complete.
     // First, we wait for the FIFO to be emptied.
     // Once that is empty, we have to wait for the
     // shifting of the last word to complete. This
@@ -66,6 +64,7 @@ void intermodule_serbus_txrx(
     // shifting is complete
     while (!pio_sm_is_tx_fifo_empty(tx_pio, tx_sm)) {
         /* spin */
+        pio_interrupt_clear(tx_pio, tx_sm); // Continue advancing the FIFO as needed
     }
     pio_interrupt_clear(tx_pio, tx_sm+1);
     while (!pio_interrupt_get(tx_pio, tx_sm+1)) {
