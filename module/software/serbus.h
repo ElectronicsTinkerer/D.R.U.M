@@ -19,7 +19,7 @@ typedef union ctlword {
         unsigned int xresv  : 12; // RESERVED
         unsigned int modsel : 1;  // 0 = Module unselected, 1 = Module selected
         unsigned int fdesel : 1;  // 0 = Don't affect module select status,
-                                  // 1 = Force unselection of module
+                                  // 1 = Force unselection of module (overrides modsel)
         unsigned int rwb    : 1;  // 0 = Write operation to module
                                   // 1 = Read operation from module
         unsigned int cs     : 1;  // "Chip Select":

@@ -45,8 +45,12 @@
 #define GPIO_ADC3        29
 
 // Named pin mappings
+#define MOD_TEMPO_SYNC   GPIO_CBUS_EXTRA1
 #define MOD_STAT_IRQ     GPIO_CBUS_EXTRA0
 #define GPIO_SEL_BTN     GPIO_BTN0
+
+#define SPI_DAC_DATA_RATE_HZ 10000000
+#define AUDIO_SAMPLE_RATE_HZ 44100
 
 typedef struct beat_data {
     signed int ubeat    : 4;
@@ -61,6 +65,8 @@ void isr_gpio_handler(unsigned int, uint32_t);
 void isr_mod_sel_btn(unsigned int, uint32_t);
 int64_t alarm_mod_stat_callback(alarm_id_t, void *);
 void set_mod_stat_line(bool);
+void isr_tempo_sync(unsigned int, uint32_t);
+bool isr_sample(repeating_timer_t *);
 void intermodule_command_handler(void);
 void execute_intermodule_command(ctlword_t);
 

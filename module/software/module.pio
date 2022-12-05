@@ -6,7 +6,7 @@
 ;;; NOTE: This uses an absolute pin number for the clock!
 idle:
     jmp PIN idle            ; Wait for data ready signal
-    pull ifempty noblock    ; If there's TX data, put it into the shift stream
+    pull ifempty noblock            ; If there's TX data, put it into the shift stream
     mov ISR, OSR            ; ISR will be copied to OSR during the shift loop
 
     wait 0 GPIO 10
@@ -88,6 +88,7 @@ static inline void module_sio_init(
     // Output shift register
     // BOOL right_shift, BOOL auto_push, 1..32 push_threshold
     sm_config_set_out_shift(&cfg, true, false, 32);
+    sm_config_set_in_shift(&cfg, true, false, 32);
 
     pio_sm_init(pio, sm, offset, &cfg);
 
