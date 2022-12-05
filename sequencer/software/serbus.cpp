@@ -5,6 +5,7 @@
  * Zach Baldwin
  */
 
+#include "pico/platform.h"
 
 #include "sequencer.pio.h"
 #include "serbus.h"
@@ -25,7 +26,7 @@
  * @param clk_pin 
  * @return 
  */
-void intermodule_serbus_txrx(
+void __time_critical_func(intermodule_serbus_txrx)(
     const PIO rx_pio,
     const uint rx_sm,
     const PIO tx_pio,

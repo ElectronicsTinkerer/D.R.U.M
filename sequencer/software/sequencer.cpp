@@ -95,6 +95,14 @@ int main ()
     gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
     gpio_put(GPIO_CBUS_DRDY, 1); // Initially not transmitting. This signal is inverted
 
+    // This clock line will be reinitialied within the PIO TX init
+    // It needs to be toggled to reset the module's state machines
+    // gpio_init(GPIO_CBUS_SCK);
+    // gpio_set_dir(GPIO_CBUS_SCK, GPIO_OUT);
+    // gpio_put(GPIO_CBUS_SCK, 1);
+    // gpio_put(GPIO_CBUS_SCK, 0);
+
+
     // Inputs
     gpio_init(TEMPO_ENC0);
     gpio_init(TEMPO_ENC1);
@@ -816,6 +824,11 @@ void serbus_read_cmd(size_t mod_index, ctlword_t cmd, ctlword_t *response)
     // so sleep for a bit and *hope* the module is ready...
     sleep_us(100);
 
+    // Reset the request commands
+    for (i = 0; i < connected_module_count; i++) {
+        cmds[i].raw = 0;
+    }
+
     // Get the response from the module
     serbus_txrx(&cmds[0].raw, &cmds[0].raw, connected_module_count);
     
@@ -851,7 +864,12 @@ void serbus_read_cmd_all(ctlword_t *response)
 
     // There's no acknowledge on the module communication
     // so sleep for a bit and *hope* the module is ready...
-    sleep_us(100);
+    sleep_us(10);
+
+    // Reset the request commands
+    for (i = 0; i < connected_module_count; i++) {
+        cmds[i].raw = 0;
+    }
 
     // Get the response from the module
     serbus_txrx(&cmds[0].raw, &response->raw, connected_module_count);
