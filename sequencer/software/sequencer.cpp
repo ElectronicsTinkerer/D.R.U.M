@@ -52,18 +52,19 @@ critical_section_t oled_spinlock;
 int connected_module_count;
 
 struct {
-    volatile beat_data_t beats[16];
     volatile bool has_mod_irq;
-    volatile bool is_mod_selected; // Indicates that a module's pattern is currently in the beats array
+    volatile beat_data_t beats[16];
     int last_veloc; // The result of the last velocity change
     volatile bool do_screen_update;
+    volatile bool is_mod_selected; // Indicates that a module's pattern is currently in the beats array
     int selected_mod_index;
+
     queue_t queue_button_event;
+
     mutex_t mutex_has_mod_irq;
     mutex_t mutex_beats;
     mutex_t mutex_last_veloc;
     mutex_t mutex_do_screen_update;
-    mutex_t mutex_selected_mod_index;
 } mod_data;
 
 
@@ -152,10 +153,11 @@ int main ()
 
     // Initialize Sequencer states
     is_running = false;
-    mod_data.is_mod_selected = true; //false; // FIXME ************************************
+    mod_data.is_mod_selected = true; //false; // DEBUG  ************************************
     mod_data.has_mod_irq = false;
     mod_data.do_screen_update = true;
     mod_data.last_veloc = 0;
+    mod_data.selected_mod_index = 0;
     has_bpm_changed = false;
     bpm = BPM_DEFAULT;
     time_sig = TS_DEFAULT;
@@ -172,7 +174,6 @@ int main ()
     mutex_init(&mod_data.mutex_beats);
     mutex_init(&mod_data.mutex_last_veloc);
     mutex_init(&mod_data.mutex_do_screen_update);
-    mutex_init(&mod_data.mutex_selected_mod_index);
     queue_init(
         &mod_data.queue_button_event,
         sizeof(beat_update_t),
@@ -607,27 +608,29 @@ void module_data_controller(void)
             if (queue_is_empty(&mod_data.queue_button_event)) {
                 if (mod_data.has_mod_irq) {
 
-                    // Get the selection status of all modules
-                    serbus_read_cmd_all(mods);
+                    mod_data.selected_mod_index = 1; // DEBUG
 
-                    // Go through the modules and find the first one
-                    // which is selected
-                    for (i = 0; i < connected_module_count && !mods[i].data.modsel; ++i) {
-                        /* loop */
-                    }
-                    if (mods[i].data.modsel) {
-                        serbus_select_module(i);
-                        is_running = true; // DEBUG
-                        // Signal that a module is selected
-                        mod_data.is_mod_selected = true;
-                    } else {
-                        serbus_select_module(-1); // Deselect all
-                        is_running = false; // DEBUG
-                        // Signal that no modules are selected
-                        mod_data.is_mod_selected = false;
-                    }
+                    // // Get the selection status of all modules
+                    // serbus_read_cmd_all(mods);
+
+                    // // Go through the modules and find the first one
+                    // // which is selected
+                    // for (i = 0; i < connected_module_count && !mods[i].data.modsel; ++i) {
+                    //     /* loop */
+                    // }
+                    // if (mods[i].data.modsel) {
+                    //     serbus_select_module(i);
+                    //     // Signal that a module is selected
+                    //     mod_data.is_mod_selected = true;
+                    //     mod_data.selected_mod_index = i;
+                    // } else {
+                    //     serbus_select_module(-1); // Deselect all
+                    //     // Signal that no modules are selected
+                    //     mod_data.is_mod_selected = false;
+                    //     mod_data.selected_mod_index = 0;
+                    // }
                     
-                    // TODO: read in new module's data
+                    // // TODO: read in new module's data
                     mod_data.has_mod_irq = false;
                 }
             }
@@ -645,7 +648,8 @@ void module_data_controller(void)
 void handle_beat_data_change(beat_update_t *msg)
 {
     size_t i;
-    
+    ctlword_t cmd;
+   
     // Check to make sure that a module is actually selected
     // before updating any beat data
     if (!mod_data.is_mod_selected) {
@@ -672,8 +676,14 @@ void handle_beat_data_change(beat_update_t *msg)
         mod_data.last_veloc = i;
         mutex_exit(&mod_data.mutex_last_veloc);
 
-        // TODO: send back modified beat data to module
-        // Figure out which module we need
+        // Send back modified beat data to module
+         cmd.raw = 0;
+        cmd.data.beat = msg->beat;
+        cmd.data.ubeat = mod_data.beats[msg->beat].ubeat;
+        cmd.data.veloc = mod_data.beats[msg->beat].veloc;
+        cmd.data.sample = mod_data.beats[msg->beat].sample;
+        cmd.data.cs = 1;
+        serbus_write_cmd(mod_data.selected_mod_index, cmd);
         break;
 
     case CLEAR_GRID:
@@ -693,7 +703,14 @@ void handle_beat_data_change(beat_update_t *msg)
         mod_data.last_veloc = 0;
         mutex_exit(&mod_data.mutex_last_veloc);
 
-        // TODO: send back beat array to module
+        // Send back a cleared beat array to module
+        cmd.raw = 0;
+        cmd.data.cs = 1;
+        for (i = 0; i < 16; ++i) {
+            cmd.data.beat = i;
+            serbus_write_cmd(mod_data.selected_mod_index, cmd);
+        }
+
         break;
                 
     default:
