@@ -1,18 +1,26 @@
 
 
-import sys
+import sys, os
 
 args = sys.argv[1:]
 
 c_arr = ""
-c_arr += "int16_t samples[][] = {\n"
 
 j = 0
+file_size = 0
 
 for arg in args:
 
     j += 1
-    
+
+    if file_size == 0:
+        file_size = os.path.getsize(arg)
+        c_arr += f"#define SAMPLE_LENGTH {int(file_size/int(2))}\n"
+        c_arr += f"static uint16_t samples[][{file_size}] = {{\n"
+    elif file_size != os.path.getsize(arg):
+        print("ERROR: files are not the same size")
+        exit(-1)
+        
     with open(arg, "rb") as file:
 
         c_arr += "{\n"
@@ -37,7 +45,7 @@ for arg in args:
         c_arr += "\n"
 
 
-c_arr += "}\n"
+c_arr += "};\n"
 
 
 with open("samples.h", "w") as file:

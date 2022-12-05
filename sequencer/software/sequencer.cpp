@@ -429,9 +429,6 @@ void isr_gpio_handler(unsigned int gpio, uint32_t event)
  */
 bool isr_timer(repeating_timer_t *rt)
 {
-    // Signal to modules start of a new beat
-    gpio_put(MOD_TEMPO_SYNC, false);
-    
     // Update the current beat
     if (is_running) {
         if (current_ubeat == 0) {
@@ -439,6 +436,12 @@ bool isr_timer(repeating_timer_t *rt)
             if (current_beat >= max_beat) {
                 current_beat = 0;
             }
+
+            // Signal to modules start of a new beat
+            gpio_put(MOD_TEMPO_SYNC, false);
+            asm volatile("nop \n nop \n nop"); // Make the pulse 'wider'
+            asm volatile("nop \n nop \n nop"); // Make the pulse 'wider'
+            gpio_put(MOD_TEMPO_SYNC, true);
         }
         else if (current_ubeat == MAX_UBEAT) {
             current_ubeat = MIN_UBEAT;
@@ -452,8 +455,6 @@ bool isr_timer(repeating_timer_t *rt)
         rt->delay_us = TEMPO_TICK_US_CALC;
         has_bpm_changed = false;
     }
-    
-    gpio_put(MOD_TEMPO_SYNC, true);
     
     return true; // keep repeating    
 }
@@ -689,7 +690,6 @@ void handle_beat_data_change(beat_update_t *msg)
         cmd.data.beat = msg->beat;
         cmd.data.ubeat = mod_data.beats[msg->beat].ubeat;
         cmd.data.veloc = mod_data.beats[msg->beat].veloc;
-        cmd.data.sample = mod_data.beats[msg->beat].sample;
         cmd.data.cs = 1;
         serbus_write_cmd(mod_data.selected_mod_index, cmd);
         break;
@@ -699,7 +699,6 @@ void handle_beat_data_change(beat_update_t *msg)
         for (i = 0; i < 16; ++i) {
             mod_data.beats[i].veloc = 0;
             mod_data.beats[i].ubeat = 0;
-            mod_data.beats[i].sample = 0;
         }
 
         // Tell screen to do an update

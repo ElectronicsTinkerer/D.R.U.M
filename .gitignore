@@ -60,5 +60,5 @@ pioasm
 .emacs.desktop*
 .\#*
 \#*
-samples/samples.h
+samples.h
 

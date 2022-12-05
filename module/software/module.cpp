@@ -16,6 +16,7 @@
 #include "hardware/gpio.h"
 #include "hardware/spi.h"
 
+#include "samples.h"
 #include "module.pio.h"
 #include "serbus.h"
 #include "module.h"
@@ -23,6 +24,7 @@
 volatile bool is_selected;
 volatile bool dac_loaded; // True following a DAC load event, false otherwise
 volatile int current_beat;
+volatile int playback_beat;
 volatile size_t sample_index;
 unsigned int variability;
 
@@ -75,7 +77,7 @@ int main ()
     spi_set_format(
         spi0,
         16, // Number of bits, defined by DAC
-        SPI_CPOL_0,
+        SPI_CPOL_1,
         SPI_CPHA_1,
         SPI_MSB_FIRST
         );
@@ -142,6 +144,8 @@ int main ()
     
 
     uint16_t m;
+    int veloc;
+    int beat;
     
     // Event loop
     while (1) {
@@ -149,12 +153,24 @@ int main ()
 
         if (dac_loaded) {
             dac_loaded = false;
+
+            // Get the value so that we don't need a mutex to prevent it
+            // from changing during sample processing
+            beat = playback_beat;
+            
+            // TODO: To add variability, put it in the lowest 1 bits
+            veloc = ((beats[beat].veloc & 0x7) << 2);
+
+            if (beats[beat].veloc && sample_index < SAMPLE_LENGTH) {
+                ++sample_index;
+                m = samples[veloc][sample_index] + 0x8000;
+            } else {
+                m = 0x8000; // Midscale
+            }
             
             // Enable the DAC
             gpio_put(GPIO_DAC_CSB, false);
 
-            m += 0x800;
-            
             // Send the new value
             spi_write16_blocking(
                 spi0,
@@ -183,7 +199,6 @@ void clear_beats(void)
     for (size_t i = 0; i < 16; ++i) {
         beats[i].ubeat = 0;
         beats[i].veloc = 0;
-        beats[i].sample = 0;
     }
 }
 
@@ -300,6 +315,13 @@ void isr_tempo_sync(unsigned int gpio, uint32_t event)
 {
     ++current_beat;
     current_beat %= 16; // FIXME
+
+    // Only restart sample playback if there is a note this beat.
+    // Otherwise, let it ring out to end
+    if (beats[current_beat].veloc != 0) {
+        sample_index = 0;
+        playback_beat = current_beat;
+    }
 }
 
 
@@ -353,7 +375,6 @@ void execute_intermodule_command(ctlword_t cmd)
     if (cmd.data.rwb == 0) {
         beats[cmd.data.beat].ubeat = cmd.data.ubeat;
         beats[cmd.data.beat].veloc = cmd.data.veloc;
-        beats[cmd.data.beat].sample = cmd.data.sample;
     }
     // Read operations
     else { // FIXME!!!!!
@@ -362,7 +383,6 @@ void execute_intermodule_command(ctlword_t cmd)
         res.data.beat = 0xa;//cmd.data.beat;
         res.data.ubeat = 0x6;//beats[cmd.data.beat].ubeat;
         res.data.veloc = beats[cmd.data.beat].veloc;
-        res.data.sample = beats[cmd.data.beat].sample;
         res.data.modsel = true; // is_selected; // FIXME
         pio_sm_put_blocking(intermodule_pio.pio, intermodule_pio.sm, 0xff00aa55);
     }
