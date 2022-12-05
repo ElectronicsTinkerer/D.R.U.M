@@ -95,6 +95,9 @@ int main ()
     gpio_init(GPIO_CBUS_DRDY);
     gpio_set_dir(GPIO_CBUS_DRDY, GPIO_OUT);
     gpio_put(GPIO_CBUS_DRDY, 1); // Initially not transmitting. This signal is inverted
+    gpio_init(MOD_TEMPO_SYNC);
+    gpio_set_dir(MOD_TEMPO_SYNC, GPIO_OUT);
+    gpio_put(MOD_TEMPO_SYNC, 1);
 
     // This clock line will be reinitialied within the PIO TX init
     // It needs to be toggled to reset the module's state machines
@@ -426,6 +429,9 @@ void isr_gpio_handler(unsigned int gpio, uint32_t event)
  */
 bool isr_timer(repeating_timer_t *rt)
 {
+    // Signal to modules start of a new beat
+    gpio_put(MOD_TEMPO_SYNC, false);
+    
     // Update the current beat
     if (is_running) {
         if (current_ubeat == 0) {
@@ -446,6 +452,8 @@ bool isr_timer(repeating_timer_t *rt)
         rt->delay_us = TEMPO_TICK_US_CALC;
         has_bpm_changed = false;
     }
+    
+    gpio_put(MOD_TEMPO_SYNC, true);
     
     return true; // keep repeating    
 }

@@ -54,6 +54,7 @@
 #define MOD_STAT_IRQ    GPIO_CBUS_EXTRA0
 #define KEYPAD_SDA      GPIO_I2C0_SDA0
 #define KEYPAD_SCL      GPIO_I2C0_SCL0
+#define MOD_TEMPO_SYNC  GPIO_CBUS_EXTRA1
 
 
 // Tempo settings
