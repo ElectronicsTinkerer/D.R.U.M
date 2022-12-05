@@ -439,9 +439,12 @@ bool isr_timer(repeating_timer_t *rt)
 
             // Signal to modules start of a new beat
             gpio_put(MOD_TEMPO_SYNC, false);
-            asm volatile("nop \n nop \n nop"); // Make the pulse 'wider'
-            asm volatile("nop \n nop \n nop"); // Make the pulse 'wider'
-            gpio_put(MOD_TEMPO_SYNC, true);
+            add_alarm_in_us(
+                (current_beat == 0) ? ALARM_TEMPO_SAMPLE_Z_US : ALARM_TEMPO_SAMPLE_NZ_US,
+                alarm_seq_beat_callback,
+                NULL,
+                false
+                );
         }
         else if (current_ubeat == MAX_UBEAT) {
             current_ubeat = MIN_UBEAT;
@@ -457,6 +460,17 @@ bool isr_timer(repeating_timer_t *rt)
     }
     
     return true; // keep repeating    
+}
+
+
+/**
+ * Called after the tempo timer fires. Delay between the tempo timer
+ * and this is dependent on the beat number.
+ */
+int64_t alarm_seq_beat_callback(alarm_id_t id, void *user_data)
+{
+    gpio_put(MOD_TEMPO_SYNC, true);
+    return 0; // Don't trigger another callback
 }
 
 

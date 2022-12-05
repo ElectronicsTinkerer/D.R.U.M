@@ -52,6 +52,8 @@
 #define SPI_DAC_DATA_RATE_HZ 10000000
 #define AUDIO_SAMPLE_RATE_HZ 44100
 
+#define ALARM_TEMPO_SAMPLE_US 75
+
 typedef struct beat_data {
     signed int ubeat    : 4;
     unsigned int veloc  : 4; // 0 = no hit
@@ -61,11 +63,11 @@ typedef struct beat_data {
 void clear_beats(void);
 unsigned int read_variability_pot(void);
 void isr_gpio_handler(unsigned int, uint32_t);
-// void isr_serbus(void);
 void isr_mod_sel_btn(unsigned int, uint32_t);
 int64_t alarm_mod_stat_callback(alarm_id_t, void *);
 void set_mod_stat_line(bool);
 void isr_tempo_sync(unsigned int, uint32_t);
+int64_t alarm_mod_beat_callback(alarm_id_t, void *);
 bool isr_sample(repeating_timer_t *);
 void intermodule_command_handler(void);
 void execute_intermodule_command(ctlword_t);

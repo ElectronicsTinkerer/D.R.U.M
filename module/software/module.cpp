@@ -69,6 +69,10 @@ int main ()
     // Init
     is_selected = false;
     variability = 0;
+    dac_loaded = true;
+    current_beat = 0;
+    playback_beat = 0;
+    sample_index = SAMPLE_LENGTH;
     clear_beats();
 
     // Set up DAC SPI communication.
@@ -215,22 +219,6 @@ unsigned int read_variability_pot(void)
 
 
 /**
- * Handle serial communication with sequencer.
- * Called when the CBUS_DRDY line is strobed
- */
-// void isr_serbus(void)
-// {
-//     // We need to clear the bits in the interrupt flag
-//     // register to acknowledge the interrupt. To do this,
-//     // we can use the active bits as a mask for the ones
-//     // that we want to clear
-//     hw_clear_bits(&pio0_hw->irq, pio0_hw->irq);
-
-//     // new_bus_command = true;
-// }
-
-
-/**
  * Called whenever a GPIO-based interrupt occurs. This decides
  * which service routine to use based on the GPIO number.
  * 
@@ -313,8 +301,24 @@ void set_mod_stat_line(bool state)
  */
 void isr_tempo_sync(unsigned int gpio, uint32_t event)
 {
-    ++current_beat;
-    current_beat %= 16; // FIXME
+    // Callback in 100 us to resample the GPIO line
+    // This allows us to detect beat 0 (long low value)
+    add_alarm_in_us(ALARM_TEMPO_SAMPLE_US, alarm_mod_beat_callback, NULL, false);
+}
+
+
+/**
+ * Handles detection of the first beat (beat 0) to synchronize with
+ * the sequencer
+ */
+int64_t alarm_mod_beat_callback(alarm_id_t id, void *user_data)
+{
+    if (gpio_get(MOD_TEMPO_SYNC) == 1) {
+        current_beat = 0;
+    } else {
+        ++current_beat;
+        current_beat %= 16; // FIXME
+    }
 
     // Only restart sample playback if there is a note this beat.
     // Otherwise, let it ring out to end
@@ -322,9 +326,16 @@ void isr_tempo_sync(unsigned int gpio, uint32_t event)
         sample_index = 0;
         playback_beat = current_beat;
     }
+    
+    return 0; // Time in us to fire again in the future. 0 disables this
 }
 
 
+/**
+ * Called by the sample rate timer. Handles loading of data to the DAC.
+ * Note that this does not perform any data shifting to the DAC. It
+ * simply tells the DAC to load what has already been shifted in.
+ */
 bool isr_sample(repeating_timer_t *t)
 {
     gpio_put(GPIO_DAC_LDACB, false);

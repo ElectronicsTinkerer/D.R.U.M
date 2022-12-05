@@ -90,7 +90,6 @@ typedef struct time_sig_t {
 typedef struct beat_data {
     signed int ubeat    : 4;
     unsigned int veloc  : 4; // 0 = no hit
-    unsigned int sample : 4;
 } beat_data_t;
 
 typedef enum {
@@ -107,6 +106,9 @@ typedef struct beat_update {
 
 #define MAX_VELOCITY 8
 
+#define ALARM_TEMPO_SAMPLE_Z_US 25
+#define ALARM_TEMPO_SAMPLE_NZ_US 125
+
 // Display
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -119,6 +121,7 @@ void update_screen(void);
 void update_buttons(void);
 void isr_gpio_handler(unsigned int, uint32_t);
 bool isr_timer(repeating_timer_t *);
+int64_t alarm_seq_beat_callback(alarm_id_t, void *);
 void isr_module_status(unsigned int, uint32_t);
 void isr_tempo_encoder(unsigned int, uint32_t);
 void isr_play_pause(unsigned int, uint32_t);
