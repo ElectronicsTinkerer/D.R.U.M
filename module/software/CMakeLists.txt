@@ -52,6 +52,7 @@ pico_generate_pio_header(${PROJECT_NAME} module.pio)
 # Pull in dependencies
 target_link_libraries(${PROJECT_NAME}
   pico_stdlib
+  hardware_adc
   hardware_pio
   hardware_spi
   pico_multicore

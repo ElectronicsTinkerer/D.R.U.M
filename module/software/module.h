@@ -54,6 +54,9 @@
 
 #define ALARM_TEMPO_SAMPLE_US 75
 
+#define VARIABILITY_STEPS 4 // MUST be a power of 2!
+#define VARIABILITY_STEPS_LOG 2 // LOG2(VARIABILITY_STEPS)
+
 typedef struct beat_data {
     signed int ubeat    : 4;
     unsigned int veloc  : 4; // 0 = no hit
@@ -61,7 +64,8 @@ typedef struct beat_data {
 } beat_data_t;
 
 void clear_beats(void);
-unsigned int read_variability_pot(void);
+uint16_t read_variability_pot(void);
+void send_sample_to_dac(void);
 void isr_gpio_handler(unsigned int, uint32_t);
 void isr_mod_sel_btn(unsigned int, uint32_t);
 int64_t alarm_mod_stat_callback(alarm_id_t, void *);

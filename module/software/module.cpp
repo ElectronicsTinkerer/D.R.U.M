@@ -13,6 +13,7 @@
 #include "pico/stdlib.h"
 #include "pico/util/queue.h"
 #include "pico/multicore.h"
+#include "hardware/adc.h"
 #include "hardware/gpio.h"
 #include "hardware/spi.h"
 
@@ -26,7 +27,8 @@ volatile bool dac_loaded; // True following a DAC load event, false otherwise
 volatile int current_beat;
 volatile int playback_beat;
 volatile size_t sample_index;
-unsigned int variability;
+uint16_t variability; // The scaled reading from the DAC
+uint16_t variability_rand; // The random value to be used on the next sample
 
 repeating_timer_t sample_timer;
 
@@ -65,10 +67,16 @@ int main ()
     gpio_init(MOD_STAT_IRQ);
     gpio_put(MOD_STAT_IRQ, 0);
     gpio_set_dir(MOD_STAT_IRQ, GPIO_IN);
+
+    // Variability pot is an analog input
+    adc_init();
+    adc_gpio_init(GPIO_ADC2); // Setup pin input buffers
+    adc_select_input(2); // Match ADC number
     
     // Init
     is_selected = false;
     variability = 0;
+    variability_rand = 0;
     dac_loaded = true;
     current_beat = 0;
     playback_beat = 0;
@@ -155,6 +163,13 @@ int main ()
     while (1) {
         variability = read_variability_pot();
 
+        /**
+         * Shift the next sample value into the DAC for playback
+         * Note: This does not actually load the DAC!!!
+         * This only fills up the shift register with the
+         * next beat's sample data. The tempo sync ISR will
+         * handle loading of the DAC.
+         */
         if (dac_loaded) {
             dac_loaded = false;
 
@@ -162,8 +177,8 @@ int main ()
             // from changing during sample processing
             beat = playback_beat;
             
-            // TODO: To add variability, put it in the lowest 1 bits
-            veloc = ((beats[beat].veloc & 0x7) << 2);
+            veloc = ((beats[beat].veloc & 0x7) << VARIABILITY_STEPS_LOG)
+                | (variability_rand & (VARIABILITY_STEPS - 1));
 
             if (beats[beat].veloc && sample_index < SAMPLE_LENGTH) {
                 ++sample_index;
@@ -185,10 +200,7 @@ int main ()
             // Disable the DAC
             gpio_put(GPIO_DAC_CSB, true);
 
-            // Note: This does not actually load the DAC!!!
-            // This only fills up the shift register with the
-            // next beat's sample data. The tempo sync ISR will
-            // handle loading of the DAC.
+            variability_rand = rand() % (variability+1);
         }
     }
 }
@@ -211,10 +223,14 @@ void clear_beats(void)
  * Read the analog value of the variability pot and return a numberically-
  * binned value corresponding to it.
  */
-unsigned int read_variability_pot(void)
+inline uint16_t read_variability_pot(void)
 {
-    // TODO!
-    return 0;
+    // The ADC is only 12 bits, but we need 32 so the descitization of the
+    // range does not overflow
+    uint32_t val = adc_read();
+    val *= (1<<12)-1;
+    val /= VARIABILITY_STEPS;
+    return val;
 }
 
 
