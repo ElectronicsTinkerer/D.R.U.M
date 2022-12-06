@@ -1,0 +1,9 @@
+Timing diagram created with Wavedrom: https://wavedrom.com/editor.html
+
+Raw source:
+
+{signal: [
+  {name: 'SCK', wave: 'l.n....l|nhl'},
+  {name: 'DRDY', wave: '10......|.1.'},
+  {name: 'SD', wave: 'x.======|=x.', data: ['D0', 'D1', 'D2', 'D3', 'D4', '...', 'Dn']}
+]}
