@@ -3,7 +3,7 @@
 The bus is based on a 32-bit word size. It uses three signals, much like SPI:
 * `SCK` - The clock to synchronize data transfers. This only runs during transmission of data and data is sampled during the high phase of the clock.
 * `DRDY` - The Data Ready is used to signal that a shift operation has completed. This signal is low during the shift and goes high during the last high clock phase of the shift. Any devices on the scan chain should not read data into their input buffers until this goes high (but they should continue to shift data through the scan chain while DRDY is low).
-* `SDxx` - The Serial Data [in/out] carries the data to be transmitted, LSb first (right shift). The data out from the master changes during the low period of the clock. Data out from bus devices changes shortly after the rising edge of the clock (now after writing this out, this seems likely it might cause issues...)
+* `SDxx` - The Serial Data [in/out] carries the data to be transmitted, LSb first (right shift). The data out from the master changes during the low period of the clock (ideally, on the falling clock edge). Data out from bus devices also changes at or shortly after the falling edge of the clock.
 
 ## Timing
 
@@ -27,8 +27,8 @@ More details:
 
 * **CS** "Chip select" is 1 when the master wants the bus device to execute the command that is shifted in when DRDY goes high. It is 0 otherwise.
 * **RWB** "Read/Write" is 1 when the master wants to perform a read operation. It is 0 to perform a write.
-* **FD** "Force Deselection" is 1 when the master wants to force the bus device to deselect itself. No effect if 0. Note that this overrides the *MS* bit if *FD* is set to 1.
-* **MS** "Module Select" Force selection of the bus device (module) if set to 1. No effect if 0.
+* **FD** "Force Deselection" is 1 when the master wants to force the bus device to deselect itself. No effect if 0. Note that this overrides the *MS* bit if *FD* is set to 1. Also, if *FD* is set to 1, data in any field which is not *CS*, *RWB*, or *FD* is ignored.
+* **MS** "Module Select" Force selection of the bus device (module) if set to 1. No effect if 0. If *MS* is set to 1, data in any field which is not *CS*, *RWB*, *FD*, or *MS* is ignored.
 
 ## Data Transfer
 

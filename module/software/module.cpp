@@ -8,7 +8,8 @@
  *
  */
 
-#define FAST_COMP
+// Uncomment to remove samples and enable fast compilation/upload
+// #define FAST_COMP
 
 #include <math.h>
 
@@ -56,14 +57,16 @@ int main ()
     // Output Pins
     gpio_init(GPIO_DAC_LDACB);
     gpio_init(GPIO_DAC_CSB);
-    // gpio_init(GPIO_DAC_SCK);
-    // gpio_init(GPIO_DAC_SDAT);
     gpio_set_dir(GPIO_DAC_LDACB, GPIO_OUT);
     gpio_set_dir(GPIO_DAC_CSB, GPIO_OUT);
     gpio_put(GPIO_DAC_LDACB, true);
     gpio_put(GPIO_DAC_CSB, true); // Active low, so disable DAC selection upon RESET
     gpio_set_function(GPIO_DAC_SCK, GPIO_FUNC_SPI);
     gpio_set_function(GPIO_DAC_SDAT, GPIO_FUNC_SPI);
+
+    gpio_init(GPIO_SEL_LED);
+    gpio_set_dir(GPIO_SEL_LED, GPIO_OUT);
+    
     
     // Input pins
     gpio_init(GPIO_SEL_BTN);
@@ -141,7 +144,7 @@ int main ()
     // Set up all the interrupt handlers for the GPIOs
     gpio_set_irq_enabled_with_callback(
         GPIO_SEL_BTN,
-        GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL,
+        GPIO_IRQ_EDGE_RISE,
         true, // (enable isr)
         &isr_gpio_handler
         );
@@ -181,6 +184,8 @@ int main ()
     
     // Event loop
     while (1) {
+        gpio_put(GPIO_SEL_LED, is_selected);
+        
         variability = read_variability_pot();
 
         /**
@@ -386,6 +391,7 @@ int64_t alarm_mod_beat_callback(alarm_id_t id, void *user_data)
 bool isr_sample(repeating_timer_t *t)
 {
     gpio_put(GPIO_DAC_LDACB, false);
+    // TODO: Clean this up and maybe use an alarm callback?
     // Datasheet says pulse must > 40ns. This makes it about 80ns
     asm volatile("nop \n nop \n nop"); // Make the pulse 'wider'
     asm volatile("nop \n nop \n nop"); // Make the pulse 'wider'
@@ -424,11 +430,20 @@ void intermodule_command_handler(void)
  */
 void execute_intermodule_command(ctlword_t cmd)
 {
-    // Don't execute the command is this module is not selected
+    // Don't execute the command if this module is not selected
     if (!cmd.data.cs) {
         return;
     }
 
+    // Handle forced module deselection
+    if (cmd.data.fdesel == 1) {
+        is_selected = false;
+        return; // IGNORE REMAINDER OF COMMAND
+    } else if (cmd.data.modsel == 1) {
+        is_selected = true;
+        return; // IGNORE REMAINDER OF COMMAND
+    }
+    
     // Write operations
     if (cmd.data.rwb == 0) {
         beats[cmd.data.beat].ubeat = cmd.data.ubeat;
@@ -442,15 +457,10 @@ void execute_intermodule_command(ctlword_t cmd)
         res.data.ubeat = beats[cmd.data.beat].ubeat;
         res.data.veloc = beats[cmd.data.beat].veloc;
         res.data.modsel = is_selected;
+        pio_sm_clear_fifos(intermodule_pio.pio, intermodule_pio.sm);
         pio_sm_put_blocking(intermodule_pio.pio, intermodule_pio.sm, res.raw);
     }
 
-    // Handle forced module deselection
-    if (cmd.data.fdesel == 1) {
-        is_selected = false;
-    } else {
-        is_selected = cmd.data.modsel;
-    }
 }
 
 

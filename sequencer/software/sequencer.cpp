@@ -156,7 +156,7 @@ int main ()
 
     // Initialize Sequencer states
     is_running = false;
-    mod_data.is_mod_selected = true; //false; // DEBUG  ************************************
+    mod_data.is_mod_selected = false;
     mod_data.has_mod_irq = false;
     mod_data.do_screen_update = true;
     mod_data.last_veloc = 0;
@@ -289,6 +289,23 @@ int main ()
         //     }
         // }
     }
+}
+
+
+/**
+ * Reset the sequencer grid
+ */
+void clear_beats(void)
+{
+    mutex_enter_blocking(&mod_data.mutex_beats);
+
+    // 16 beats
+    for (size_t i = 0; i < 16; ++i) {
+        mod_data.beats[i].ubeat = 0;
+        mod_data.beats[i].veloc = 0;
+    }
+
+    mutex_exit(&mod_data.mutex_beats);
 }
 
 
@@ -631,29 +648,31 @@ void module_data_controller(void)
             if (queue_is_empty(&mod_data.queue_button_event)) {
                 if (mod_data.has_mod_irq) {
 
-                    mod_data.selected_mod_index = 1; // DEBUG
+                    // Get the selection status of all modules
+                    serbus_read_cmd_all(mods);
 
-                    // // Get the selection status of all modules
-                    // serbus_read_cmd_all(mods);
-
-                    // // Go through the modules and find the first one
-                    // // which is selected
-                    // for (i = 0; i < connected_module_count && !mods[i].data.modsel; ++i) {
-                    //     /* loop */
-                    // }
-                    // if (mods[i].data.modsel) {
-                    //     serbus_select_module(i);
-                    //     // Signal that a module is selected
-                    //     mod_data.is_mod_selected = true;
-                    //     mod_data.selected_mod_index = i;
-                    // } else {
-                    //     serbus_select_module(-1); // Deselect all
-                    //     // Signal that no modules are selected
-                    //     mod_data.is_mod_selected = false;
-                    //     mod_data.selected_mod_index = 0;
-                    // }
+                    // Go through the modules and find the first one
+                    // which is selected
+                    for (i = 0; i < connected_module_count && !mods[i].data.modsel; ++i) {
+                        /* loop */
+                    }
+                    // Then force deselect all other modules
+                    if (i < connected_module_count && mods[i].data.modsel) {
+                        serbus_select_module(i);
+                        // Signal that a module is selected
+                        mod_data.is_mod_selected = true;
+                        mod_data.selected_mod_index = i;
+                        // Read in the selected module's data
+                        get_module_beats();
+                    }
+                    else {
+                        serbus_select_module(-1); // Deselect all
+                        // Signal that no modules are selected
+                        mod_data.is_mod_selected = false;
+                        mod_data.selected_mod_index = 0;
+                        clear_beats();
+                    }
                     
-                    // // TODO: read in new module's data
                     mod_data.has_mod_irq = false;
                 }
             }
@@ -662,6 +681,31 @@ void module_data_controller(void)
 
     }
 }
+
+
+/**
+ * Read out all beats from the module specified by selected_mod_index
+ * and store them in the mod_data.beats array
+ */
+void get_module_beats(void)
+{
+    mutex_enter_blocking(&mod_data.mutex_beats);
+
+    size_t i;
+    ctlword_t res;
+    for (i = 0; i < max_beat; ++i) {
+        res.raw = 0;
+        res.data.beat = i;
+        res.data.rwb = true; // Read
+        res.data.cs = true;
+        serbus_read_cmd(mod_data.selected_mod_index, res, &res);
+        mod_data.beats[i].veloc = res.data.veloc;
+        mod_data.beats[i].ubeat = res.data.ubeat;
+    }
+    
+    mutex_exit(&mod_data.mutex_beats);
+}
+
 
 
 /**

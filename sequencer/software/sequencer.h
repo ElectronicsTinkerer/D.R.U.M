@@ -115,6 +115,7 @@ typedef struct beat_update {
 #define SCREEN_ADDRESS 0x3D // Magic number from OLED datasheet
 
 // Function signatures
+void clear_beats(void);
 bool start_timer();
 bool stop_timer();
 void update_screen(void);
@@ -129,6 +130,7 @@ void isr_time_sig_encoder(unsigned int, uint32_t);
 TrellisCallback isr_pad_event(keyEvent);
 void isr_clear_pattern(unsigned int, uint32_t);
 void module_data_controller(void);
+void get_module_beats(void);
 void handle_beat_data_change(beat_update_t *);
 int get_connected_module_count(void);
 void serbus_write_cmd(size_t, ctlword_t);

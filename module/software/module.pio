@@ -9,8 +9,9 @@ idle:
     pull noblock            ; If there's TX data, put it into the shift stream
     mov ISR, OSR
     
-    out PINS, 1             ; Shift out the next bit
-    jmp loop_entry
+    ;; out PINS, 1             ; Shift out the next bit
+    ;; jmp loop_entry
+    ;; wait 0 GPIO 10
     
     .wrap_target
 shift_loop:
@@ -19,12 +20,12 @@ shift_loop:
     mov OSR, ISR         ; Allow data shifted in to be shifted out
 loop_entry: 
     wait 0 GPIO 10          
-    jmp PIN push_word       ; Keep shifting as long as the data ready signal is low
     out PINS, 1             ; Shift out the next bit
+    jmp PIN push_word       ; Keep shifting as long as the data ready signal is low
     .wrap
 
 push_word:
-    mov X, ISR
+    mov X, ISR                  ; Push clears the ISR, so save a copy for later
     push noblock            ; Move shifted data into RX FIFO
     ;; irq SET 0 rel           ; Done shifting, trigger an interrupt
     jmp idle
