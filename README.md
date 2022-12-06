@@ -8,7 +8,7 @@ Files for the D.R.U.M. Machine, the modular, expandable drum machine complete wi
 
 ```
 .
-├── doc             # Documentation on components, throughts, h/sware details
+├── doc             # Documentation on components, thoughts, h/sware details
 ├── module          # Files specific to the modules
 │   ├── cad         # Housing design
 │   ├── hardware    # PCB design (kicad)
@@ -20,9 +20,9 @@ Files for the D.R.U.M. Machine, the modular, expandable drum machine complete wi
 │   ├── cad         # Housing design
 │   ├── hardware    # PCB design (kicad)
 │   └── software    # Sequencer firmware
-└── slidepot        # Slide potentiometer daughterboard
+└── slidepot        # Slide potentiometer daughter board
     ├── cad         # 3D models for slidepot (knob)
-    └── hardware    # Daughterboard design
+    └── hardware    # Daughter board design
 ```
 
 

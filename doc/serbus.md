@@ -15,7 +15,7 @@ Here's the timing diagram. Note that any multiple of 32 bits can be shifted befo
 
 The scan chain is fairly straight forward. The sequencer is the 'master' of the bus and is what controls all shift operations. 
 
-![Picture showing the scanchain routing from the sequencer, through the modues, and back to the sequencer.](img/scanchain.svg)
+![Picture showing the scanchain routing from the sequencer, through the modules, and back to the sequencer.](img/scanchain.svg)
 
 ## Frame Format
 
@@ -38,6 +38,6 @@ To perform a write operation to one or more modules, the master will set *CS*=1,
 
 ### Read Operation
 
-To perform a write operation to one or more modules, the master will set *CS*=1, *RWB*=1, and the other data fields as needed to carry the appropiate data. The master first sends out a command word to the bus device(s) that it wants to read from. It then raises DRDY (as it would for a write operation). Since the v1.0 protocol does not make use of handshaking, the master must wait some time (currently, 100us) before performing another shift operation through the scan chain to shift the results of the read operation back into the master's RX buffer. During the wait period between command and read shifts, the bus device must execute the command and replace the contents of its shift register with the result of the read operation.
+To perform a write operation to one or more modules, the master will set *CS*=1, *RWB*=1, and the other data fields as needed to carry the appropriate data. The master first sends out a command word to the bus device(s) that it wants to read from. It then raises DRDY (as it would for a write operation). Since the v1.0 protocol does not make use of handshaking, the master must wait some time (currently, 100us) before performing another shift operation through the scan chain to shift the results of the read operation back into the master's RX buffer. During the wait period between command and read shifts, the bus device must execute the command and replace the contents of its shift register with the result of the read operation.
 
 
