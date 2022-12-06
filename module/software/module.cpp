@@ -153,8 +153,20 @@ int main ()
         NULL,
         &sample_timer
         );
-    
 
+
+    int angle;
+
+    // For testing purposes, if the system boots with SELECT button held
+    // down, output a 1KHz sine wave
+    while (gpio_get(GPIO_SEL_BTN) == 1) {
+        if (dac_loaded) {
+            dac_loaded = false;
+            ++angle;
+            write_dac(0x8000+(int16_t)(32767.0*sin((double)angle*42.0/3.14159*(double)1000/(double)AUDIO_SAMPLE_RATE_HZ)));
+        }
+    }
+    
     uint16_t m;
     int veloc;
     int beat;
@@ -186,20 +198,9 @@ int main ()
             } else {
                 m = 0x8000; // Midscale
             }
+
+            write_dac(m);
             
-            // Enable the DAC
-            gpio_put(GPIO_DAC_CSB, false);
-
-            // Send the new value
-            spi_write16_blocking(
-                spi0,
-                &m,
-                1
-                );
-
-            // Disable the DAC
-            gpio_put(GPIO_DAC_CSB, true);
-
             variability_rand = rand() % (variability+1);
         }
     }
@@ -231,6 +232,28 @@ inline uint16_t read_variability_pot(void)
     val *= (1<<12)-1;
     val /= VARIABILITY_STEPS;
     return val;
+}
+
+
+/**
+ * Shift a value (m) into the DAC's SR but do not load it to the analog output
+ * @param m The value to send to the dac
+ */
+inline void write_dac(uint16_t m)
+{
+    // Enable the DAC
+    gpio_put(GPIO_DAC_CSB, false);
+
+    // Send the new value
+    spi_write16_blocking(
+        spi0,
+        &m,
+        1
+        );
+
+    // Disable the DAC
+    gpio_put(GPIO_DAC_CSB, true);
+
 }
 
 

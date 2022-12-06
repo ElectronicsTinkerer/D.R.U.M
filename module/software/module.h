@@ -66,6 +66,7 @@ typedef struct beat_data {
 void clear_beats(void);
 uint16_t read_variability_pot(void);
 void send_sample_to_dac(void);
+void write_dac(uint16_t);
 void isr_gpio_handler(unsigned int, uint32_t);
 void isr_mod_sel_btn(unsigned int, uint32_t);
 int64_t alarm_mod_stat_callback(alarm_id_t, void *);
