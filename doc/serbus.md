@@ -15,13 +15,13 @@ Here's the timing diagram. Note that any multiple of 32 bits can be shifted befo
 
 The scan chain is fairly straight forward. The sequencer is the 'master' of the bus and is what controls all shift operations. 
 
-![Picture showing the scanchain routing from the sequencer, through the modules, and back to the sequencer.](img/scanchain.svg)
+![Picture showing the scanchain routing from the sequencer, through the modules, and back to the sequencer.](img/scanchain.png)
 
 ## Frame Format
 
 The data frames are independent of the protocol for the most part, except that CS and RWB bits should always be kept as the upper two most significant bits of the word, respectively. For the DRUM modules, the word follows the following frame format:
 
-![Frame format for the inter-module communication bus which is used by the DRUM system.](img/dataframe.svg)
+![Frame format for the inter-module communication bus which is used by the DRUM system.](img/dataframe.png)
 
 More details:
 
