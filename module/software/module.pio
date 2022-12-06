@@ -6,24 +6,26 @@
 ;;; NOTE: This uses an absolute pin number for the clock!
 idle:
     jmp PIN idle            ; Wait for data ready signal
-    pull ifempty noblock            ; If there's TX data, put it into the shift stream
-    mov ISR, OSR            ; ISR will be copied to OSR during the shift loop
-
-    wait 0 GPIO 10
-
+    mov x, isr
+    pull noblock            ; If there's TX data, put it into the shift stream
+    
+    out PINS, 1             ; Shift out the next bit
+    jmp loop_entry
+    
     .wrap_target
 shift_loop:
-    wait 1 GPIO 10          ; Capture rising edge of clock
-    mov OSR, ISR            ; Copy current data to allow for transparent loopback shifting
-    out PINS, 1         [6] ; Shift out the next bit
+    wait 1 GPIO 10      [7] ; Capture rising edge of clock
     in PINS, 1              ; Get the data in
+    mov OSR, ISR         ; Allow data shifted in to be shifted out
+loop_entry: 
     wait 0 GPIO 10          
     jmp PIN push_word       ; Keep shifting as long as the data ready signal is low
+    out PINS, 1             ; Shift out the next bit
     .wrap
 
 push_word:
-    push noblock            ; Move shifted data into RX FIFO
-    irq SET 0 rel           ; Done shifting, trigger an interrupt
+    ;; push noblock            ; Move shifted data into RX FIFO
+    ;; irq SET 0 rel           ; Done shifting, trigger an interrupt
     jmp idle
 
 

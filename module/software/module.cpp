@@ -8,6 +8,8 @@
  *
  */
 
+#define FAST_COMP
+
 #include <math.h>
 
 #include "pico/stdlib.h"
@@ -17,7 +19,13 @@
 #include "hardware/gpio.h"
 #include "hardware/spi.h"
 
+#ifdef FAST_COMP
+uint16_t samples[][1]  = {{1}};
+#define SAMPLE_LENGTH 1
+#else
 #include "samples.h"
+#endif
+
 #include "module.pio.h"
 #include "serbus.h"
 #include "module.h"
