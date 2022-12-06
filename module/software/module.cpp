@@ -435,14 +435,14 @@ void execute_intermodule_command(ctlword_t cmd)
         beats[cmd.data.beat].veloc = cmd.data.veloc;
     }
     // Read operations
-    else { // FIXME!!!!!
+    else {
         ctlword_t res;
         res.raw = 0;
-        res.data.beat = 0xa;//cmd.data.beat;
-        res.data.ubeat = 0x6;//beats[cmd.data.beat].ubeat;
+        res.data.beat = cmd.data.beat;
+        res.data.ubeat = beats[cmd.data.beat].ubeat;
         res.data.veloc = beats[cmd.data.beat].veloc;
-        res.data.modsel = true; // is_selected; // FIXME
-        pio_sm_put_blocking(intermodule_pio.pio, intermodule_pio.sm, 0xff00aa55);
+        res.data.modsel = is_selected;
+        pio_sm_put_blocking(intermodule_pio.pio, intermodule_pio.sm, res.raw);
     }
 
     // Handle forced module deselection

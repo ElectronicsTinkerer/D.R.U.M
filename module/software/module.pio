@@ -6,8 +6,8 @@
 ;;; NOTE: This uses an absolute pin number for the clock!
 idle:
     jmp PIN idle            ; Wait for data ready signal
-    mov x, isr
     pull noblock            ; If there's TX data, put it into the shift stream
+    mov ISR, OSR
     
     out PINS, 1             ; Shift out the next bit
     jmp loop_entry
@@ -24,7 +24,8 @@ loop_entry:
     .wrap
 
 push_word:
-    ;; push noblock            ; Move shifted data into RX FIFO
+    mov X, ISR
+    push noblock            ; Move shifted data into RX FIFO
     ;; irq SET 0 rel           ; Done shifting, trigger an interrupt
     jmp idle
 
@@ -50,13 +51,13 @@ static inline void module_sio_init(
     sm_config_set_jmp_pin(&cfg, drdy_pin);
     sm_config_set_out_pins(&cfg, tx_pin, 1); // One pin
     sm_config_set_in_pins(&cfg, rx_pin);
-    
+
     // Set outputs to 0 initially
     pio_sm_set_pins_with_mask(
         pio,
         sm,
         0,
-        (1u << tx_pin)
+        (1u << tx_pin) | (1u << 12)
     );
 
     // Set output pins as outputs
