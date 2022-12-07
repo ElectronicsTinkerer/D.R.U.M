@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="390.41537mm"
+   height="279.35175mm"
+   viewBox="0 0 390.41537 279.35175"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="oled-breakout.svg"
+   inkscape:export-filename="oled-breakout.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#505050"
+     bordercolor="#ffffff"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="1"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.74208053"
+     inkscape:cx="737.79055"
+     inkscape:cy="636.72335"
+     inkscape:window-width="2400"
+     inkscape:window-height="1471"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="163.41731"
+       height="72.894608"
+       id="rect290" />
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="163.41731"
+       height="72.894608"
+       id="rect1839" />
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="163.41731"
+       height="72.894608"
+       id="rect1947" />
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="163.41731"
+       height="72.894608"
+       id="rect1953" />
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="452.46951"
+       height="87.044014"
+       id="rect11398" />
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="455.16464"
+       height="179.35207"
+       id="rect11506" />
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="630.34778"
+       height="167.224"
+       id="rect12293" />
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="661.34174"
+       height="206.9771"
+       id="rect12299" />
+    <rect
+       x="183.90404"
+       y="91.952019"
+       width="859.43343"
+       height="158.46484"
+       id="rect16237" />
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter17411"
+       x="0"
+       y="0"
+       width="1.0049008"
+       height="1.0702025">
+      <feFlood
+         flood-opacity="1"
+         flood-color="rgb(255,255,255)"
+         result="flood"
+         id="feFlood17401" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite17403" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="2.77556e-17"
+         result="blur"
+         id="feGaussianBlur17405" />
+      <feOffset
+         dx="3.94322"
+         dy="4.57413"
+         result="offset"
+         id="feOffset17407" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite17409" />
+    </filter>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(86.457504,86.372261)">
+    <rect
+       style="fill:#5a7fb0;fill-opacity:1;stroke-width:3.64875;stroke-linecap:round"
+       id="rect14772"
+       width="390.41537"
+       height="279.35175"
+       x="-86.457504"
+       y="-86.372261"
+       ry="25.791241" />
+    <rect
+       style="fill:#000000;fill-opacity:1;stroke-width:1;stroke-linecap:round"
+       id="rect234"
+       width="128"
+       height="64"
+       x="44.750183"
+       y="21.303606"
+       ry="3.4582839" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-10.462719,-2.1429665)"
+       id="text288"
+       style="font-size:64px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:end;white-space:pre;shape-inside:url(#rect290);display:inline;fill:#fff2f2;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round"><tspan
+         x="232.10352"
+         y="148.89694"
+         id="tspan17912"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17910">120</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,73.674786,-2.1429665)"
+       id="text1837"
+       style="font-size:64px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:end;white-space:pre;shape-inside:url(#rect1839);display:inline;fill:#fff2f2;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round"><tspan
+         x="232.10352"
+         y="148.89694"
+         id="tspan17916"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17914">4/4</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-31.100231,39.661203)"
+       id="text1945"
+       style="font-size:64px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:end;white-space:pre;shape-inside:url(#rect1947);display:inline;fill:#fff2f2;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round"><tspan
+         x="308.91602"
+         y="148.89694"
+         id="tspan17920"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17918">0</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-1.9960518,39.661203)"
+       id="text1951"
+       style="font-size:64px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:end;white-space:pre;shape-inside:url(#rect1953);display:inline;fill:#fff2f2;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round"><tspan
+         x="308.91602"
+         y="148.89694"
+         id="tspan17924"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17922">1</tspan></tspan></text>
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#85ecff;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 31.019208,131.56423 53.837935,82.539614"
+       id="path2018"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#85ecff;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 110.52821,113.38055 86.283313,81.826529"
+       id="path10462"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#85ecff;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 66.495194,23.353544 54.372749,-6.7743115"
+       id="path10464"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:#ffffff;fill-opacity:1;stroke:#85ecff;stroke-width:2.6;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1"
+       d="M 153.66987,22.462185 170.42737,3.7436952"
+       id="path10468"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-57.704616,-52.237204)"
+       id="text11396"
+       style="font-size:64px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:end;white-space:pre;shape-inside:url(#rect11398);display:inline;fill:#ffffff;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round"><tspan
+         x="252.31055"
+         y="148.89694"
+         id="tspan17928"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17926">Tempo(BPM)</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,107.73116,-62.933483)"
+       id="text11504"
+       style="font-size:64px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:end;white-space:pre;shape-inside:url(#rect11506);display:inline;fill:#ffffff;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round"
+       x="-345.53125"
+       y="0"><tspan
+         x="183.9043"
+         y="148.89694"
+         id="tspan17932"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic';text-align:start;text-anchor:start"
+           id="tspan17930">Time </tspan></tspan><tspan
+         x="183.9043"
+         y="229.72213"
+         id="tspan17936"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic';text-align:start;text-anchor:start"
+           id="tspan17934">Signature</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,66.015672,71.661356)"
+       id="text12291"
+       style="font-size:64px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:start;white-space:pre;shape-inside:url(#rect12293);display:inline;fill:#ffffff;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round"
+       x="-533.34375"
+       y="0"><tspan
+         x="183.9043"
+         y="148.89694"
+         id="tspan17940"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17938">Total detected </tspan></tspan><tspan
+         x="183.9043"
+         y="229.72213"
+         id="tspan17944"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17942">modules</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,-127.23043,106.95907)"
+       id="text12297"
+       style="font-size:64px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:end;white-space:pre;shape-inside:url(#rect12299);display:inline;fill:#ffffff;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round"><tspan
+         x="230.74609"
+         y="148.89694"
+         id="tspan17948"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17946">Velocity of last </tspan></tspan><tspan
+         x="345.96484"
+         y="229.72213"
+         id="tspan17952"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic'"
+           id="tspan17950">modified beat</tspan></tspan></text>
+    <text
+       xml:space="preserve"
+       id="text16235"
+       style="font-size:96px;font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:end;white-space:pre;shape-inside:url(#rect16237);display:inline;fill:#ffffff;fill-opacity:1;stroke-width:3.77953;stroke-linecap:round;filter:url(#filter17411)"
+       transform="matrix(0.26458333,0,0,0.26458333,-58.753301,-105.04904)"><tspan
+         x="236.80664"
+         y="177.36982"
+         id="tspan17956"><tspan
+           style="font-style:italic;font-weight:bold;font-family:'Liberation Mono';-inkscape-font-specification:'Liberation Mono Bold Italic';fill:#000000"
+           id="tspan17954">OLED INTERFACE</tspan></tspan></text>
+  </g>
+</svg>
