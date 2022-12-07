@@ -69,4 +69,6 @@ The time signature of the playback can be changed via the time signature knob. T
 
 ![Interface breakout of the sequencer](doc/img/interface-breakout.png)
 
+![Interface breakout of the bass module](doc/img/interface-module.png)
+
 
