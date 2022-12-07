@@ -114,6 +114,20 @@ typedef struct beat_update {
 #define SCREEN_HEIGHT 64
 #define SCREEN_ADDRESS 0x3D // Magic number from OLED datasheet
 
+
+// Colors based on velocity
+uint8_t velocity_colors[MAX_VELOCITY][3] = {
+    {0,   0,   0  }, // Off
+    {0,   0,   127}, // Blue
+    {0,   127, 127}, // Cyan
+    {0,   127, 0  }, // Green
+    {127, 127, 0  }, // Yellow
+    {127, 0,   0  }, // Red-orange
+    {127, 0,   127}, // Pink
+    {64,  32,  127}  // White-purple
+};
+
+
 // Function signatures
 void clear_beats(void);
 bool start_timer();

@@ -24,9 +24,9 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.6951041"
-     inkscape:cx="1696.0611"
-     inkscape:cy="329.47829"
+     inkscape:zoom="0.2996549"
+     inkscape:cx="1563.4652"
+     inkscape:cy="545.62765"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
@@ -252,7 +252,10 @@
        height="175.47113"
        x="-232.59393"
        y="-125.42085"
-       ry="26.219826" />
+       ry="26.219826"
+       inkscape:export-filename="dataframe.png"
+       inkscape:export-xdpi="96"
+       inkscape:export-ydpi="96" />
     <rect
        style="fill:#c64444;fill-opacity:1;stroke:none;stroke-width:0.575656;stroke-linecap:round;stroke-dasharray:none"
        id="rect2740"
@@ -474,9 +477,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1266);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1077.6286"
          y="-200.13585"
-         id="tspan1029"><tspan
+         id="tspan1165"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1027">0</tspan></tspan></text>
+           id="tspan1163">0</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-26.987501,1.0583333)"
@@ -484,9 +487,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1324);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1079.3131"
          y="-200.13585"
-         id="tspan1033"><tspan
+         id="tspan1169"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1031">3</tspan></tspan></text>
+           id="tspan1167">3</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-26.458334,0)"
@@ -494,9 +497,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1330);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1070.6387"
          y="-156.31227"
-         id="tspan1037"><tspan
+         id="tspan1173"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1035">3</tspan></tspan></text>
+           id="tspan1171">3</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-34.395836,1.0583333)"
@@ -504,9 +507,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1336);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1079.3131"
          y="-200.13585"
-         id="tspan1041"><tspan
+         id="tspan1177"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1039">4</tspan></tspan></text>
+           id="tspan1175">4</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-58.208351,1.0583333)"
@@ -514,9 +517,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1342);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1079.3131"
          y="-200.13585"
-         id="tspan1045"><tspan
+         id="tspan1181"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1043">7</tspan></tspan></text>
+           id="tspan1179">7</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-66.145856,1.0583333)"
@@ -524,9 +527,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1415);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1079.3131"
          y="-200.13585"
-         id="tspan1049"><tspan
+         id="tspan1185"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1047">8</tspan></tspan></text>
+           id="tspan1183">8</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-91.016705,1.0583333)"
@@ -534,9 +537,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1421);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1053"><tspan
+         id="tspan1189"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1051">11</tspan></tspan></text>
+           id="tspan1187">11</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-103.18756,1.0583333)"
@@ -544,9 +547,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1427);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1057"><tspan
+         id="tspan1193"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1055">12</tspan></tspan></text>
+           id="tspan1191">12</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-122.76676,1.0583333)"
@@ -554,9 +557,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1433);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1061"><tspan
+         id="tspan1197"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1059">15</tspan></tspan></text>
+           id="tspan1195">15</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-134.93767,1.0583333)"
@@ -564,9 +567,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1439);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1065"><tspan
+         id="tspan1201"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1063">16</tspan></tspan></text>
+           id="tspan1199">16</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-229.6588,1.2753264)"
@@ -574,9 +577,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1445);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1069"><tspan
+         id="tspan1205"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1067">27</tspan></tspan></text>
+           id="tspan1203">27</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-241.38968,1.0583333)"
@@ -584,9 +587,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1451);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1073"><tspan
+         id="tspan1209"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1071">28</tspan></tspan></text>
+           id="tspan1207">28</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-251.97308,1.0583333)"
@@ -594,9 +597,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1457);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1077"><tspan
+         id="tspan1213"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1075">29</tspan></tspan></text>
+           id="tspan1211">29</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-262.55648,1.0583333)"
@@ -604,9 +607,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1463);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1081"><tspan
+         id="tspan1217"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1079">30</tspan></tspan></text>
+           id="tspan1215">30</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-273.22902,1.0583333)"
@@ -614,9 +617,9 @@
        style="font-size:26.6667px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1469);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1082.8655"
          y="-200.13585"
-         id="tspan1085"><tspan
+         id="tspan1221"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1083">31</tspan></tspan></text>
+           id="tspan1219">31</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-22.309712,-18.164292)"
@@ -624,9 +627,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1612);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1078.5547"
          y="-195.3904"
-         id="tspan1089"><tspan
+         id="tspan1225"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1087">BEAT</tspan></tspan></text>
+           id="tspan1223">BEAT</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-54.588881,-18.164292)"
@@ -634,9 +637,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1618);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1071.3223"
          y="-195.3904"
-         id="tspan1093"><tspan
+         id="tspan1229"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1091">uBEAT</tspan></tspan></text>
+           id="tspan1227">uBEAT</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-86.338883,-18.164292)"
@@ -644,9 +647,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1624);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1071.3223"
          y="-195.3904"
-         id="tspan1097"><tspan
+         id="tspan1233"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1095">VELOC</tspan></tspan></text>
+           id="tspan1231">VELOC</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-118.08889,-18.164292)"
@@ -654,9 +657,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1630);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1071.3223"
          y="-195.3904"
-         id="tspan1101"><tspan
+         id="tspan1237"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1099">SAMPL</tspan></tspan></text>
+           id="tspan1235">SAMPL</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-197.46394,-18.164292)"
@@ -664,9 +667,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1636);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1074.8594"
          y="-195.3904"
-         id="tspan1105"><tspan
+         id="tspan1241"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1103">RESERVED</tspan></tspan></text>
+           id="tspan1239">RESERVED</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0,-0.26458333,0.26458333,0,103.37753,223.12956)"
@@ -674,9 +677,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1648);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1097.7578"
          y="-195.3904"
-         id="tspan1109"><tspan
+         id="tspan1245"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1107">MS</tspan></tspan></text>
+           id="tspan1243">MS</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0,-0.26458333,0.26458333,0,92.794196,223.12956)"
@@ -684,9 +687,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1654);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1097.7578"
          y="-195.3904"
-         id="tspan1113"><tspan
+         id="tspan1249"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1111">FD</tspan></tspan></text>
+           id="tspan1247">FD</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0,-0.26458333,0.26458333,0,82.210862,223.12956)"
@@ -694,9 +697,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1660);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1088.1562"
          y="-195.3904"
-         id="tspan1117"><tspan
+         id="tspan1253"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1115">RWB</tspan></tspan></text>
+           id="tspan1251">RWB</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0,-0.26458333,0.26458333,0,71.627528,223.12956)"
@@ -704,9 +707,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:center;white-space:pre;shape-inside:url(#rect1666);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1097.7578"
          y="-195.3904"
-         id="tspan1121"><tspan
+         id="tspan1257"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1119">CS</tspan></tspan></text>
+           id="tspan1255">CS</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,20.552803,14.644042)"
@@ -716,9 +719,9 @@
        y="0"><tspan
          x="1070.6387"
          y="-195.3904"
-         id="tspan1125"><tspan
+         id="tspan1261"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New';text-align:start"
-           id="tspan1123">Beat number that this frame corresponds to</tspan></tspan></text>
+           id="tspan1259">Beat number that this frame corresponds to</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,20.552803,25.227376)"
@@ -726,9 +729,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:start;white-space:pre;shape-inside:url(#rect1878);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1070.6387"
          y="-195.3904"
-         id="tspan1129"><tspan
+         id="tspan1265"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1127">Microbeat to use for this beat </tspan></tspan></text>
+           id="tspan1263">Microbeat to use for this beat </tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,20.552803,35.81071)"
@@ -736,9 +739,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:start;white-space:pre;shape-inside:url(#rect1888);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1070.6387"
          y="-195.3904"
-         id="tspan1133"><tspan
+         id="tspan1269"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1131">Velocity of playback (sample number)</tspan></tspan></text>
+           id="tspan1267">Velocity of playback (sample number)</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,18.436135,46.394044)"
@@ -746,9 +749,9 @@
        style="font-size:32px;font-family:Amiri;-inkscape-font-specification:Amiri;text-align:start;white-space:pre;shape-inside:url(#rect1894);display:inline;fill:none;stroke:#000000;stroke-width:3.77953;stroke-linecap:round;stroke-dasharray:none"><tspan
          x="1070.6387"
          y="-195.3904"
-         id="tspan1137"><tspan
+         id="tspan1273"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1135">[Unimplemented] Sound type identifier</tspan></tspan></text>
+           id="tspan1271">[Unimplemented] Sound type identifier</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-509.67247,56.977378)"
@@ -758,9 +761,9 @@
        y="0"><tspan
          x="1457.2285"
          y="-195.3904"
-         id="tspan1141"><tspan
+         id="tspan1277"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New';text-anchor:end"
-           id="tspan1139">Reserved for future use</tspan></tspan></text>
+           id="tspan1275">Reserved for future use</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-509.67247,46.394044)"
@@ -770,9 +773,9 @@
        y="0"><tspan
          x="1418.8223"
          y="-195.3904"
-         id="tspan1145"><tspan
+         id="tspan1281"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New'"
-           id="tspan1143">Force selection of module</tspan></tspan></text>
+           id="tspan1279">Force selection of module</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-509.67247,35.81071)"
@@ -782,9 +785,9 @@
        y="0"><tspan
          x="1092.3691"
          y="-195.3904"
-         id="tspan1149"><tspan
+         id="tspan1285"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New';text-anchor:end"
-           id="tspan1147">Force deselection of module (overrides MS)</tspan></tspan></text>
+           id="tspan1283">Force deselection of module (overrides MS)</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-509.67247,25.227376)"
@@ -794,9 +797,9 @@
        y="0"><tspan
          x="1322.8066"
          y="-195.3904"
-         id="tspan1153"><tspan
+         id="tspan1289"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New';text-anchor:end"
-           id="tspan1151">Read (1) / Write (0) to module</tspan></tspan></text>
+           id="tspan1287">Read (1) / Write (0) to module</tspan></tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.26458333,0,0,0.26458333,-509.67247,14.644042)"
@@ -806,8 +809,8 @@
        y="0"><tspan
          x="1476.4316"
          y="-195.3904"
-         id="tspan1157"><tspan
+         id="tspan1293"><tspan
            style="font-family:'Courier New';-inkscape-font-specification:'Courier New';text-anchor:end"
-           id="tspan1155">&quot;Chip&quot; (module) Select</tspan></tspan></text>
+           id="tspan1291">&quot;Chip&quot; (module) Select</tspan></tspan></text>
   </g>
 </svg>

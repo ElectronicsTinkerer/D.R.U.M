@@ -2,13 +2,16 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="10in"
-   height="7.5in"
-   viewBox="0 0 254 190.5"
+   width="7.376842in"
+   height="5.2713308in"
+   viewBox="0 0 187.37179 133.8918"
    version="1.1"
    id="svg5"
    inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
-   sodipodi:docname="block-diagram.svg"
+   sodipodi:docname="scanchain.svg"
+   inkscape:export-filename="scanchain.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -24,11 +27,11 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="mm"
      showgrid="false"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="640.28519"
-     inkscape:cy="518.66282"
-     inkscape:window-width="2400"
-     inkscape:window-height="1471"
+     inkscape:zoom="0.7071068"
+     inkscape:cx="120.91526"
+     inkscape:cy="210.01071"
+     inkscape:window-width="1920"
+     inkscape:window-height="991"
      inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
@@ -38,8 +41,8 @@
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect8292" />
     <marker
        style="overflow:visible"
@@ -84,119 +87,119 @@
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect8382" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect8422" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect9282" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect9306" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect9326" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect9541" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect9597" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect10462" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect10677" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect11550" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect11588" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect11712" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="85.515337"
-       height="68.237748"
+       width="85.515335"
+       height="68.237747"
        id="rect11732" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="42.323569"
-       height="34.177954"
+       width="42.32357"
+       height="34.177956"
        id="rect11752" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="42.323569"
-       height="34.177954"
+       width="42.32357"
+       height="34.177956"
        id="rect12254" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="42.323569"
-       height="34.177954"
+       width="42.32357"
+       height="34.177956"
        id="rect12274" />
     <rect
        x="509.25256"
        y="439.44412"
-       width="42.323569"
-       height="34.177954"
+       width="42.32357"
+       height="34.177956"
        id="rect440" />
     <rect
        x="509.25256"
        y="439.44412"
        width="226.52838"
-       height="42.408625"
+       height="42.408627"
        id="rect1311" />
     <filter
-       style="color-interpolation-filters:sRGB;"
+       style="color-interpolation-filters:sRGB"
        inkscape:label="Drop Shadow"
        id="filter4080"
-       x="-0.0051275557"
-       y="-0.041853989"
-       width="1.0199111"
-       height="1.1625257">
+       x="-0.0072742807"
+       y="-0.043994096"
+       width="1.0282472"
+       height="1.1708361">
       <feFlood
          flood-opacity="1"
          flood-color="rgb(0,0,0)"
@@ -229,19 +232,20 @@
        x="509.25256"
        y="439.44412"
        width="226.52838"
-       height="42.408625"
+       height="42.408627"
        id="rect4485" />
     <rect
        x="509.25256"
        y="439.44412"
        width="226.52838"
-       height="42.408625"
+       height="42.408627"
        id="rect4503" />
   </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1">
+     id="layer1"
+     transform="translate(-54.620724,-34.511605)">
     <path
        style="fill:none;stroke:#ffffff;stroke-width:1.262;stroke-linecap:round;stroke-dasharray:2.524, 1.262;stroke-dashoffset:0;stroke-opacity:1;marker-end:url(#marker4866)"
        d="m 227.2504,134.63194 c 5.79379,0.2889 13.86418,0.0775 14.10519,5.24659 0.18997,4.05326 -4.44902,6.03647 -14.3664,5.8772 H 111.62133"
@@ -258,14 +262,14 @@
        x="55.251724"
        y="35.142605" />
     <rect
-       style="fill:#545454;stroke-width:1.262;stroke:#ffffff;stroke-opacity:1;fill-opacity:0.5"
+       style="fill:#545454;fill-opacity:0.5;stroke:#ffffff;stroke-width:1.262;stroke-opacity:1"
        id="rect543"
        width="38.101006"
        height="122.47923"
        x="130.33249"
        y="35.142605" />
     <rect
-       style="fill:#545454;stroke-width:1.262;stroke:#ffffff;stroke-opacity:1;fill-opacity:0.5"
+       style="fill:#545454;fill-opacity:0.5;stroke:#ffffff;stroke-width:1.262;stroke-opacity:1"
        id="rect545"
        width="38.101006"
        height="122.47923"
@@ -281,7 +285,7 @@
        id="path2624" />
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow3)"
-       d="m 130.86034,134.52375 15.67699,0 0.0416,-5.68454"
+       d="m 130.86034,134.52375 h 15.67699 l 0.0416,-5.68454"
        id="path8072"
        sodipodi:nodetypes="ccc" />
     <path
@@ -306,7 +310,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';white-space:pre;shape-inside:url(#rect8292);display:inline;fill:none;fill-opacity:0.5;stroke:#ff4210;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4893">MCU</tspan></text>
+           id="tspan591">MCU</tspan></text>
     </g>
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow3)"
@@ -335,7 +339,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';white-space:pre;shape-inside:url(#rect8382);display:inline;fill:none;fill-opacity:0.5;stroke:#ff4210;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4895">MCU</tspan></text>
+           id="tspan593">MCU</tspan></text>
     </g>
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow3)"
@@ -364,7 +368,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';white-space:pre;shape-inside:url(#rect8422);display:inline;fill:none;fill-opacity:0.5;stroke:#ff4210;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4897">MCU</tspan></text>
+           id="tspan595">MCU</tspan></text>
     </g>
     <g
        id="g9280"
@@ -383,7 +387,7 @@
          style="font-size:10.6667px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:0.64px;white-space:pre;shape-inside:url(#rect9282);display:inline;fill:none;fill-opacity:0.5;stroke:#ff4210;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="449.12739"
-           id="tspan4899">FLASH</tspan></text>
+           id="tspan597">FLASH</tspan></text>
     </g>
     <g
        id="g9304"
@@ -402,7 +406,7 @@
          style="font-size:10.6667px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:0.64px;white-space:pre;shape-inside:url(#rect9306);display:inline;fill:none;fill-opacity:0.5;stroke:#ff4210;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="449.12739"
-           id="tspan4901">FLASH</tspan></text>
+           id="tspan599">FLASH</tspan></text>
     </g>
     <g
        id="g9324"
@@ -421,7 +425,7 @@
          style="font-size:10.6667px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:0.64px;white-space:pre;shape-inside:url(#rect9326);display:inline;fill:none;fill-opacity:0.5;stroke:#ff4210;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="449.12739"
-           id="tspan4903">FLASH</tspan></text>
+           id="tspan601">FLASH</tspan></text>
     </g>
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker4866);marker-end:url(#Arrow3)"
@@ -459,7 +463,7 @@
            style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:0.64px;white-space:pre;shape-inside:url(#rect9541);display:inline;fill:none;fill-opacity:0.5;stroke:#05fe04;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
              x="509.25195"
              y="451.54832"
-             id="tspan4905">DAC</tspan></text>
+             id="tspan603">DAC</tspan></text>
         <rect
            style="fill:none;fill-opacity:0.5;stroke:#05fe04;stroke-width:0.662;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            id="rect9585"
@@ -479,7 +483,7 @@
            style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:0.64px;white-space:pre;shape-inside:url(#rect9597);display:inline;fill:none;fill-opacity:0.5;stroke:#05fe04;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
              x="509.25195"
              y="451.54832"
-             id="tspan4907">DAC</tspan></text>
+             id="tspan605">DAC</tspan></text>
         <rect
            style="fill:none;fill-opacity:0.5;stroke:#05fe04;stroke-width:0.662;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
            id="rect9593"
@@ -524,7 +528,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';white-space:pre;shape-inside:url(#rect10462);display:inline;fill:none;fill-opacity:0.5;stroke:#ffd310;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4909">U I</tspan></text>
+           id="tspan607">U I</tspan></text>
     </g>
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow3)"
@@ -549,7 +553,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';white-space:pre;shape-inside:url(#rect10677);display:inline;fill:none;fill-opacity:0.5;stroke:#ffd310;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4911">U I</tspan></text>
+           id="tspan609">U I</tspan></text>
     </g>
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow3)"
@@ -574,7 +578,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';white-space:pre;shape-inside:url(#rect11550);display:inline;fill:none;fill-opacity:0.5;stroke:#ffd310;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4913">U I</tspan></text>
+           id="tspan611">U I</tspan></text>
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,0.33879916,63.753704)"
@@ -582,9 +586,9 @@
          style="font-size:32px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:3px;white-space:pre;shape-inside:url(#rect1311);display:inline;fill:none;fill-opacity:0.5;stroke:#ffd310;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4080)"><tspan
            x="509.25195"
            y="468.49535"
-           id="tspan4917"><tspan
+           id="tspan615"><tspan
              style="stroke:#ffffff"
-             id="tspan4915">SEQUENCER</tspan></tspan></text>
+             id="tspan613">SEQUENCER</tspan></tspan></text>
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,74.422171,63.753704)"
@@ -592,9 +596,9 @@
          style="font-size:32px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:3px;white-space:pre;shape-inside:url(#rect4485);display:inline;fill:none;fill-opacity:0.5;stroke:#ffd310;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4080)"><tspan
            x="509.25195"
            y="468.49535"
-           id="tspan4921"><tspan
+           id="tspan619"><tspan
              style="stroke:#ffffff"
-             id="tspan4919">MODULE</tspan></tspan></text>
+             id="tspan617">MODULE</tspan></tspan></text>
       <text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,133.15987,63.753704)"
@@ -602,9 +606,9 @@
          style="font-size:32px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:3px;white-space:pre;shape-inside:url(#rect4503);display:inline;fill:none;fill-opacity:0.5;stroke:#ffd310;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4080)"><tspan
            x="509.25195"
            y="468.49535"
-           id="tspan4925"><tspan
+           id="tspan623"><tspan
              style="stroke:#ffffff"
-             id="tspan4923">MODULE</tspan></tspan></text>
+             id="tspan621">MODULE</tspan></tspan></text>
     </g>
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker4866);marker-end:url(#Arrow3)"
@@ -629,7 +633,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:0.64px;white-space:pre;shape-inside:url(#rect11588);display:inline;fill:none;fill-opacity:0.5;stroke:#7981ff;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4927">AMP</tspan></text>
+           id="tspan625">AMP</tspan></text>
     </g>
     <g
        id="g11710"
@@ -649,7 +653,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:0.64px;white-space:pre;shape-inside:url(#rect11712);display:inline;fill:none;fill-opacity:0.5;stroke:#7981ff;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4929">AMP</tspan></text>
+           id="tspan627">AMP</tspan></text>
     </g>
     <g
        id="g11730"
@@ -669,7 +673,7 @@
          style="font-size:13.3333px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic';letter-spacing:0.64px;white-space:pre;shape-inside:url(#rect11732);display:inline;fill:none;fill-opacity:0.5;stroke:#7981ff;stroke-width:2.12409;stroke-linecap:round;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"><tspan
            x="509.25195"
            y="451.54832"
-           id="tspan4931">AMP</tspan></text>
+           id="tspan629">AMP</tspan></text>
     </g>
     <g
        id="g11750"
@@ -694,15 +698,15 @@
            y="0"><tspan
              x="521.95507"
              y="451.54832"
-             id="tspan4935"><tspan
+             id="tspan633"><tspan
                style="text-align:center;text-anchor:middle"
-               id="tspan4933">FIL
+               id="tspan631">FIL
 </tspan></tspan><tspan
              x="519.3151"
              y="468.21495"
-             id="tspan4939"><tspan
+             id="tspan637"><tspan
                style="text-align:center;text-anchor:middle"
-               id="tspan4937">TER</tspan></tspan></text>
+               id="tspan635">TER</tspan></tspan></text>
       </g>
       <g
          id="g438"
@@ -723,15 +727,15 @@
            y="0"><tspan
              x="521.95507"
              y="451.54832"
-             id="tspan4943"><tspan
+             id="tspan641"><tspan
                style="text-align:center;text-anchor:middle"
-               id="tspan4941">FIL
+               id="tspan639">FIL
 </tspan></tspan><tspan
              x="519.3151"
              y="468.21495"
-             id="tspan4947"><tspan
+             id="tspan645"><tspan
                style="text-align:center;text-anchor:middle"
-               id="tspan4945">TER</tspan></tspan></text>
+               id="tspan643">TER</tspan></tspan></text>
       </g>
     </g>
     <path
@@ -756,7 +760,7 @@
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4866)"
-       d="m 208.87466,65.997382 0,-10.452845 -2.39089,-2.421415 -16.56573,-0.03635"
+       d="M 208.87466,65.997382 V 55.544537 l -2.39089,-2.421415 -16.56573,-0.03635"
        id="path558"
        sodipodi:nodetypes="cccc" />
     <path
@@ -848,7 +852,7 @@
        sodipodi:nodetypes="cccc" />
     <path
        style="fill:none;stroke:#ffffff;stroke-width:0.562;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Arrow3)"
-       d="m 72.869804,51.00752 -16.666914,0"
+       d="M 72.869804,51.00752 H 56.20289"
        id="path1303"
        sodipodi:nodetypes="cc" />
   </g>

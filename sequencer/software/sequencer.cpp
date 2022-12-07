@@ -389,16 +389,20 @@ bool stop_timer()
  */
 void update_buttons(void)
 {
+    uint8_t r, g, b;
     mutex_enter_blocking(&mod_data.mutex_beats);
     for (size_t i = 0; i < 16; ++i) {
         if (is_running && i == current_beat) {
             trellis.pixels.setPixelColor(i, 255, 255, 255);
         }
         else if (i >= max_beat) {
-            trellis.pixels.setPixelColor(i, 127, 0, 0); // Light red
+            trellis.pixels.setPixelColor(i, 64, 64, 64); // Light red
         }
         else if (mod_data.beats[i].veloc > 0) {
-            trellis.pixels.setPixelColor(i, 30, 127, 127); // A "nice" teal
+            r = velocity_colors[mod_data.beats[i].veloc][0];
+            g = velocity_colors[mod_data.beats[i].veloc][1];
+            b = velocity_colors[mod_data.beats[i].veloc][2];
+            trellis.pixels.setPixelColor(i, r, g, b);
         }
         else {
             trellis.pixels.setPixelColor(i, 0, 0, 0);
