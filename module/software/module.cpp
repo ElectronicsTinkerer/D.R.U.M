@@ -242,8 +242,8 @@ inline uint16_t read_variability_pot(void)
     // The ADC is only 12 bits, but we need 32 so the descitization of the
     // range does not overflow
     uint32_t val = adc_read();
-    val *= (1<<12)-1;
-    val /= VARIABILITY_STEPS;
+    val *= VARIABILITY_STEPS;
+    val /= (1<<12)-1;
     return val;
 }
 
