@@ -78,6 +78,9 @@ typedef struct time_sig_t {
 } time_sig_t;
 
 
+// Clear timeout (ms)
+#define CLEAR_GRID_TIMEOUT_MS 1000
+
 // PIO Tx/Rx config
 #define PIO_SPEED_HZ ((float)1000000)
 
@@ -142,7 +145,8 @@ void isr_tempo_encoder(unsigned int, uint32_t);
 void isr_play_pause(unsigned int, uint32_t);
 void isr_time_sig_encoder(unsigned int, uint32_t);
 TrellisCallback isr_pad_event(keyEvent);
-void isr_clear_pattern(unsigned int, uint32_t);
+void isr_clear_pattern_start_timeout(unsigned int, uint32_t);
+int64_t alarm_clear_pattern_callback(alarm_id_t, void *);
 void module_data_controller(void);
 void get_module_beats(void);
 void handle_beat_data_change(beat_update_t *);

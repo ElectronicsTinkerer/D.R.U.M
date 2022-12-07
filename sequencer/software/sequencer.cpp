@@ -47,6 +47,7 @@ volatile unsigned int time_sig;
 volatile unsigned int current_beat;
 volatile signed int current_ubeat;
 volatile unsigned int max_beat;
+volatile alarm_id_t alarm_clear_grid_id;
 repeating_timer_t timer;
 critical_section_t oled_spinlock;
 int connected_module_count;
@@ -246,7 +247,7 @@ int main ()
     // Clear beat pad button
     gpio_set_irq_enabled(
         CLEAR_BTN,
-        GPIO_IRQ_EDGE_FALL,
+        GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE,
         true // Enable interrupt
         );
 
@@ -432,7 +433,7 @@ void isr_gpio_handler(unsigned int gpio, uint32_t event)
         break;
 
     case CLEAR_BTN:
-        isr_clear_pattern(gpio, event);
+        isr_clear_pattern_start_timeout(gpio, event);
         break;
 
     case MOD_STAT_IRQ:
@@ -613,16 +614,46 @@ TrellisCallback isr_pad_event(keyEvent evt)
 
 
 /**
- * Send a message to CORE 1 to reset all beat data on the current module
+ * Start the timeout for the clear grid operation. But do not yet
+ * clear the grid.
  */
-void isr_clear_pattern(unsigned int gpio, uint32_t event)
+void isr_clear_pattern_start_timeout(unsigned int gpio, uint32_t event)
 {
-    beat_update_t msg = {
-        .op = CLEAR_GRID,
-        .beat = 0,
-        .delta_veloc = 0
-    };    
-    queue_add_blocking(&mod_data.queue_button_event, &msg);
+    if (gpio_get(CLEAR_BTN) == 0) {
+        alarm_clear_grid_id = add_alarm_in_ms(
+            CLEAR_GRID_TIMEOUT_MS,
+            alarm_clear_pattern_callback,
+            NULL,
+            false
+            );
+    }
+    else {
+        // Cancel the timeout if the button was released during the timeout
+        // 
+        // Returns false if the alarm ID is invalid, so it should be
+        // fine that this will be run after the button is released
+        // (and thus after the alarm ID has expired)
+        cancel_alarm(alarm_clear_grid_id);
+    }
+}
+
+
+/**
+ * Send a message to CORE 1 to reset all beat data on the current module
+ * if the clear button has been held down for the full timeout period
+ */
+int64_t alarm_clear_pattern_callback(alarm_id_t id, void *user_data)
+{
+    // Make sure that the button is still held down.
+    if (gpio_get(CLEAR_BTN) == 0) {
+        beat_update_t msg = {
+            .op = CLEAR_GRID,
+            .beat = 0,
+            .delta_veloc = 0
+        };    
+        queue_add_blocking(&mod_data.queue_button_event, &msg);
+    }
+    return 0; // Don't repeat timer
 }
 
 
