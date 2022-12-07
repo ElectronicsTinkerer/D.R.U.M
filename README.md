@@ -2,7 +2,7 @@
 Files for the D.R.U.M. Machine, the modular, expandable drum machine complete with digital AND analog circuitry!
 
 
-![CAD rendering of the DRUM sequencer with three modules attached to its right size](assembly.King)
+![CAD rendering of the DRUM sequencer with three modules attached to its right size](assembly.png)
 
 ## File Structure
 
