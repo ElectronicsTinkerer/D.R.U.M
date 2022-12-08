@@ -37,7 +37,7 @@ volatile int current_beat;
 volatile int playback_beat;
 volatile size_t sample_index;
 uint16_t variability; // The scaled reading from the DAC
-uint16_t variability_rand; // The random value to be used on the next sample
+volatile uint16_t variability_rand; // The random value to be used on the next sample
 
 repeating_timer_t sample_timer;
 
@@ -180,7 +180,6 @@ int main ()
     
     uint16_t m;
     int veloc;
-    int beat;
     
     // Event loop
     while (1) {
@@ -198,14 +197,11 @@ int main ()
         if (dac_loaded) {
             dac_loaded = false;
 
-            // Get the value so that we don't need a mutex to prevent it
-            // from changing during sample processing
-            beat = playback_beat;
-            
-            veloc = ((beats[beat].veloc & 0x7) << VARIABILITY_STEPS_LOG)
+            // Get the velocity for the given beat
+            veloc = ((beats[playback_beat].veloc & 0x7) << VARIABILITY_STEPS_LOG)
                 | (variability_rand & (VARIABILITY_STEPS - 1));
 
-            if (beats[beat].veloc && sample_index < SAMPLE_LENGTH) {
+            if (beats[playback_beat].veloc && sample_index < SAMPLE_LENGTH) {
                 ++sample_index;
                 m = samples[veloc][sample_index] + 0x8000;
             } else {
@@ -213,8 +209,6 @@ int main ()
             }
 
             write_dac(m);
-            
-            variability_rand = rand() % (variability+1);
         }
     }
 }
@@ -377,6 +371,7 @@ int64_t alarm_mod_beat_callback(alarm_id_t id, void *user_data)
     if (beats[current_beat].veloc != 0) {
         sample_index = 0;
         playback_beat = current_beat;
+        variability_rand = rand() % (variability+1);
     }
     
     return 0; // Time in us to fire again in the future. 0 disables this
