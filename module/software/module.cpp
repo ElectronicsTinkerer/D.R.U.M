@@ -174,7 +174,7 @@ int main ()
         if (dac_loaded) {
             dac_loaded = false;
             ++angle;
-            write_dac(0x8000+(int16_t)(32767.0*sin((double)angle*42.0/3.14159*(double)1000/(double)AUDIO_SAMPLE_RATE_HZ)));
+            write_dac(0x8000+(int16_t)(32767.0*sin((double)angle*4*3.14159*(double)1000/(double)AUDIO_SAMPLE_RATE_HZ)));
         }
     }
     
