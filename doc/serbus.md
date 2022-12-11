@@ -38,6 +38,12 @@ To perform a write operation to one or more modules, the master will set *CS*=1,
 
 ### Read Operation
 
-To perform a write operation to one or more modules, the master will set *CS*=1, *RWB*=1, and the other data fields as needed to carry the appropriate data. The master first sends out a command word to the bus device(s) that it wants to read from. It then raises DRDY (as it would for a write operation). Since the v1.0 protocol does not make use of handshaking, the master must wait some time (currently, 100us) before performing another shift operation through the scan chain to shift the results of the read operation back into the master's RX buffer. During the wait period between command and read shifts, the bus device must execute the command and replace the contents of its shift register with the result of the read operation.
+To perform a read operation to one or more modules, the master will set *CS*=1, *RWB*=1, and the other data fields as needed to carry the appropriate data. The master first sends out a command word to the bus device(s) that it wants to read from. It then raises DRDY (as it would for a write operation). Since the v1.0 protocol does not make use of handshaking, the master must wait some time (currently, 100us) before performing another shift operation through the scan chain to shift the results of the read operation back into the master's RX buffer. During the wait period between command and read shifts, the bus device must execute the command and replace the contents of its shift register with the result of the read operation.
+
+## Device Discovery
+
+The sequencer needs a method to determine the number of devices currently connected on the scan chain. Since the maximum length of the chain is set to be eight modules (determined by the analog routing scheme), the sequencer shifts out eight command words which are zeroed to clear the scan chain. It ignores any data shifted back in during this operation. Following the clear operation, the sequencer then sends out a magic number command which is designed so that it does not trigger an operation on the modules (CS=0). It then repeatedly shifts out this command word until it receives it in its Rx shift register. If it does not find this word within eight shifts, it defaults to the condition that no modules are connected.
+
+![Oscillscope capture of serial bus performing a scan of the chain with one device attached](img/discovery.png)
 
 
