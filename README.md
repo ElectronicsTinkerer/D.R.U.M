@@ -46,6 +46,7 @@ The `doc` directory contains most of the relevant documentation to this project.
 
 * [`serbus.md`](doc/serbus.md) contains information on the custom 32-bit scan chain protocol used for communication between modules. This is implemented using the RP2040's PIO state machines, meaning that the bus can be much faster than bit-banging in software. It also allows an "address-free" control scheme, where modules (bus devices) are selected by their depth on the scan chain, rather than an address. This allows a user to completely fill the bus with 8 of the same module if desired.
 * [`ipc.md`](doc/ipc.md) contains information on how information is sent between the different processes running on the sequencer and the module. Both CPU cores on the RP2040 are utilized in each design to allow simultaneous execution of multiple tasks. In the case of the sequencer, the I2C bus is rather slow compared to the amount of data to be sent over it, so the second thread (core 1) handles data modification and transfer to/from the modules.
+* [`samples.md`](doc/samples.md) contains information on the used sample format and how playback is achieved as well as how the signed to unsigned conversion is performed.
 
 ## Usage
 
